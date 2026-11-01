@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-canvas: #FAF8F5;
+  --bg-surface: #F2EFE9;
+  --text-ink: #141413;
+  --text-stone: #65625D;
+  --border-subtle: #E5E0D8;
+  --accent-obsidian: #181816;
+  --accent-terracotta: #9E4733;
+  --accent-olive: #2D4A3E;
+  --accent-champagne: #C5A059;
+}
+
+.dark {
+  --bg-canvas: #0C0C0B;
+  --bg-surface: #161614;
+  --text-ink: #FAF8F5;
+  --text-stone: #A39E93;
+  --border-subtle: #2A2A27;
+  --accent-obsidian: #FAF8F5;
+  --accent-terracotta: #D0634C;
+  --accent-olive: #456E5D;
+  --accent-champagne: #D8B772;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-ink);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Editorial selection highlight */
+::selection {
+  background-color: #181816;
+  color: #FAF8F5;
+}
+
+/* Hide scrollbars for slick horizontal product/swatch lists while allowing scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D2C2;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A39E93;
+}

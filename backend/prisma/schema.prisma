@@ -1,0 +1,163 @@
+// Atelier Vêtements & Horology Prisma Data Schema
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TargetGender {
+  MALE
+  FEMALE
+  UNISEX
+  KIDS_BOY
+  KIDS_GIRL
+}
+
+enum AgeGroup {
+  ADULT
+  CHILDREN
+  TODDLER
+}
+
+enum MainCategory {
+  GARMENTS
+  WEARABLES
+  FOOTWEAR
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH_ON_DELIVERY
+  BKASH_NAGAD
+  CREDIT_CARD
+}
+
+model Product {
+  id                  String         @id @default(uuid())
+  slug                String         @unique
+  name                String
+  subtitle            String
+  dressType           String
+  mainCategory        MainCategory
+  gender              TargetGender
+  ageGroup            AgeGroup
+  fabricType          String
+  fabricWeightGsm     Int?
+  careInstructions    String
+  fitType             String
+  basePrice           Float
+  discountPrice       Float?
+  currency            String         @default("BDT")
+  primaryColor        String
+  primaryColorHex     String
+  isNewCollection     Boolean        @default(false)
+  isTrending          Boolean        @default(false)
+  isFeatured          Boolean        @default(false)
+  rating              Float          @default(5.0)
+  reviewsCount        Int            @default(0)
+  description         String?
+  editorialHighlights String[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  colorVariants       ColorVariant[]
+  sizes               ProductSize[]
+  orderItems          OrderItem[]
+}
+
+model ColorVariant {
+  id         String   @id @default(uuid())
+  productId  String
+  colorName  String
+  colorHex   String
+  images     String[] // Cloudinary CDN URLs
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductSize {
+  id                 String   @id @default(uuid())
+  productId          String
+  sizeLabel          String   // e.g. "M", "40mm", "EU 42"
+  stock              Int      @default(0)
+  skuSuffix          String
+  
+  // Dual Measurements (Inches & CM)
+  chestInch          Float?
+  waistInch          Float?
+  shoulderInch       Float?
+  lengthInch         Float?
+  sleeveInch         Float?
+  footLengthInch     Float?
+  wristOrCaseInch    Float?
+
+  chestCm            Float?
+  waistCm            Float?
+  shoulderCm         Float?
+  lengthCm           Float?
+  sleeveCm           Float?
+  footLengthCm       Float?
+  wristOrCaseCm      Float?
+
+  product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id                String         @id @default(uuid())
+  orderNumber       String         @unique
+  customerName      String
+  customerEmail     String
+  customerPhone     String
+  shippingAddress   String
+  city              String
+  zone              String
+  postalCode        String
+  deliveryNotes     String?
+  subtotal          Float
+  shippingFee       Float
+  total             Float
+  paymentMethod     PaymentMethod
+  paymentStatus     String         @default("PENDING")
+  orderStatus       OrderStatus    @default(PENDING)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  estimatedDelivery DateTime?
+
+  items             OrderItem[]
+  timeline          OrderTimeline[]
+}
+
+model OrderItem {
+  id              String      @id @default(uuid())
+  orderId         String
+  productId       String
+  productName     String
+  selectedColor   String
+  selectedSize    String
+  price           Float
+  quantity        Int         @default(1)
+
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product     @relation(fields: [productId], references: [id])
+}
+
+model OrderTimeline {
+  id          String      @id @default(uuid())
+  orderId     String
+  status      OrderStatus
+  timestamp   DateTime    @default(now())
+  note        String
+
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
