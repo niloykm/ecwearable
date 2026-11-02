@@ -452,6 +452,119 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
+          EDITORIAL LOOKBOOK GALLERY: High-Fashion Visual Showcase
+         ========================================================= */}
+      <section className="w-full py-20 bg-canvas-elevated border-t border-border-subtle">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div className="space-y-2 max-w-xl">
+              <span className="text-[10px] font-mono tracking-editorial uppercase text-[#9E4733]">
+                Visual Journal — SS26
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-ink">
+                The Atelier Editorial Lookbook
+              </h2>
+              <p className="text-xs sm:text-sm font-sans text-ink-muted leading-relaxed">
+                A visual inquiry into silhouettes, textures, and unconstrained drapery photographed in raw natural morning light.
+              </p>
+            </div>
+
+            <Link
+              href="/shop"
+              className="mt-4 md:mt-0 inline-flex items-center gap-2 text-xs font-sans uppercase tracking-editorial font-medium text-ink hover:text-ink-muted transition-colors"
+            >
+              <span>View Full Lookbook Catalog</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: "Architectural Drape & Raw Flax",
+                subtitle: "Normandy Flax / SS26 Runway",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644722/aurelia_studio/editorial_lookbook_1.jpg",
+                aspect: "aspect-[4/5]",
+                category: "Linen & Suiting",
+                href: "/shop?fabric=linen"
+              },
+              {
+                title: "Oversized Silhouette & Airflow",
+                subtitle: "Relaxed Cut / Botanical Weave",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644724/aurelia_studio/editorial_lookbook_2.jpg",
+                aspect: "aspect-[4/5]",
+                category: "Modern Casual",
+                href: "/shop?collection=new"
+              },
+              {
+                title: "Autumnal Cashmere & Wool Overcoat",
+                subtitle: "Hand-Stitched Lapel / Tuscan Horn",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644725/aurelia_studio/editorial_lookbook_3.jpg",
+                aspect: "aspect-[4/5]",
+                category: "Outerwear",
+                href: "/shop?category=GARMENTS"
+              },
+              {
+                title: "Monochrome Sartorial Discipline",
+                subtitle: "Pure Giza Combed Cotton",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644727/aurelia_studio/editorial_lookbook_4.jpg",
+                aspect: "aspect-[4/5]",
+                category: "Monochrome Edit",
+                href: "/shop?color=Obsidian"
+              },
+              {
+                title: "Bespoke Evening Tailoring",
+                subtitle: "Dhakai Muslin & Mulberry Silk Accents",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644729/aurelia_studio/editorial_lookbook_5.jpg",
+                aspect: "aspect-[4/5]",
+                category: "Festive & Ceremonial",
+                href: "/shop?collection=trending"
+              },
+              {
+                title: "Subtle Tactile Horology & Hide",
+                subtitle: "Blake-Stitched Leather & 316L Chronograph",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644731/aurelia_studio/editorial_lookbook_6.jpg",
+                aspect: "aspect-[4/5]",
+                category: "Wearables & Timepieces",
+                href: "/shop?category=WEARABLES"
+              }
+            ].map((look, idx) => (
+              <Link
+                key={idx}
+                href={look.href}
+                className="group relative overflow-hidden bg-white border border-border-subtle block"
+              >
+                <div className={`relative w-full ${look.aspect} overflow-hidden bg-neutral-100`}>
+                  <Image
+                    src={optimizeCloudinaryUrl(look.image, { width: 900, height: 1125 })}
+                    alt={look.title}
+                    fill
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                  
+                  <div className="absolute top-4 left-4">
+                    <span className="px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-mono uppercase tracking-wider text-black">
+                      {look.category}
+                    </span>
+                  </div>
+
+                  <div className="absolute bottom-5 left-5 right-5 text-white">
+                    <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-300 block mb-1">
+                      {look.subtitle}
+                    </span>
+                    <h3 className="font-serif text-lg sm:text-xl font-normal leading-snug group-hover:underline underline-offset-4 decoration-white/60">
+                      {look.title}
+                    </h3>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
           EDITORIAL TRUST PILLARS
          ========================================================= */}
       <section className="w-full py-12 bg-canvas-elevated border-t border-border-subtle">

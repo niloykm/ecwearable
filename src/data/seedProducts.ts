@@ -1268,5 +1268,317 @@ export const SEED_PRODUCTS: Product[] = [
     createdAt: "2026-02-01T10:00:00Z",
     description: "Four-strand braided Italian cord paired with a custom marine screw-pin shackle in solid raw brass that patinas alongside your daily wear.",
     editorialHighlights: ["Full-Grain Bridle Cord", "Solid Cast Brass Hardware", "Screw-Pin Marine Shackle", "Hand-Braided"]
+  },
+
+  {
+    id: "prod-men-linen-blazer",
+    slug: "tailored-normandy-linen-blazer",
+    name: "Tailored Normandy Linen Blazer",
+    subtitle: "Unstructured single-breasted blazer in breathable Normandy flax with horn buttons",
+    dressType: "Blazer",
+    mainCategory: "GARMENTS",
+    gender: "MALE",
+    ageGroup: "ADULT",
+    fabricType: "Pure European Linen",
+    fabricWeightGsm: 240,
+    careInstructions: "Dry clean or gentle steam. Do not tumble dry.",
+    fitType: "Tailored Fit",
+    basePrice: 9450,
+    discountPrice: 8500,
+    currency: "BDT",
+    primaryColor: "Oatmeal Flax",
+    primaryColorHex: "#D8C7B5",
+    colorVariants: [
+      {
+        colorName: "Oatmeal Flax",
+        colorHex: "#D8C7B5",
+        images: [
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644732/aurelia_studio/prod-men-linen-blazer-1.jpg",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644734/aurelia_studio/prod-men-linen-blazer-2.jpg"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "38R",
+        stock: 10,
+        skuSuffix: "38R-BLZ",
+        measurementsInch: { chest: 40.0, shoulder: 17.5, length: 29.0, sleeve: 25.0 },
+        measurementsCm: { chest: 101.6, shoulder: 44.5, length: 73.7, sleeve: 63.5 }
+      },
+      {
+        sizeLabel: "40R",
+        stock: 14,
+        skuSuffix: "40R-BLZ",
+        measurementsInch: { chest: 42.0, shoulder: 18.2, length: 29.5, sleeve: 25.5 },
+        measurementsCm: { chest: 106.7, shoulder: 46.2, length: 74.9, sleeve: 64.8 }
+      },
+      {
+        sizeLabel: "42R",
+        stock: 8,
+        skuSuffix: "42R-BLZ",
+        measurementsInch: { chest: 44.0, shoulder: 19.0, length: 30.0, sleeve: 26.0 },
+        measurementsCm: { chest: 111.8, shoulder: 48.3, length: 76.2, sleeve: 66.0 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.95,
+    reviewsCount: 38,
+    createdAt: "2026-03-22T10:00:00Z",
+    description: "An unstructured tailoring masterpiece crafted with high-density Normandy linen. Half-lined in breathable Bemberg silk for warm-weather lightness.",
+    editorialHighlights: ["Pure Normandy Flax", "Genuine Natural Horn Buttons", "Unstructured Soft Shoulder", "Dual Rear Vents"]
+  },
+
+  {
+    id: "prod-women-trench-coat",
+    slug: "gabardine-atelier-trench-coat",
+    name: "Belted Atelier Gabardine Trench",
+    subtitle: "Double-breasted storm-flap trench tailored from water-repellent organic cotton gabardine",
+    dressType: "Overcoat",
+    mainCategory: "GARMENTS",
+    gender: "FEMALE",
+    ageGroup: "ADULT",
+    fabricType: "100% Organic Cotton",
+    fabricWeightGsm: 280,
+    careInstructions: "Specialist dry clean. Cool iron under cloth.",
+    fitType: "Relaxed Fit",
+    basePrice: 11200,
+    discountPrice: 9800,
+    currency: "BDT",
+    primaryColor: "Caramel Honey",
+    primaryColorHex: "#C19A6B",
+    colorVariants: [
+      {
+        colorName: "Caramel Honey",
+        colorHex: "#C19A6B",
+        images: [
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644736/aurelia_studio/prod-women-trench-1.jpg",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644737/aurelia_studio/prod-women-trench-2.jpg"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "S",
+        stock: 9,
+        skuSuffix: "S-TRN",
+        measurementsInch: { chest: 39.0, shoulder: 16.5, length: 44.0, sleeve: 24.0 },
+        measurementsCm: { chest: 99.0, shoulder: 42.0, length: 111.8, sleeve: 61.0 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 15,
+        skuSuffix: "M-TRN",
+        measurementsInch: { chest: 41.0, shoulder: 17.2, length: 45.0, sleeve: 24.5 },
+        measurementsCm: { chest: 104.1, shoulder: 43.7, length: 114.3, sleeve: 62.2 }
+      },
+      {
+        sizeLabel: "L",
+        stock: 7,
+        skuSuffix: "L-TRN",
+        measurementsInch: { chest: 43.5, shoulder: 18.0, length: 45.5, sleeve: 25.0 },
+        measurementsCm: { chest: 110.5, shoulder: 45.7, length: 115.6, sleeve: 63.5 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.9,
+    reviewsCount: 42,
+    createdAt: "2026-03-24T12:00:00Z",
+    description: "An architectural double-breasted trench featuring an exaggerated lapel, raglan shoulders, storm shield, and a cinched self-fabric waist belt.",
+    editorialHighlights: ["High-Density Cotton Gabardine", "Detachable Buckled Belt", "Storm Flap Architecture", "Horn Buttons"]
+  },
+
+  {
+    id: "prod-women-silk-gown",
+    slug: "flowing-mulberry-silk-evening-gown",
+    name: "Flowing Mulberry Silk Evening Gown",
+    subtitle: "Floor-length bias-cut pure silk gown with fluid liquid drape and delicate halter neckline",
+    dressType: "Dress",
+    mainCategory: "GARMENTS",
+    gender: "FEMALE",
+    ageGroup: "ADULT",
+    fabricType: "Mulberry Silk",
+    fabricWeightGsm: 115,
+    careInstructions: "Dry clean only. Steam with silk attachment.",
+    fitType: "Regular Fit",
+    basePrice: 12500,
+    currency: "BDT",
+    primaryColor: "Midnight Obsidian",
+    primaryColorHex: "#151515",
+    colorVariants: [
+      {
+        colorName: "Midnight Obsidian",
+        colorHex: "#151515",
+        images: [
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644738/aurelia_studio/prod-women-silk-gown-1.jpg",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644740/aurelia_studio/prod-women-silk-gown-2.jpg"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "S",
+        stock: 6,
+        skuSuffix: "S-GWN",
+        measurementsInch: { chest: 34.0, waist: 27.0, length: 56.0 },
+        measurementsCm: { chest: 86.4, waist: 68.6, length: 142.2 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 8,
+        skuSuffix: "M-GWN",
+        measurementsInch: { chest: 36.5, waist: 29.5, length: 57.0 },
+        measurementsCm: { chest: 92.7, waist: 74.9, length: 144.8 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 5.0,
+    reviewsCount: 29,
+    createdAt: "2026-03-25T14:30:00Z",
+    description: "Cut on the bias from opulent 22-momme Rajshahi mulberry silk, this silhouette cascades effortlessly over curves with tactile liquid sheen.",
+    editorialHighlights: ["22-Momme Pure Mulberry Silk", "Bias-Cut Fluid Drape", "French Clean Seams", "Floor Grazing Hemline"]
+  },
+
+  {
+    id: "prod-bag-leather-duffel",
+    slug: "tapioca-full-grain-leather-weekender",
+    name: "Full-Grain Leather Weekender Duffel",
+    subtitle: "Heavyweight vegetable-tanned Tuscan leather travel holdall with brass YKK Excella zippers",
+    dressType: "Bag",
+    mainCategory: "WEARABLES",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "Full-Grain Italian Leather",
+    careInstructions: "Condition with beeswax leather balm twice yearly.",
+    fitType: "Regular Fit",
+    basePrice: 14800,
+    discountPrice: 13500,
+    currency: "BDT",
+    primaryColor: "Cognac Amber",
+    primaryColorHex: "#9E5B28",
+    colorVariants: [
+      {
+        colorName: "Cognac Amber",
+        colorHex: "#9E5B28",
+        images: [
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644742/aurelia_studio/prod-bag-leather-duffel-1.jpg",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644744/aurelia_studio/prod-bag-leather-duffel-2.jpg"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "45L Standard",
+        stock: 12,
+        skuSuffix: "45L-DUF",
+        measurementsInch: { length: 21.0, chest: 11.5 },
+        measurementsCm: { length: 53.3, chest: 29.2 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.95,
+    reviewsCount: 51,
+    createdAt: "2026-03-21T09:00:00Z",
+    description: "Constructed from thick 2.2mm Tuscan hide with reinforced hand-riveted handles and an adjustable wool-padded shoulder strap.",
+    editorialHighlights: ["2.2mm Tuscan Calfskin", "Hand-Riveted Stress Points", "Solid Antique Brass Hardware", "Passport Quick-Access Pocket"]
+  },
+
+  {
+    id: "prod-eyewear-aviator",
+    slug: "titanium-minimalist-aviator-sunglasses",
+    name: "Japanese Titanium Aviator Sunglasses",
+    subtitle: "Ultra-lightweight aerospace titanium frames with anti-reflective polarized Zeiss lenses",
+    dressType: "Eyewear",
+    mainCategory: "WEARABLES",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "Sapphire Crystal & Titanium",
+    careInstructions: "Clean with microfiber cloth and lens solution.",
+    fitType: "Regular Fit",
+    basePrice: 5200,
+    currency: "BDT",
+    primaryColor: "Gunmetal & Charcoal",
+    primaryColorHex: "#2C3539",
+    colorVariants: [
+      {
+        colorName: "Gunmetal & Charcoal",
+        colorHex: "#2C3539",
+        images: [
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644745/aurelia_studio/prod-eyewear-aviator-1.jpg",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644747/aurelia_studio/prod-eyewear-aviator-2.jpg"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "54mm (Universal)",
+        stock: 18,
+        skuSuffix: "54MM-TIT",
+        measurementsInch: { wristOrCase: 5.5 },
+        measurementsCm: { wristOrCase: 14.0 }
+      }
+    ],
+    isNewCollection: false,
+    isTrending: true,
+    isFeatured: false,
+    rating: 4.88,
+    reviewsCount: 24,
+    createdAt: "2026-02-18T16:00:00Z",
+    description: "Weighing only 18 grams, forged from beta-titanium with precision silicone nose pads and 100% UVA/UVB Carl Zeiss polarized optic glass.",
+    editorialHighlights: ["18g Beta-Titanium Frame", "Carl Zeiss Polarized Optics", "Hypoallergenic Nose Pads", "Hand-Stitched Leather Case"]
+  },
+
+  {
+    id: "prod-wear-merino-scarf",
+    slug: "handwoven-merino-cashmere-fringe-scarf",
+    name: "Handwoven Merino Cashmere Fringe Scarf",
+    subtitle: "Featherlight oversized winter drape woven from combed extrafine Merino & Mongolian cashmere",
+    dressType: "Scarf",
+    mainCategory: "WEARABLES",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "Fine Cashmere Blend",
+    fabricWeightGsm: 160,
+    careInstructions: "Hand wash cold with wool detergent. Dry flat.",
+    fitType: "Regular Fit",
+    basePrice: 3800,
+    currency: "BDT",
+    primaryColor: "Camel Ivory",
+    primaryColorHex: "#C19A6B",
+    colorVariants: [
+      {
+        colorName: "Camel Ivory",
+        colorHex: "#C19A6B",
+        images: [
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644748/aurelia_studio/prod-wear-merino-scarf-1.jpg",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644750/aurelia_studio/prod-wear-merino-scarf-2.jpg"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "200cm × 70cm",
+        stock: 25,
+        skuSuffix: "200X70-SCF",
+        measurementsInch: { length: 78.5, chest: 27.5 },
+        measurementsCm: { length: 200.0, chest: 70.0 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.92,
+    reviewsCount: 36,
+    createdAt: "2026-03-20T11:00:00Z",
+    description: "Spun in Nepal from blended grade-A Mongolian cashmere and Australian merino. Finished with eyelash hand-twisted fringe details.",
+    editorialHighlights: ["70% Merino 30% Cashmere", "Eyelash Hand-Twisted Fringe", "Air-Spun Featherlight Warmth", "Generous Oversized Wrap"]
   }
 ];
