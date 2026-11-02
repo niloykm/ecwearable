@@ -214,8 +214,8 @@ function ShopContent() {
             <div className="flex flex-col gap-1 text-xs font-sans">
               {[
                 { id: "all", label: "All Items" },
-                { id: "new", label: "✨ New Collection" },
-                { id: "trending", label: "🔥 Trending Now" },
+                { id: "new", label: "New Collection" },
+                { id: "trending", label: "Trending Now" },
               ].map((c) => (
                 <button
                   key={c.id}

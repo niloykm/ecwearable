@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ShoppingBag,
   Lock,
+  ChevronRight,
 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
@@ -123,7 +124,7 @@ export default function CheckoutPage() {
             >
               1. Delivery
             </span>
-            <span className="text-border-subtle">➔</span>
+            <ChevronRight className="w-3.5 h-3.5 text-ink-muted" />
             <span
               className={`px-2 py-0.5 border ${
                 step === 2 ? "bg-[#181816] text-white" : "text-ink-muted"

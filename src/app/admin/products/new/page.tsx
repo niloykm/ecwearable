@@ -741,7 +741,7 @@ export default function AdminNewProductPage() {
                 className="w-4 h-4"
               />
               <span className="text-xs font-sans font-medium text-ink">
-                ✨ New Collection Flag
+                New Collection Flag
               </span>
             </label>
 
@@ -753,7 +753,7 @@ export default function AdminNewProductPage() {
                 className="w-4 h-4"
               />
               <span className="text-xs font-sans font-medium text-ink">
-                🔥 Trending Now Flag
+                Trending Now Flag
               </span>
             </label>
 
@@ -765,7 +765,7 @@ export default function AdminNewProductPage() {
                 className="w-4 h-4"
               />
               <span className="text-xs font-sans font-medium text-ink">
-                ⭐ Featured on Homepage
+                Featured on Homepage
               </span>
             </label>
           </div>

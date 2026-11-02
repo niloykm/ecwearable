@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react";
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Check } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
 import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
@@ -76,7 +76,8 @@ export function CartDrawer() {
                   </>
                 ) : (
                   <span className="text-[#2D4A3E] font-medium flex items-center gap-1">
-                    ✓ You unlocked complimentary express delivery
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Complimentary express delivery unlocked</span>
                   </span>
                 )}
               </span>

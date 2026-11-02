@@ -16,6 +16,7 @@ import {
   PackagePlus,
   Layers,
   ExternalLink,
+  ChevronDown,
 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { cn } from "@/lib/utils";
@@ -350,7 +351,7 @@ export function Header() {
                   <MoreVertical className="w-3.5 h-3.5 text-[#C5A059]" />
                   <span>Studio Options</span>
                 </span>
-                <span className="text-[10px] text-ink-muted group-open:rotate-180 transition-transform">▼</span>
+                <ChevronDown className="w-3.5 h-3.5 text-ink-muted group-open:rotate-180 transition-transform" />
               </summary>
               <div className="pt-2 pl-4 space-y-2 text-xs font-sans">
                 <Link
