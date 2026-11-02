@@ -358,11 +358,24 @@ export const useCommerceStore = create<CommerceState>()(
       },
     }),
     {
-      name: 'aurelia-atelier-commerce-v1',
+      name: 'aurelia-atelier-commerce-v2',
       storage: createJSONStorage(() => localStorage),
-      // Merge with seed products if storage is empty
+      // Automatically refresh or migrate cached products with updated Cloudinary seed data
       onRehydrateStorage: () => (state) => {
-        if (state && (!state.products || state.products.length === 0)) {
+        if (!state) return;
+        if (!state.products || state.products.length === 0) {
+          state.products = SEED_PRODUCTS;
+          return;
+        }
+
+        // If any cached products have legacy broken unsplash URLs, upgrade them to Cloudinary seed URLs
+        const hasLegacyImages = state.products.some((p) =>
+          p.colorVariants?.some((c) =>
+            c.images?.some((img) => !img.includes('res.cloudinary.com'))
+          )
+        );
+
+        if (hasLegacyImages) {
           state.products = SEED_PRODUCTS;
         }
       },
