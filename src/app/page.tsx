@@ -23,7 +23,7 @@ export default function HomePage() {
       origin: "Normandy, France",
       gsm: "180–210 GSM",
       desc: "Cultivated along the breezy Atlantic coast, Normandy flax produces naturally hollow fibers that conduct heat away from the body 5x faster than wool and 19x faster than silk. Air-washed for instant drape.",
-      image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1000&q=80",
+      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617599/aurelia_studio/img_1596755094514f87.jpg",
       tag: "Natural Thermoregulation",
     },
     {
@@ -31,7 +31,7 @@ export default function HomePage() {
       origin: "Dhaka & Rajshahi, Bangladesh",
       gsm: "110–145 GSM",
       desc: "Woven on pit looms by generational artisan families using high-count yarn, floating featherweight over the skin with lustrous mulberry silk wefts and antique hand-spun zari borders.",
-      image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80",
+      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617621/aurelia_studio/img_161003046998398e.jpg",
       tag: "Heritage Pit-Loom Weave",
     },
     {
@@ -39,7 +39,7 @@ export default function HomePage() {
       origin: "Egyptian Giza & Organic Deltas",
       gsm: "140–240 GSM",
       desc: "Grown without synthetic pesticides or defoliants, our long-staple combed cotton is double-twisted for dense pill resistance, baby-soft tactile feel, and non-allergenic comfort in tropical heat.",
-      image: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=1000&q=80",
+      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617611/aurelia_studio/img_1581655353564df1.jpg",
       tag: "Chemical-Free Touch",
     },
     {
@@ -47,7 +47,7 @@ export default function HomePage() {
       origin: "Tuscany, Italy & Swiss Horology",
       gsm: "Solid Density",
       desc: "Vegetable-tanned Tuscan calfskin that deepens in patina over decades, married to surgical marine-grade 316L steel chronographs with sapphire exhibition crystals.",
-      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80",
+      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617648/aurelia_studio/img_1523275335684378.jpg",
       tag: "Enduring Heirloom",
     },
   ];
@@ -111,7 +111,7 @@ export default function HomePage() {
             <div className="relative group overflow-hidden border-b sm:border-b-0 sm:border-r border-border-subtle min-h-[380px] lg:min-h-full">
               <Image
                 src={optimizeCloudinaryUrl(
-                  "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1200&q=85",
+                  "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg",
                   { width: 900, height: 1200 }
                 )}
                 alt="European Linen Lookbook"
@@ -140,7 +140,7 @@ export default function HomePage() {
             <div className="relative group overflow-hidden min-h-[380px] lg:min-h-full">
               <Image
                 src={optimizeCloudinaryUrl(
-                  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85",
+                  "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617662/aurelia_studio/img_1523275335684378.jpg",
                   { width: 900, height: 1200 }
                 )}
                 alt="Horology and Fine Wearables"
@@ -198,7 +198,7 @@ export default function HomePage() {
           >
             <Image
               src={optimizeCloudinaryUrl(
-                "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1000&q=80",
+                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617604/aurelia_studio/img_161713798409574e.jpg",
                 { width: 800, height: 550 }
               )}
               alt="Men's Sartorial Edit"
@@ -225,7 +225,7 @@ export default function HomePage() {
           >
             <Image
               src={optimizeCloudinaryUrl(
-                "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1000&q=80",
+                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617626/aurelia_studio/img_159577745758395e.jpg",
                 { width: 800, height: 550 }
               )}
               alt="Women's Atelier Collection"
@@ -252,7 +252,7 @@ export default function HomePage() {
           >
             <Image
               src={optimizeCloudinaryUrl(
-                "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=800&q=80",
+                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617664/aurelia_studio/img_1518831959646742.jpg",
                 { width: 700, height: 525 }
               )}
               alt="Children's Edit"
@@ -279,7 +279,7 @@ export default function HomePage() {
           >
             <Image
               src={optimizeCloudinaryUrl(
-                "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=80",
+                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617650/aurelia_studio/img_1524805444758089.jpg",
                 { width: 900, height: 560 }
               )}
               alt="Watches, Leather Footwear & Bracelets"
