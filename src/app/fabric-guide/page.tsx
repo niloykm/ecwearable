@@ -19,7 +19,7 @@ const FABRIC_CATALOG = [
     weave: "Plain Weave & Herringbone",
     breathability: "Exceptional (98/100)",
     feel: "Crisp initially, develops fluid buttery drape with wash cycles",
-    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617599/aurelia_studio/img_1596755094514f87.jpg",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640643/aurelia_studio/fabric-linen_2892.jpg",
     description:
       "Cultivated along the oceanic mist belt between northern France and Belgium. Flax requires zero artificial irrigation and creates long, hollow bast fibers that rapidly wick perspiration and conduct heat away from the body.",
     bestFor: "Warm-weather shirts, summer blazers, tailored relaxed trousers, midi dresses",
@@ -31,7 +31,7 @@ const FABRIC_CATALOG = [
     weave: "Discontinuous Weft Handloom (Pit Loom)",
     breathability: "Ultra-Lightweight Airflow (100/100)",
     feel: "Featherlight, floating, translucent with tactile zari relief",
-    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617621/aurelia_studio/img_161003046998398e.jpg",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640643/aurelia_studio/fabric-muslin_2893.jpg",
     description:
       "A UNESCO-recognized intangible cultural heritage craft. Spun with gossamer cotton and fine mulberry silk, woven in pit-loom darkness where ambient river humidity keeps delicate fibers pliable during weaving.",
     bestFor: "Festive celebration sarees, heirloom drapes, ceremonial dupattas",
@@ -43,7 +43,7 @@ const FABRIC_CATALOG = [
     weave: "Interlock Pique, Fine Poplin & Double Gauze",
     breathability: "High (90/100)",
     feel: "Silky, hypoallergenic, dense yet cool to touch",
-    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617611/aurelia_studio/img_1581655353564df1.jpg",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640643/aurelia_studio/fabric-cotton_2893.jpg",
     description:
       "Extra-long staple fibers yield twice the tensile strength of standard commercial cotton. Spun into double-twisted yarns that resist pilling over years of regular laundry while offering unmatched comfort next to bare skin.",
     bestFor: "Tailored polos, kurtis, kids festive panjabi sets, infant rompers",
@@ -55,7 +55,7 @@ const FABRIC_CATALOG = [
     weave: "Vegetable Pit-Tanned Hide",
     breathability: "Natural Porous Membrane",
     feel: "Firm structure that molds to the wearer's feet and wrist",
-    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617654/aurelia_studio/img_1638247025967b4e.jpg",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640643/aurelia_studio/fabric-leather_2893.jpg",
     description:
       "Tanned using natural tree barks and chestnut extracts over 40 days without toxic heavy metal chromium. Maintains the full epidermal grain for natural water resistance and develops an amber patina unique to each owner.",
     bestFor: "Blake-stitched Chelsea boots, watch straps, artisanal bracelets",

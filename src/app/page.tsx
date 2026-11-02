@@ -23,7 +23,7 @@ export default function HomePage() {
       origin: "Normandy, France",
       gsm: "180–210 GSM",
       desc: "Cultivated along the breezy Atlantic coast, Normandy flax produces naturally hollow fibers that conduct heat away from the body 5x faster than wool and 19x faster than silk. Air-washed for instant drape.",
-      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617599/aurelia_studio/img_1596755094514f87.jpg",
+      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640620/aurelia_studio/prod-men-linen-shirt-1_8830.jpg",
       tag: "Natural Thermoregulation",
     },
     {
@@ -47,7 +47,7 @@ export default function HomePage() {
       origin: "Tuscany, Italy & Swiss Horology",
       gsm: "Solid Density",
       desc: "Vegetable-tanned Tuscan calfskin that deepens in patina over decades, married to surgical marine-grade 316L steel chronographs with sapphire exhibition crystals.",
-      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617648/aurelia_studio/img_1523275335684378.jpg",
+      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640635/aurelia_studio/prod-wear-chronograph-40mm-1_5575.jpg",
       tag: "Enduring Heirloom",
     },
   ];
