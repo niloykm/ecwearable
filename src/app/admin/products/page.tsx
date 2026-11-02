@@ -105,7 +105,7 @@ export default function AdminProductsPage() {
                 const totalStock = product.sizes.reduce((sum, s) => sum + s.stock, 0);
                 const primaryImg =
                   product.colorVariants[0]?.images[0] ||
-                  "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1000&q=80";
+                  "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg";
 
                 return (
                   <tr key={product.id} className="hover:bg-canvas transition-colors">

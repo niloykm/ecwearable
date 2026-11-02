@@ -55,10 +55,10 @@ export default function AdminNewProductPage() {
   const [primaryColor, setPrimaryColor] = useState("Ecru Alabaster");
   const [primaryColorHex, setPrimaryColorHex] = useState("#F2EFE9");
   const [imageUrlInput, setImageUrlInput] = useState(
-    "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1000&q=80"
+    "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg"
   );
   const [hoverImageUrlInput, setHoverImageUrlInput] = useState(
-    "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1000&q=80"
+    "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617662/aurelia_studio/img_1523275335684378.jpg"
   );
 
   // Dynamic Size Matrix Builder with Auto-Converting Dual-Unit Engine

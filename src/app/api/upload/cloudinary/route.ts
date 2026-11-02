@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     // High quality mock optimization for uploaded images
     const mockOptimizedUrl =
-      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1200&q=80";
+      "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg";
 
     return NextResponse.json({
       success: true,
