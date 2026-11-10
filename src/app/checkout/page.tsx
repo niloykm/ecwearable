@@ -47,10 +47,10 @@ export default function CheckoutPage() {
   );
 
   const shippingFee =
-    formData.zone === "DHAKA_METRO"
-      ? subtotal > (currency === "BDT" ? 5000 : 50)
-        ? 0
-        : 80
+    subtotal >= (currency === "BDT" ? 1500 : 50)
+      ? 0
+      : formData.zone === "DHAKA_METRO"
+      ? 80
       : formData.zone === "NATIONWIDE"
       ? 150
       : 1200;

@@ -1,6 +1,6 @@
 export type TargetGender = 'MALE' | 'FEMALE' | 'UNISEX' | 'KIDS_BOY' | 'KIDS_GIRL';
 export type AgeGroup = 'ADULT' | 'CHILDREN' | 'TODDLER';
-export type MainCategory = 'GARMENTS' | 'WEARABLES' | 'FOOTWEAR';
+export type MainCategory = 'GARMENTS' | 'WEARABLES' | 'FOOTWEAR' | 'OUTERWEAR' | 'BASICS' | 'ACCESSORIES';
 
 export type FabricOrMaterial =
   | '100% Organic Cotton'
@@ -14,7 +14,13 @@ export type FabricOrMaterial =
   | 'Full-Grain Italian Leather'
   | '316L Surgical Stainless Steel'
   | 'Sapphire Crystal & Titanium'
-  | 'Fine Cashmere Blend';
+  | 'Fine Cashmere Blend'
+  | 'Heavyweight French Terry (280 GSM)'
+  | 'DWR 3-Layer Ripstop Nylon'
+  | '4-Way Stretch Technical Knit'
+  | 'Cordura® 500D Ballistic Nylon'
+  | 'Merino Wool Thermal Knit'
+  | string;
 
 export interface SizeMeasurement {
   sizeLabel: string; // e.g., "XS", "S", "M", "L", "XL", "XXL", "4-5Y", "EU 42", "40mm", "19cm"
@@ -59,8 +65,11 @@ export interface Product {
   ageGroup: AgeGroup;
   fabricType: FabricOrMaterial;
   fabricWeightGsm?: number;
+  breathabilityRating?: string;
+  modelReference?: string;
+  badge?: string;
   careInstructions: string;
-  fitType: 'Relaxed Fit' | 'Tailored Fit' | 'Regular Fit' | 'Oversized' | 'Adjustable';
+  fitType: 'Relaxed Fit' | 'Tailored Fit' | 'Regular Fit' | 'Oversized' | 'Adjustable' | 'Athletic Taper' | 'Boxy Fit';
   basePrice: number;
   discountPrice?: number;
   currency: 'BDT' | 'USD';

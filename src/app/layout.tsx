@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/navigation/Footer";
@@ -7,17 +7,10 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
 import { SearchModal } from "@/components/search/SearchModal";
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -29,17 +22,18 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AURELIA STUDIO — Editorial Garments, Bespoke Apparel & Luxury Wearables",
+  title: "ECWEARABLE — Engineered Everyday Garments & Technical Wearables",
   description:
-    "A human-crafted editorial garment and horology commerce flagship. Featuring pure Normandy linen, Dhakai muslin, organic cotton, and mechanical timepieces.",
+    "High-performance technical apparel and everyday essential brand. Heavyweight 280 GSM French Terry, water-repellent ripstop shells, and ergonomic activewear built for daily transit and training.",
   keywords: [
-    "Garments",
-    "Wearables",
-    "Linen Shirt",
-    "Festive Panjabi",
-    "Handloom Saree",
-    "Chronograph Watch",
-    "Editorial Fashion",
+    "ECWEARABLE",
+    "Technical Apparel",
+    "Heavyweight Tee 280 GSM",
+    "Ripstop Cargo Pants",
+    "Storm Shell Windbreaker",
+    "Merino Wool Crewneck",
+    "Everyday Basics",
+    "Cordura Daypack",
   ],
 };
 
@@ -49,8 +43,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${jakarta.variable} ${jetbrains.variable}`}>
-      <body className="min-h-screen flex flex-col bg-canvas text-ink antialiased selection:bg-[#181816] selection:text-[#FAF8F5]">
+    <html lang="en" className={`${jakarta.variable} ${jetbrains.variable}`}>
+      <body className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 antialiased selection:bg-zinc-950 selection:text-white">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

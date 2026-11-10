@@ -3,413 +3,290 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles, Feather, Shield, Compass, ChevronRight } from "lucide-react";
+import {
+  ArrowRight,
+  ShieldCheck,
+  Feather,
+  Compass,
+  ChevronRight,
+  Sparkles,
+  ShoppingBag,
+  Check,
+  X,
+  Droplets,
+  Wind,
+  Layers,
+} from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { ProductCard } from "@/components/product/ProductCard";
-import { Badge } from "@/components/ui/Badge";
+import { formatPrice, cn } from "@/lib/utils";
 import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
 
 export default function HomePage() {
-  const { products } = useCommerceStore();
+  const { products, currency, addToCart, toggleCart } = useCommerceStore();
+  const [activePin, setActivePin] = useState<string | null>(null);
   const [activeFabricTab, setActiveFabricTab] = useState<number>(0);
 
-  const newCollectionProducts = products.filter((p) => p.isNewCollection).slice(0, 4);
-  const trendingProducts = products.filter((p) => p.isTrending).slice(0, 4);
-  const wearableProducts = products.filter((p) => p.mainCategory === "WEARABLES" || p.mainCategory === "FOOTWEAR").slice(0, 4);
+  // Curated collections
+  const newArrivals = products.filter((p) => p.isNewCollection).slice(0, 8);
+  const technicalOuterwear = products.filter(
+    (p) => p.mainCategory === "OUTERWEAR" || p.dressType.includes("Windbreaker") || p.dressType.includes("Cargo")
+  ).slice(0, 4);
 
-  const fabrics = [
+  // Pin products for Hero Lookbook
+  const pinProducts = {
+    tee: products.find((p) => p.id === "prod-tech-heavyweight-tee") || products[0],
+    cargo: products.find((p) => p.id === "prod-tech-ripstop-cargo") || products[1],
+    daypack: products.find((p) => p.id === "prod-tech-cordura-daypack") || products[5],
+  };
+
+  const handleQuickAddPin = (e: React.MouseEvent, product: typeof pinProducts.tee) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, product.colorVariants[0], product.sizes[0], 1);
+    toggleCart(true);
+    setActivePin(null);
+  };
+
+  const fabricMatrix = [
     {
-      name: "Pure European Linen",
-      origin: "Normandy, France",
-      gsm: "180–210 GSM",
-      desc: "Cultivated along the breezy Atlantic coast, Normandy flax produces naturally hollow fibers that conduct heat away from the body 5x faster than wool and 19x faster than silk. Air-washed for instant drape.",
-      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640620/aurelia_studio/prod-men-linen-shirt-1_8830.jpg",
-      tag: "Natural Thermoregulation",
+      name: "Heavyweight French Terry",
+      spec: "280 GSM Combed Organic Cotton",
+      feature: "Zero-Bacon Ribbed Tension Collar",
+      desc: "Developed on high-gauge circular knitting machines with double-twisted yarn. Resists garment sagging, holds structural boxy drape, and provides breathable thermal balance across seasons.",
+      metric: "42 CFM Airflow",
+      icon: Feather,
+      image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80",
     },
     {
-      name: "Dhakai Muslin & Mulberry Silk",
-      origin: "Dhaka & Rajshahi, Bangladesh",
-      gsm: "110–145 GSM",
-      desc: "Woven on pit looms by generational artisan families using high-count yarn, floating featherweight over the skin with lustrous mulberry silk wefts and antique hand-spun zari borders.",
-      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617621/aurelia_studio/img_161003046998398e.jpg",
-      tag: "Heritage Pit-Loom Weave",
+      name: "DWR 3-Layer Ripstop",
+      spec: "Hydrostatic 10,000mm Membrane",
+      feature: "Fluorocarbon-Free Water Repellence",
+      desc: "Micro-grid reinforced nylon shell bonded to a breathable monolithic membrane. Water beads and rolls off on contact while body vapor vents continuously through high-exertion transit.",
+      metric: "10,000 g/m² Breathability",
+      icon: Droplets,
+      image: "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=900&q=80",
     },
     {
-      name: "100% GOTS Organic Cotton",
-      origin: "Egyptian Giza & Organic Deltas",
-      gsm: "140–240 GSM",
-      desc: "Grown without synthetic pesticides or defoliants, our long-staple combed cotton is double-twisted for dense pill resistance, baby-soft tactile feel, and non-allergenic comfort in tropical heat.",
-      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617611/aurelia_studio/img_1581655353564df1.jpg",
-      tag: "Chemical-Free Touch",
+      name: "18.5µ Australian Merino",
+      spec: "Ultrafine Thermoregulating Knit",
+      feature: "Natural Keratin Anti-Odor",
+      desc: "Spun from long-staple 18.5-micron fleece. Naturally wicks moisture vapor in the fiber cortex before it condenses, ensuring zero-itch tactile comfort and weeks of wear between cold washes.",
+      metric: "18.5 Micron Fineness",
+      icon: Wind,
+      image: "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=900&q=80",
     },
     {
-      name: "Full-Grain Leather & 316L Horology Steel",
-      origin: "Tuscany, Italy & Swiss Horology",
-      gsm: "Solid Density",
-      desc: "Vegetable-tanned Tuscan calfskin that deepens in patina over decades, married to surgical marine-grade 316L steel chronographs with sapphire exhibition crystals.",
-      image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640635/aurelia_studio/prod-wear-chronograph-40mm-1_5575.jpg",
-      tag: "Enduring Heirloom",
+      name: "Cordura® 500D Ballistic",
+      spec: "Military-Spec Air-Textured Nylon",
+      feature: "Fidlock® Magnetic Compatibility",
+      desc: "High-tenacity filament nylon engineered to withstand severe friction, abrasion, and tropical rainfall. Finished with a weather-resistant polyurethane backing.",
+      metric: "500 Denier Toughness",
+      icon: Layers,
+      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
     },
   ];
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col bg-white dark:bg-zinc-950">
       {/* =========================================================
-          HERO SECTION: Split Editorial Lookbook
+          HERO SECTION: Asymmetric 2-Column Editorial Grid
          ========================================================= */}
-      <section className="relative w-full border-b border-border-subtle bg-canvas">
+      <section className="relative w-full border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[82vh]">
           {/* Left Text Column */}
-          <div className="lg:col-span-5 flex flex-col justify-between p-8 sm:p-12 lg:p-16 border-b lg:border-b-0 lg:border-r border-border-subtle">
-            <div className="space-y-6">
+          <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-10 lg:p-14 border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800">
+            <div className="space-y-5">
               <div className="flex items-center gap-2">
-                <Badge variant="terracotta">SS26 Runway Edition</Badge>
-                <span className="text-[11px] font-mono tracking-widest uppercase text-ink-muted">
-                  Collection 04
+                <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">
+                  SS26 TECHNICAL LAB
+                </span>
+                <span className="text-[11px] font-mono tracking-wider uppercase text-zinc-500">
+                  SYSTEM RELEASE 04
                 </span>
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light leading-[1.08] tracking-tight text-ink">
-                Quiet tactile architecture for everyday ceremony.
+              <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.08] tracking-tightest uppercase text-zinc-950 dark:text-white">
+                Engineered Comfort. Zero Compromise.
               </h1>
 
-              <p className="text-sm sm:text-base font-sans text-ink-muted leading-relaxed max-w-md">
-                Aurelia Studio reconciles Parisian and Dhakai sartorial heritage.
-                Breathable Normandy flax, hand-smocked silk, and Swiss-inspired horology crafted for tactile longevity.
+              <p className="text-sm font-sans text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+                Heavyweight 280 GSM French Terry, water-repellent ripstop shells, and ergonomic activewear built for daily transit and training.
               </p>
+
+              {/* Fabric Callouts Grid */}
+              <div className="grid grid-cols-2 gap-2.5 pt-2">
+                <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                  <span className="text-[10px] font-mono uppercase text-zinc-400 block">Density</span>
+                  <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">280 GSM French Terry</span>
+                </div>
+                <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                  <span className="text-[10px] font-mono uppercase text-zinc-400 block">Protection</span>
+                  <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">DWR 3-Layer Ripstop</span>
+                </div>
+                <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                  <span className="text-[10px] font-mono uppercase text-zinc-400 block">Thermal</span>
+                  <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">18.5µ Merino Wool</span>
+                </div>
+                <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                  <span className="text-[10px] font-mono uppercase text-zinc-400 block">Hardware</span>
+                  <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">Cordura® & Fidlock®</span>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-8 sm:pt-12 space-y-4">
+            <div className="pt-8 space-y-4">
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/shop?collection=new"
-                  className="px-7 py-3.5 bg-[#181816] text-[#FAF8F5] text-xs font-sans uppercase tracking-editorial font-medium hover:bg-neutral-800 transition-all flex items-center gap-2 group shadow-subtle"
+                  className="px-6 py-3.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase tracking-wider font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all flex items-center gap-2 group shadow-sm"
                 >
-                  <span>Explore New Collection</span>
+                  <span>Shop New Arrivals</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
 
                 <Link
-                  href="/shop"
-                  className="px-6 py-3.5 bg-canvas-elevated border border-border-subtle text-ink text-xs font-sans uppercase tracking-editorial font-medium hover:bg-[#E5E0D8] transition-all"
+                  href="/shop?category=OUTERWEAR"
+                  className="px-5 py-3.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 text-xs font-sans uppercase tracking-wider font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all"
                 >
-                  Full Catalog
+                  Explore Technical Outerwear
                 </Link>
               </div>
 
-              <div className="flex items-center gap-6 pt-4 text-xs font-mono text-ink-muted">
-                <span>• 20 Curated SKUs</span>
+              <div className="flex items-center gap-5 pt-3 text-[11px] font-mono text-zinc-500">
+                <span>• 28+ Engineered SKUs</span>
                 <span>• Dual [INCH | CM] Specs</span>
-                <span>• 100% Traceable</span>
+                <span>• Lab Tested</span>
               </div>
             </div>
           </div>
 
-          {/* Right Dual Lookbook Display */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 bg-canvas-elevated">
-            {/* Image 1: Apparel */}
-            <div className="relative group overflow-hidden border-b sm:border-b-0 sm:border-r border-border-subtle min-h-[380px] lg:min-h-full">
-              <Image
-                src={optimizeCloudinaryUrl(
-                  "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg",
-                  { width: 900, height: 1200 }
-                )}
-                alt="European Linen Lookbook"
-                fill
-                priority
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-6 sm:p-8 text-white">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#E5DEC9]">
-                  Mens & Womens Atelier
-                </span>
-                <h3 className="font-serif text-2xl font-normal mt-1 mb-2">
-                  Normandy Linen & Festive Panjabis
-                </h3>
-                <Link
-                  href="/shop?category=GARMENTS"
-                  className="text-xs uppercase font-sans tracking-editorial underline underline-offset-4 flex items-center gap-1.5 hover:text-[#C5A059] transition-colors"
-                >
-                  <span>Discover Garments</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Image 2: Horology & Wearables */}
-            <div className="relative group overflow-hidden min-h-[380px] lg:min-h-full">
-              <Image
-                src={optimizeCloudinaryUrl(
-                  "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617662/aurelia_studio/img_1523275335684378.jpg",
-                  { width: 900, height: 1200 }
-                )}
-                alt="Horology and Fine Wearables"
-                fill
-                priority
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-6 sm:p-8 text-white">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#C5A059]">
-                  Horology & Fine Leather
-                </span>
-                <h3 className="font-serif text-2xl font-normal mt-1 mb-2">
-                  Chronographs & Italian Boots
-                </h3>
-                <Link
-                  href="/shop?category=WEARABLES"
-                  className="text-xs uppercase font-sans tracking-editorial underline underline-offset-4 flex items-center gap-1.5 hover:text-[#C5A059] transition-colors"
-                >
-                  <span>Discover Wearables</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          DEMOGRAPHIC & CATEGORY BENTO
-         ========================================================= */}
-      <section className="w-full py-16 sm:py-20 px-6 sm:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 pb-4 border-b border-border-subtle">
-          <div>
-            <span className="text-[10px] font-mono tracking-editorial uppercase text-[#9E4733] block mb-1">
-              Curated Wardrobe Architecture
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-light text-ink">
-              Explore by Atelier Department
-            </h2>
-          </div>
-          <Link
-            href="/shop"
-            className="text-xs font-sans uppercase tracking-editorial text-ink hover:text-ink-muted transition-colors flex items-center gap-1.5 mt-2 sm:mt-0"
-          >
-            <span>View All Departments</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Bento Item 1: Men's */}
-          <Link
-            href="/shop?gender=MALE"
-            className="md:col-span-6 relative aspect-[16/11] bg-canvas-elevated overflow-hidden group border border-border-subtle"
-          >
+          {/* Right Column: High-Impact Lookbook with Subtle Interactive Tag Pins */}
+          <div className="lg:col-span-7 relative min-h-[460px] lg:min-h-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
             <Image
-              src={optimizeCloudinaryUrl(
-                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617604/aurelia_studio/img_161713798409574e.jpg",
-                { width: 800, height: 550 }
-              )}
-              alt="Men's Sartorial Edit"
+              src="https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=1400&q=85"
+              alt="ECWEARABLE Technical Apparel Transit Editorial"
               fill
-              className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+              priority
+              className="object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end text-white">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E5DEC9]">
-                01 / Menswear
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+
+            {/* Editorial Overlay Typography */}
+            <div className="absolute top-6 left-6 z-10 pointer-events-none">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-300 block">
+                FIELD TEST 04 // RAIN & TRANSIT
               </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-light mt-1">
-                Men&apos;s Sartorial Atelier
-              </h3>
-              <p className="text-xs font-sans text-neutral-300 mt-1 max-w-md">
-                Air-washed linen shirts, festive embroidered panjabis, and pleated chino trousers.
-              </p>
-            </div>
-          </Link>
-
-          {/* Bento Item 2: Women's */}
-          <Link
-            href="/shop?gender=FEMALE"
-            className="md:col-span-6 relative aspect-[16/11] bg-canvas-elevated overflow-hidden group border border-border-subtle"
-          >
-            <Image
-              src={optimizeCloudinaryUrl(
-                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617626/aurelia_studio/img_159577745758395e.jpg",
-                { width: 800, height: 550 }
-              )}
-              alt="Women's Atelier Collection"
-              fill
-              className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end text-white">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E5DEC9]">
-                02 / Womenswear
-              </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-light mt-1">
-                Women&apos;s Atelier Collection
-              </h3>
-              <p className="text-xs font-sans text-neutral-300 mt-1 max-w-md">
-                Handloom Dhakai muslin sarees, belted linen midi dresses, and tailored co-ord sets.
-              </p>
-            </div>
-          </Link>
-
-          {/* Bento Item 3: Children's */}
-          <Link
-            href="/shop?ageGroup=CHILDREN"
-            className="md:col-span-5 relative aspect-[4/3] bg-canvas-elevated overflow-hidden group border border-border-subtle"
-          >
-            <Image
-              src={optimizeCloudinaryUrl(
-                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617664/aurelia_studio/img_1518831959646742.jpg",
-                { width: 700, height: 525 }
-              )}
-              alt="Children's Edit"
-              fill
-              className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 flex flex-col justify-end text-white">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#E5DEC9]">
-                03 / Children
-              </span>
-              <h3 className="font-serif text-xl sm:text-2xl font-light mt-1">
-                Children&apos;s Organic Edit
-              </h3>
-              <p className="text-xs font-sans text-neutral-300 mt-1">
-                Hypoallergenic cotton panjabi sets, smocked linen frocks, and rompers.
-              </p>
-            </div>
-          </Link>
-
-          {/* Bento Item 4: Wearables, Horology & Footwear */}
-          <Link
-            href="/shop?category=WEARABLES"
-            className="md:col-span-7 relative aspect-[16/10] bg-canvas-elevated overflow-hidden group border border-border-subtle"
-          >
-            <Image
-              src={optimizeCloudinaryUrl(
-                "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617650/aurelia_studio/img_1524805444758089.jpg",
-                { width: 900, height: 560 }
-              )}
-              alt="Watches, Leather Footwear & Bracelets"
-              fill
-              className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end text-white">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#C5A059]">
-                04 / Horology & Footwear
-              </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-light mt-1">
-                Timepieces, Footwear & Bracelets
-              </h3>
-              <p className="text-xs font-sans text-neutral-300 mt-1 max-w-lg">
-                40mm automatic mechanical chronographs, Italian Blake-stitched Chelsea boots, and sterling silver cuffs.
-              </p>
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* =========================================================
-          NEW ARRIVALS: Interactive Product Grid
-         ========================================================= */}
-      <section className="w-full py-16 bg-canvas-elevated border-y border-border-subtle">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-[#9E4733]" />
-                <span className="text-[10px] font-mono tracking-editorial uppercase text-[#9E4733]">
-                  Just In From The Studio
-                </span>
-              </div>
-              <h2 className="font-serif text-3xl sm:text-4xl font-light text-ink">
-                New Collection
-              </h2>
-            </div>
-
-            <Link
-              href="/shop?collection=new"
-              className="text-xs font-sans uppercase tracking-editorial text-ink hover:text-ink-muted transition-colors flex items-center gap-1.5 mt-2 sm:mt-0"
-            >
-              <span>Shop All New Arrivals</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newCollectionProducts.map((product, idx) => (
-              <ProductCard key={product.id} product={product} priority={idx < 2} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-          TACTILE FABRIC STORY SECTION
-         ========================================================= */}
-      <section className="w-full py-20 px-6 sm:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-[10px] font-mono tracking-editorial uppercase text-[#2D4A3E] block mb-2">
-            Material Sourcing Integrity
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-light text-ink">
-            The Tactile Fabric Story
-          </h2>
-          <p className="text-xs sm:text-sm font-sans text-ink-muted mt-2">
-            Every garment begins with natural fiber provenance. We reject synthetic polyesters in favor of breathable flax, organic cotton, and pit-loom weaves.
-          </p>
-        </div>
-
-        {/* Tab Buttons */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 overflow-x-auto pb-4 no-scrollbar">
-          {fabrics.map((fabric, idx) => (
-            <button
-              key={fabric.name}
-              onClick={() => setActiveFabricTab(idx)}
-              className={`px-4 py-2 text-xs font-sans uppercase tracking-wider transition-all whitespace-nowrap border ${
-                activeFabricTab === idx
-                  ? "bg-[#181816] text-[#FAF8F5] border-[#181816]"
-                  : "bg-canvas-elevated text-ink-muted hover:text-ink border-border-subtle"
-              }`}
-            >
-              {fabric.name.split(" ")[0]} {fabric.name.split(" ")[1] || ""}
-            </button>
-          ))}
-        </div>
-
-        {/* Active Fabric Display */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 bg-canvas-elevated border border-border-subtle overflow-hidden">
-          <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-[420px]">
-            <Image
-              src={optimizeCloudinaryUrl(fabrics[activeFabricTab].image, { width: 700, height: 600 })}
-              alt={fabrics[activeFabricTab].name}
-              fill
-              className="object-cover"
-            />
-          </div>
-
-          <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Badge variant="cypress">{fabrics[activeFabricTab].tag}</Badge>
-                <span className="font-mono text-xs text-ink-muted">
-                  {fabrics[activeFabricTab].gsm}
-                </span>
-              </div>
-
-              <h3 className="font-serif text-2xl sm:text-3xl font-light text-ink">
-                {fabrics[activeFabricTab].name}
-              </h3>
-
-              <div className="flex items-center gap-2 text-xs font-mono text-[#9E4733]">
-                <Compass className="w-3.5 h-3.5" />
-                <span>Harvest Provenance: {fabrics[activeFabricTab].origin}</span>
-              </div>
-
-              <p className="text-sm font-sans text-ink-muted leading-relaxed pt-2">
-                {fabrics[activeFabricTab].desc}
+              <p className="text-white text-xs font-sans font-medium">
+                Tap garment pins to inspect technical specs
               </p>
             </div>
 
-            <div className="pt-8 border-t border-border-subtle flex items-center justify-between">
-              <Link
-                href="/fabric-guide"
-                className="text-xs uppercase font-sans tracking-editorial font-medium text-ink hover:text-ink-muted transition-colors flex items-center gap-1.5"
+            {/* Tag Pin 1: Heavyweight Boxy Tee (Upper torso) */}
+            <div className="absolute top-[34%] left-[45%] z-20">
+              <button
+                onClick={() => setActivePin(activePin === "tee" ? null : "tee")}
+                className="relative group p-2 focus:outline-none"
+                aria-label="View Heavyweight Boxy Tee details"
               >
-                <span>Read Full Fabric Taxonomy Guide</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span className="absolute inset-0 rounded-full bg-white/40 animate-ping" />
+                <span className="relative flex items-center justify-center w-6 h-6 rounded-full bg-zinc-950 text-white border-2 border-white text-[10px] font-mono font-bold shadow-lg">
+                  1
+                </span>
+              </button>
+
+              {activePin === "tee" && (
+                <div className="absolute left-8 top-0 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-3 z-30 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-[9px] font-mono uppercase font-bold text-emerald-600 dark:text-emerald-400">
+                      280 GSM FRENCH TERRY
+                    </span>
+                    <button onClick={() => setActivePin(null)} className="text-zinc-400 hover:text-black dark:hover:text-white">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <h4 className="text-xs font-sans font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                    {pinProducts.tee.name}
+                  </h4>
+                  <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
+                    {formatPrice(pinProducts.tee.discountPrice || pinProducts.tee.basePrice, currency)}
+                  </p>
+                  <div className="flex gap-2 mt-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                    <button
+                      onClick={(e) => handleQuickAddPin(e, pinProducts.tee)}
+                      className="flex-1 py-1 px-2 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-[10px] font-sans font-medium uppercase tracking-wider text-center"
+                    >
+                      Quick Add
+                    </button>
+                    <Link
+                      href={`/product/${pinProducts.tee.slug}`}
+                      className="py-1 px-2 border border-zinc-300 dark:border-zinc-700 text-[10px] font-sans font-medium uppercase text-zinc-800 dark:text-zinc-200"
+                    >
+                      Inspect
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Tag Pin 2: Transit Ripstop Cargo (Legs) */}
+            <div className="absolute top-[68%] left-[52%] z-20">
+              <button
+                onClick={() => setActivePin(activePin === "cargo" ? null : "cargo")}
+                className="relative group p-2 focus:outline-none"
+                aria-label="View Transit Ripstop Cargo details"
+              >
+                <span className="absolute inset-0 rounded-full bg-white/40 animate-ping" />
+                <span className="relative flex items-center justify-center w-6 h-6 rounded-full bg-zinc-950 text-white border-2 border-white text-[10px] font-mono font-bold shadow-lg">
+                  2
+                </span>
+              </button>
+
+              {activePin === "cargo" && (
+                <div className="absolute left-8 bottom-0 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-3 z-30 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-[9px] font-mono uppercase font-bold text-blue-600 dark:text-blue-400">
+                      DWR 3-LAYER RIPSTOP
+                    </span>
+                    <button onClick={() => setActivePin(null)} className="text-zinc-400 hover:text-black dark:hover:text-white">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <h4 className="text-xs font-sans font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                    {pinProducts.cargo.name}
+                  </h4>
+                  <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
+                    {formatPrice(pinProducts.cargo.discountPrice || pinProducts.cargo.basePrice, currency)}
+                  </p>
+                  <div className="flex gap-2 mt-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                    <button
+                      onClick={(e) => handleQuickAddPin(e, pinProducts.cargo)}
+                      className="flex-1 py-1 px-2 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-[10px] font-sans font-medium uppercase tracking-wider text-center"
+                    >
+                      Quick Add
+                    </button>
+                    <Link
+                      href={`/product/${pinProducts.cargo.slug}`}
+                      className="py-1 px-2 border border-zinc-300 dark:border-zinc-700 text-[10px] font-sans font-medium uppercase text-zinc-800 dark:text-zinc-200"
+                    >
+                      Inspect
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Caption */}
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between text-white text-xs font-sans">
+              <span className="tracking-wider uppercase font-mono text-[11px] text-zinc-300">
+                Modular Technical Uniform System
+              </span>
+              <Link
+                href="/shop?collection=new"
+                className="underline underline-offset-4 uppercase tracking-wider font-semibold text-white hover:text-zinc-300 flex items-center gap-1"
+              >
+                <span>View Complete Lookbook</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
@@ -417,34 +294,182 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          TRENDING NOW & WEARABLES GRID
+          CURATED COLLECTION MARQUEE & CATEGORY RAIL
+          (Heavyweight Tees, Cargo Pants & Joggers, Water-Resistant Windbreakers, Technical Bags & Caps)
          ========================================================= */}
-      <section className="w-full py-16 bg-canvas border-t border-border-subtle">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
+      <section className="w-full py-8 sm:py-10 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-[#C5A059]" />
-                <span className="text-[10px] font-mono tracking-editorial uppercase text-[#C5A059]">
-                  Patron Favorites
-                </span>
-              </div>
-              <h2 className="font-serif text-3xl sm:text-4xl font-light text-ink">
-                Trending Now & Wearables
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block">
+                CATALOG ARCHITECTURE
+              </span>
+              <h2 className="font-sans text-xl sm:text-2xl font-bold uppercase tracking-tight text-zinc-950 dark:text-white">
+                Core Uniform Categories
               </h2>
             </div>
-
             <Link
-              href="/shop?collection=trending"
-              className="text-xs font-sans uppercase tracking-editorial text-ink hover:text-ink-muted transition-colors flex items-center gap-1.5 mt-2 sm:mt-0"
+              href="/shop"
+              className="text-xs font-sans uppercase tracking-wider font-semibold text-zinc-900 dark:text-zinc-100 hover:text-zinc-500 transition-colors flex items-center gap-1"
             >
-              <span>Explore Trending</span>
+              <span>Explore All</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {trendingProducts.map((product) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {/* 1. Heavyweight Tees */}
+            <Link
+              href="/shop?dressType=Heavyweight%20Tee"
+              className="group relative aspect-[4/5] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=700&q=80"
+                alt="Heavyweight Tees"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400 block">280 GSM French Terry</span>
+                <h3 className="font-sans text-sm sm:text-base font-bold uppercase tracking-tight mt-0.5">Heavyweight Tees</h3>
+                <span className="text-[10px] font-mono text-zinc-300 mt-1 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Shop Category <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Link>
+
+            {/* 2. Cargo Pants & Joggers */}
+            <Link
+              href="/shop?dressType=Cargo%20Pant"
+              className="group relative aspect-[4/5] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=700&q=80"
+                alt="Cargo Pants & Joggers"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400 block">Articulated Knee Shells</span>
+                <h3 className="font-sans text-sm sm:text-base font-bold uppercase tracking-tight mt-0.5">Cargo Pants & Joggers</h3>
+                <span className="text-[10px] font-mono text-zinc-300 mt-1 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Shop Category <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Link>
+
+            {/* 3. Water-Resistant Windbreakers */}
+            <Link
+              href="/shop?dressType=Technical%20Windbreaker"
+              className="group relative aspect-[4/5] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=700&q=80"
+                alt="Water-Resistant Windbreakers"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400 block">10K Hydrostatic Shell</span>
+                <h3 className="font-sans text-sm sm:text-base font-bold uppercase tracking-tight mt-0.5">Water-Resistant Windbreakers</h3>
+                <span className="text-[10px] font-mono text-zinc-300 mt-1 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Shop Category <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Link>
+
+            {/* 4. Technical Bags & Caps */}
+            <Link
+              href="/shop?category=ACCESSORIES"
+              className="group relative aspect-[4/5] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=80"
+                alt="Technical Bags & Caps"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400 block">500D Cordura® & Fidlock®</span>
+                <h3 className="font-sans text-sm sm:text-base font-bold uppercase tracking-tight mt-0.5">Technical Bags & Caps</h3>
+                <span className="text-[10px] font-mono text-zinc-300 mt-1 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Shop Category <ChevronRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          FEATURED PRODUCT GRID WITH EDITORIAL RHYTHM
+         ========================================================= */}
+      <section className="w-full py-12 sm:py-16 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 block mb-1">
+                INVENTORY DEPLOYMENT
+              </span>
+              <h2 className="font-sans text-2xl sm:text-3xl font-black uppercase tracking-tightest text-zinc-950 dark:text-white">
+                Engineered Essentials
+              </h2>
+            </div>
+            <Link
+              href="/shop?collection=new"
+              className="text-xs font-sans uppercase tracking-wider font-semibold text-zinc-900 dark:text-zinc-100 hover:text-zinc-500 transition-colors flex items-center gap-1.5 mt-2 sm:mt-0"
+            >
+              <span>Full Release Catalog</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* 4-column product grid with 3/4 aspect ratio */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+            {newArrivals.slice(0, 4).map((product, idx) => (
+              <ProductCard key={product.id} product={product} priority={idx < 2} />
+            ))}
+          </div>
+
+          {/* Editorial Banner Interspersed between products */}
+          <div className="my-8 sm:my-10 relative bg-zinc-900 text-white overflow-hidden border border-zinc-800 p-8 sm:p-12">
+            <div className="relative z-10 max-w-xl space-y-3">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                FABRIC CALIBRATION LAB
+              </span>
+              <h3 className="font-sans text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+                Micro-climate thermoregulation for tropical moisture & urban transit.
+              </h3>
+              <p className="text-xs sm:text-sm font-sans text-zinc-400 leading-relaxed">
+                Every seam is flatlocked or taped to prevent chafing during high-friction transit. We test hydrostatic head ratings in real monsoon downpours.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/fabric-guide"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-zinc-950 text-xs font-sans uppercase font-bold tracking-wider hover:bg-zinc-200 transition-colors"
+                >
+                  <span>Explore Fabric Taxonomy</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-25 hidden md:block">
+              <Image
+                src="https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80"
+                alt="Technical fabric weave"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Remaining Curated Product Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+            {newArrivals.slice(4, 8).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -452,167 +477,133 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          EDITORIAL LOOKBOOK GALLERY: High-Fashion Visual Showcase
+          TECHNICAL FABRIC MATRIX INTERACTIVE SECTION
          ========================================================= */}
-      <section className="w-full py-20 bg-canvas-elevated border-t border-border-subtle">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-            <div className="space-y-2 max-w-xl">
-              <span className="text-[10px] font-mono tracking-editorial uppercase text-[#9E4733]">
-                Visual Journal — SS26
-              </span>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-ink">
-                The Atelier Editorial Lookbook
-              </h2>
-              <p className="text-xs sm:text-sm font-sans text-ink-muted leading-relaxed">
-                A visual inquiry into silhouettes, textures, and unconstrained drapery photographed in raw natural morning light.
-              </p>
-            </div>
-
-            <Link
-              href="/shop"
-              className="mt-4 md:mt-0 inline-flex items-center gap-2 text-xs font-sans uppercase tracking-editorial font-medium text-ink hover:text-ink-muted transition-colors"
-            >
-              <span>View Full Lookbook Catalog</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+      <section className="w-full py-14 sm:py-20 bg-zinc-50 dark:bg-zinc-900/40 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
+              MATERIAL ARCHITECTURE
+            </span>
+            <h2 className="font-sans text-2xl sm:text-3xl font-black uppercase tracking-tightest text-zinc-950 dark:text-white">
+              Tactile Fabric & Specs Matrix
+            </h2>
+            <p className="text-xs sm:text-sm font-sans text-zinc-600 dark:text-zinc-400 mt-2">
+              Every fiber blend is engineered for tactile longevity, mechanical stretch, and moisture management.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                title: "Architectural Drape & Raw Flax",
-                subtitle: "Normandy Flax / SS26 Runway",
-                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644722/aurelia_studio/editorial_lookbook_1.jpg",
-                aspect: "aspect-[4/5]",
-                category: "Linen & Suiting",
-                href: "/shop?fabric=linen"
-              },
-              {
-                title: "Oversized Silhouette & Airflow",
-                subtitle: "Relaxed Cut / Botanical Weave",
-                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644724/aurelia_studio/editorial_lookbook_2.jpg",
-                aspect: "aspect-[4/5]",
-                category: "Modern Casual",
-                href: "/shop?collection=new"
-              },
-              {
-                title: "Autumnal Cashmere & Wool Overcoat",
-                subtitle: "Hand-Stitched Lapel / Tuscan Horn",
-                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644725/aurelia_studio/editorial_lookbook_3.jpg",
-                aspect: "aspect-[4/5]",
-                category: "Outerwear",
-                href: "/shop?category=GARMENTS"
-              },
-              {
-                title: "Monochrome Sartorial Discipline",
-                subtitle: "Pure Giza Combed Cotton",
-                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644727/aurelia_studio/editorial_lookbook_4.jpg",
-                aspect: "aspect-[4/5]",
-                category: "Monochrome Edit",
-                href: "/shop?color=Obsidian"
-              },
-              {
-                title: "Bespoke Evening Tailoring",
-                subtitle: "Dhakai Muslin & Mulberry Silk Accents",
-                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644729/aurelia_studio/editorial_lookbook_5.jpg",
-                aspect: "aspect-[4/5]",
-                category: "Festive & Ceremonial",
-                href: "/shop?collection=trending"
-              },
-              {
-                title: "Subtle Tactile Horology & Hide",
-                subtitle: "Blake-Stitched Leather & 316L Chronograph",
-                image: "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644731/aurelia_studio/editorial_lookbook_6.jpg",
-                aspect: "aspect-[4/5]",
-                category: "Wearables & Timepieces",
-                href: "/shop?category=WEARABLES"
-              }
-            ].map((look, idx) => (
-              <Link
-                key={idx}
-                href={look.href}
-                className="group relative overflow-hidden bg-white border border-border-subtle block"
+          {/* Tabs */}
+          <div className="flex justify-center border-b border-zinc-200 dark:border-zinc-800 mb-8 overflow-x-auto no-scrollbar">
+            {fabricMatrix.map((item, idx) => (
+              <button
+                key={item.name}
+                onClick={() => setActiveFabricTab(idx)}
+                className={cn(
+                  "px-4 sm:px-6 py-3 text-xs font-sans uppercase tracking-wider font-semibold border-b-2 transition-all whitespace-nowrap",
+                  activeFabricTab === idx
+                    ? "border-zinc-950 text-zinc-950 dark:border-white dark:text-white"
+                    : "border-transparent text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                )}
               >
-                <div className={`relative w-full ${look.aspect} overflow-hidden bg-neutral-100`}>
-                  <Image
-                    src={optimizeCloudinaryUrl(look.image, { width: 900, height: 1125 })}
-                    alt={look.title}
-                    fill
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-                  
-                  <div className="absolute top-4 left-4">
-                    <span className="px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-mono uppercase tracking-wider text-black">
-                      {look.category}
-                    </span>
-                  </div>
-
-                  <div className="absolute bottom-5 left-5 right-5 text-white">
-                    <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-300 block mb-1">
-                      {look.subtitle}
-                    </span>
-                    <h3 className="font-serif text-lg sm:text-xl font-normal leading-snug group-hover:underline underline-offset-4 decoration-white/60">
-                      {look.title}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
+                {item.name}
+              </button>
             ))}
+          </div>
+
+          {/* Active Tab Card */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-10 shadow-sm">
+            <div className="md:col-span-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 text-[9px] font-mono tracking-widest uppercase font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">
+                  {fabricMatrix[activeFabricTab].spec}
+                </span>
+                <span className="text-[11px] font-mono text-zinc-500">
+                  {fabricMatrix[activeFabricTab].metric}
+                </span>
+              </div>
+
+              <h3 className="font-sans text-2xl font-bold uppercase tracking-tight text-zinc-950 dark:text-white">
+                {fabricMatrix[activeFabricTab].name}
+              </h3>
+
+              <p className="text-xs sm:text-sm font-sans text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {fabricMatrix[activeFabricTab].desc}
+              </p>
+
+              <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <span className="text-[10px] font-mono uppercase text-zinc-400 block">Engineering Callout</span>
+                <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">
+                  {fabricMatrix[activeFabricTab].feature}
+                </span>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-wider font-bold text-zinc-950 dark:text-white hover:underline"
+                >
+                  <span>Shop garments in this fabric</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="md:col-span-6 relative aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800">
+              <Image
+                src={fabricMatrix[activeFabricTab].image}
+                alt={fabricMatrix[activeFabricTab].name}
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          EDITORIAL TRUST PILLARS
+          TRUST & FRICTIONLESS CHECKOUT VALUE PROP
          ========================================================= */}
-      <section className="w-full py-12 bg-canvas-elevated border-t border-border-subtle">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="flex items-start gap-4">
-            <Feather className="w-5 h-5 text-[#2D4A3E] flex-shrink-0 mt-0.5" />
+      <section className="w-full py-10 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+              <ShieldCheck className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+            </div>
             <div>
-              <h4 className="font-sans text-xs uppercase tracking-wider font-semibold text-ink">
-                Artisan Crafted
+              <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
+                7-Day Hassle-Free Sizing Exchanges
               </h4>
-              <p className="text-[11px] font-sans text-ink-muted mt-1 leading-normal">
-                Hand-smocked linen, Dhakai pit-loom muslin & bench-made Blake boots.
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
+                If the garment fit isn&apos;t exact, our courier swaps your size right at your doorstep.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
-            <Shield className="w-5 h-5 text-[#C5A059] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+              <Compass className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+            </div>
             <div>
-              <h4 className="font-sans text-xs uppercase tracking-wider font-semibold text-ink">
-                Dual [INCH | CM] Specs
+              <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
+                Nationwide 24-48hr Rapid Dispatch
               </h4>
-              <p className="text-[11px] font-sans text-ink-muted mt-1 leading-normal">
-                Precise flat-laid measurements dynamically convertible for zero-guess sizing.
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
+                Complimentary delivery on orders over ৳ 1,500 / $50. Real-time courier SMS updates.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
-            <Sparkles className="w-5 h-5 text-[#9E4733] flex-shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-sans text-xs uppercase tracking-wider font-semibold text-ink">
-                Zero Plastic Packaging
-              </h4>
-              <p className="text-[11px] font-sans text-ink-muted mt-1 leading-normal">
-                Shipped in unbleached cotton garment pouches and keepsake boxes.
-              </p>
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+              <Feather className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
             </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <Compass className="w-5 h-5 text-ink flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-sans text-xs uppercase tracking-wider font-semibold text-ink">
-                Express Fulfillment
+              <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
+                Pre-Shrunk Cold Dye Process
               </h4>
-              <p className="text-[11px] font-sans text-ink-muted mt-1 leading-normal">
-                Same-day dispatch across Dhaka Metro and expedited courier nationwide.
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
+                All cottons are pre-washed with enzymatic wash to eliminate shrinkage after repeated laundering.
               </p>
             </div>
           </div>

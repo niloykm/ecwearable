@@ -2,6 +2,558 @@ import { Product } from "@/types/commerce";
 
 export const SEED_PRODUCTS: Product[] = [
   // ==========================================
+  // 0. TECHNICAL APPAREL & EVERYDAY ESSENTIALS
+  // ==========================================
+  {
+    id: "prod-tech-heavyweight-tee",
+    slug: "heavyweight-boxy-tee-280-gsm",
+    name: "Heavyweight Boxy Tee 280 GSM",
+    subtitle: "Custom 280 GSM combed organic cotton with twin-needle reinforced collar",
+    dressType: "Heavyweight Tee",
+    mainCategory: "BASICS",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "Heavyweight French Terry (280 GSM)",
+    fabricWeightGsm: 280,
+    breathabilityRating: "High airflow 42 CFM",
+    modelReference: 'Model is 6\'1" (185 cm) wearing size L (Boxy Fit)',
+    badge: "HEAVYWEIGHT",
+    careInstructions: "Machine wash cold inside-out with like colors. Hang dry to maintain collar tension. Do not tumble dry.",
+    fitType: "Boxy Fit",
+    basePrice: 1950,
+    discountPrice: 1650,
+    currency: "BDT",
+    primaryColor: "Obsidian Black",
+    primaryColorHex: "#111111",
+    colorVariants: [
+      {
+        colorName: "Obsidian Black",
+        colorHex: "#111111",
+        images: [
+          "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&q=80"
+        ]
+      },
+      {
+        colorName: "Washed Olive",
+        colorHex: "#36453B",
+        images: [
+          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=900&q=80"
+        ]
+      },
+      {
+        colorName: "Warm Stone",
+        colorHex: "#8E8A82",
+        images: [
+          "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "XS",
+        stock: 14,
+        skuSuffix: "XS-BLK",
+        measurementsInch: { chest: 38.0, shoulder: 18.0, length: 27.5, sleeve: 8.5 },
+        measurementsCm: { chest: 96.5, shoulder: 45.7, length: 69.8, sleeve: 21.6 }
+      },
+      {
+        sizeLabel: "S",
+        stock: 28,
+        skuSuffix: "S-BLK",
+        measurementsInch: { chest: 40.5, shoulder: 19.0, length: 28.5, sleeve: 9.0 },
+        measurementsCm: { chest: 102.9, shoulder: 48.2, length: 72.4, sleeve: 22.8 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 35,
+        skuSuffix: "M-BLK",
+        measurementsInch: { chest: 43.0, shoulder: 20.0, length: 29.5, sleeve: 9.5 },
+        measurementsCm: { chest: 109.2, shoulder: 50.8, length: 74.9, sleeve: 24.1 }
+      },
+      {
+        sizeLabel: "L",
+        stock: 22,
+        skuSuffix: "L-BLK",
+        measurementsInch: { chest: 45.5, shoulder: 21.0, length: 30.5, sleeve: 10.0 },
+        measurementsCm: { chest: 115.6, shoulder: 53.3, length: 77.5, sleeve: 25.4 }
+      },
+      {
+        sizeLabel: "XL",
+        stock: 12,
+        skuSuffix: "XL-BLK",
+        measurementsInch: { chest: 48.0, shoulder: 22.0, length: 31.5, sleeve: 10.5 },
+        measurementsCm: { chest: 121.9, shoulder: 55.9, length: 80.0, sleeve: 26.7 }
+      },
+      {
+        sizeLabel: "XXL",
+        stock: 7,
+        skuSuffix: "XXL-BLK",
+        measurementsInch: { chest: 50.5, shoulder: 23.0, length: 32.5, sleeve: 11.0 },
+        measurementsCm: { chest: 128.3, shoulder: 58.4, length: 82.5, sleeve: 27.9 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.9,
+    reviewsCount: 84,
+    createdAt: "2026-03-20T10:00:00Z",
+    description: "Constructed from custom-developed 280 GSM combed organic cotton. Featuring a wide-gauge ribbed collar that refuses to bacon or sag, dropped shoulder geometry, and a structured drape that holds its silhouette through countless wash cycles.",
+    editorialHighlights: ["280 GSM Heavyweight Organic Cotton", "Twin-Needle Ribbed Tension Collar", "Pre-Shrunk Cold Garment Dye", "Engineered Drop Shoulder Geometry"]
+  },
+
+  {
+    id: "prod-tech-ripstop-cargo",
+    slug: "transit-ripstop-cargo-pant",
+    name: "Transit Ripstop Cargo Pant",
+    subtitle: "DWR water-repellent ripstop shell with articulated knees and magnetic utility pockets",
+    dressType: "Cargo Pant",
+    mainCategory: "OUTERWEAR",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "DWR 3-Layer Ripstop Nylon",
+    fabricWeightGsm: 240,
+    breathabilityRating: "Waterproof 8,000mm / Breathable 6,500 g/m²",
+    modelReference: 'Model is 6\'2" (188 cm) wearing size L (Athletic Taper)',
+    badge: "DWR RIPSTOP",
+    careInstructions: "Machine wash cold delicate cycle. Fasten all pocket flaps and drawstrings before washing. Line dry in shade.",
+    fitType: "Athletic Taper",
+    basePrice: 3850,
+    discountPrice: 3450,
+    currency: "BDT",
+    primaryColor: "Tactical Charcoal",
+    primaryColorHex: "#22252A",
+    colorVariants: [
+      {
+        colorName: "Tactical Charcoal",
+        colorHex: "#22252A",
+        images: [
+          "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=900&q=80"
+        ]
+      },
+      {
+        colorName: "Olive Drab",
+        colorHex: "#3A4333",
+        images: [
+          "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1542272604-780c96856592?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "XS",
+        stock: 8,
+        skuSuffix: "XS-TAC",
+        measurementsInch: { waist: 28.0, inseam: 30.0, length: 39.5 },
+        measurementsCm: { waist: 71.1, inseam: 76.2, length: 100.3 }
+      },
+      {
+        sizeLabel: "S",
+        stock: 16,
+        skuSuffix: "S-TAC",
+        measurementsInch: { waist: 30.0, inseam: 30.5, length: 40.5 },
+        measurementsCm: { waist: 76.2, inseam: 77.5, length: 102.9 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 24,
+        skuSuffix: "M-TAC",
+        measurementsInch: { waist: 32.0, inseam: 31.0, length: 41.5 },
+        measurementsCm: { waist: 81.3, inseam: 78.7, length: 105.4 }
+      },
+      {
+        sizeLabel: "L",
+        stock: 19,
+        skuSuffix: "L-TAC",
+        measurementsInch: { waist: 34.0, inseam: 31.5, length: 42.5 },
+        measurementsCm: { waist: 86.4, inseam: 80.0, length: 107.9 }
+      },
+      {
+        sizeLabel: "XL",
+        stock: 9,
+        skuSuffix: "XL-TAC",
+        measurementsInch: { waist: 36.0, inseam: 32.0, length: 43.5 },
+        measurementsCm: { waist: 91.4, inseam: 81.3, length: 110.5 }
+      },
+      {
+        sizeLabel: "XXL",
+        stock: 5,
+        skuSuffix: "XXL-TAC",
+        measurementsInch: { waist: 38.0, inseam: 32.5, length: 44.5 },
+        measurementsCm: { waist: 96.5, inseam: 82.5, length: 113.0 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.8,
+    reviewsCount: 62,
+    createdAt: "2026-03-21T10:00:00Z",
+    description: "Built for urban commuting and technical transit. Engineered from cross-weave ripstop nylon coated with fluorocarbon-free DWR. Features articulated knee darts, ergonomic diamond gusset for 180-degree mobility, and silent magnetic pocket flaps.",
+    editorialHighlights: ["DWR Fluorocarbon-Free Water Repellence", "Articulated Knee Ergonomics", "Dual Magnetic Utility Cargo Pockets", "Tapered Cinch Ankle Bungees"]
+  },
+
+  {
+    id: "prod-tech-merino-crewneck",
+    slug: "merino-wool-thermal-crewneck",
+    name: "Merino Wool Thermal Crewneck",
+    subtitle: "18.5-micron ultrafine Australian Merino wool for natural odor resistance and thermoregulation",
+    dressType: "Thermal Crewneck",
+    mainCategory: "BASICS",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "Merino Wool Thermal Knit",
+    fabricWeightGsm: 220,
+    breathabilityRating: "Ultra-breathable microclimate regulation",
+    modelReference: 'Model is 6\'0" (183 cm) wearing size M (Regular Fit)',
+    badge: "MERINO WOOL",
+    careInstructions: "Hand wash or gentle wool cycle cold with wool detergent. Reshape flat to dry. Do not hang damp.",
+    fitType: "Regular Fit",
+    basePrice: 4200,
+    discountPrice: 3800,
+    currency: "BDT",
+    primaryColor: "Deep Heather Charcoal",
+    primaryColorHex: "#282828",
+    colorVariants: [
+      {
+        colorName: "Deep Heather Charcoal",
+        colorHex: "#282828",
+        images: [
+          "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=900&q=80"
+        ]
+      },
+      {
+        colorName: "Pine Forest",
+        colorHex: "#1E3024",
+        images: [
+          "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "XS",
+        stock: 6,
+        skuSuffix: "XS-MER",
+        measurementsInch: { chest: 37.0, shoulder: 17.0, length: 26.5, sleeve: 24.0 },
+        measurementsCm: { chest: 94.0, shoulder: 43.2, length: 67.3, sleeve: 61.0 }
+      },
+      {
+        sizeLabel: "S",
+        stock: 14,
+        skuSuffix: "S-MER",
+        measurementsInch: { chest: 39.5, shoulder: 17.5, length: 27.5, sleeve: 24.5 },
+        measurementsCm: { chest: 100.3, shoulder: 44.5, length: 69.8, sleeve: 62.2 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 20,
+        skuSuffix: "M-MER",
+        measurementsInch: { chest: 42.0, shoulder: 18.2, length: 28.5, sleeve: 25.0 },
+        measurementsCm: { chest: 106.7, shoulder: 46.2, length: 72.4, sleeve: 63.5 }
+      },
+      {
+        sizeLabel: "L",
+        stock: 16,
+        skuSuffix: "L-MER",
+        measurementsInch: { chest: 44.5, shoulder: 19.0, length: 29.5, sleeve: 25.5 },
+        measurementsCm: { chest: 113.0, shoulder: 48.3, length: 74.9, sleeve: 64.8 }
+      },
+      {
+        sizeLabel: "XL",
+        stock: 8,
+        skuSuffix: "XL-MER",
+        measurementsInch: { chest: 47.0, shoulder: 19.8, length: 30.5, sleeve: 26.0 },
+        measurementsCm: { chest: 119.4, shoulder: 50.3, length: 77.5, sleeve: 66.0 }
+      },
+      {
+        sizeLabel: "XXL",
+        stock: 4,
+        skuSuffix: "XXL-MER",
+        measurementsInch: { chest: 49.5, shoulder: 20.5, length: 31.5, sleeve: 26.5 },
+        measurementsCm: { chest: 125.7, shoulder: 52.1, length: 80.0, sleeve: 67.3 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: false,
+    isFeatured: true,
+    rating: 5.0,
+    reviewsCount: 47,
+    createdAt: "2026-03-22T10:00:00Z",
+    description: "Spun from certified 18.5-micron Australian Merino wool fibers. Naturally antibacterial, moisture-wicking, and temperature regulating across both brisk mornings and warm afternoons without holding odor.",
+    editorialHighlights: ["18.5 Micron Ultrafine Merino", "Zero-Itch Skin Feel", "Natural Odor Resistance", "Flatlock Anti-Chafe Seams"]
+  },
+
+  {
+    id: "prod-tech-storm-windbreaker",
+    slug: "all-weather-storm-shell-windbreaker",
+    name: "All-Weather Storm Shell Windbreaker",
+    subtitle: "10,000mm hydrostatic waterproof membrane, taped seams, YKK Aquaguard zips",
+    dressType: "Water-Resistant Windbreaker",
+    mainCategory: "OUTERWEAR",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "DWR 3-Layer Ripstop Nylon",
+    fabricWeightGsm: 190,
+    breathabilityRating: "10,000mm Hydrostatic / 10,000 g/m²/24hr Breathability",
+    modelReference: 'Model is 6\'1" (185 cm) wearing size L (Regular Fit)',
+    badge: "WATERPROOF 10K",
+    careInstructions: "Machine wash cold delicate. Tumble dry low for 20 minutes to reactivate DWR coating. Do not dry clean.",
+    fitType: "Regular Fit",
+    basePrice: 5800,
+    discountPrice: 5200,
+    currency: "BDT",
+    primaryColor: "Stealth Black",
+    primaryColorHex: "#0F1012",
+    colorVariants: [
+      {
+        colorName: "Stealth Black",
+        colorHex: "#0F1012",
+        images: [
+          "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80"
+        ]
+      },
+      {
+        colorName: "Signal Ember",
+        colorHex: "#C74B28",
+        images: [
+          "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "XS",
+        stock: 5,
+        skuSuffix: "XS-STM",
+        measurementsInch: { chest: 41.0, shoulder: 18.0, length: 28.0, sleeve: 25.5 },
+        measurementsCm: { chest: 104.1, shoulder: 45.7, length: 71.1, sleeve: 64.8 }
+      },
+      {
+        sizeLabel: "S",
+        stock: 11,
+        skuSuffix: "S-STM",
+        measurementsInch: { chest: 43.5, shoulder: 18.8, length: 29.0, sleeve: 26.0 },
+        measurementsCm: { chest: 110.5, shoulder: 47.8, length: 73.7, sleeve: 66.0 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 18,
+        skuSuffix: "M-STM",
+        measurementsInch: { chest: 46.0, shoulder: 19.5, length: 30.0, sleeve: 26.5 },
+        measurementsCm: { chest: 116.8, shoulder: 49.5, length: 76.2, sleeve: 67.3 }
+      },
+      {
+        sizeLabel: "L",
+        stock: 14,
+        skuSuffix: "L-STM",
+        measurementsInch: { chest: 48.5, shoulder: 20.3, length: 31.0, sleeve: 27.0 },
+        measurementsCm: { chest: 123.2, shoulder: 51.6, length: 78.7, sleeve: 68.6 }
+      },
+      {
+        sizeLabel: "XL",
+        stock: 8,
+        skuSuffix: "XL-STM",
+        measurementsInch: { chest: 51.0, shoulder: 21.0, length: 32.0, sleeve: 27.5 },
+        measurementsCm: { chest: 129.5, shoulder: 53.3, length: 81.3, sleeve: 69.8 }
+      },
+      {
+        sizeLabel: "XXL",
+        stock: 4,
+        skuSuffix: "XXL-STM",
+        measurementsInch: { chest: 53.5, shoulder: 21.8, length: 33.0, sleeve: 28.0 },
+        measurementsCm: { chest: 135.9, shoulder: 55.4, length: 83.8, sleeve: 71.1 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.9,
+    reviewsCount: 51,
+    createdAt: "2026-03-23T10:00:00Z",
+    description: "An uncompromising technical shell constructed with 3-layer micro-ripstop and a breathable waterproof membrane. Features fully sealed seams, two-way YKK AquaGuard® zippers, storm visor hood, and underarm venting for active heat expulsion.",
+    editorialHighlights: ["10,000mm Waterproof Taped Seams", "YKK AquaGuard® Dual Zippers", "Underarm Ventilation Pit-Zips", "Packable Into Internal Chest Pocket"]
+  },
+
+  {
+    id: "prod-tech-active-jogger",
+    slug: "ergonomic-activewear-transit-jogger",
+    name: "Ergonomic Activewear Transit Jogger",
+    subtitle: "4-way technical stretch double-weave with moisture-wicking gusset and concealed zip storage",
+    dressType: "Cargo Pants & Joggers",
+    mainCategory: "BASICS",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "4-Way Stretch Technical Knit",
+    fabricWeightGsm: 260,
+    breathabilityRating: "Dynamic moisture transfer 58 CFM",
+    modelReference: 'Model is 6\'0" (183 cm) wearing size M (Athletic Taper)',
+    badge: "4-WAY STRETCH",
+    careInstructions: "Machine wash cold with synthetic activewear wash. Do not use fabric softeners. Line dry.",
+    fitType: "Athletic Taper",
+    basePrice: 3200,
+    discountPrice: 2800,
+    currency: "BDT",
+    primaryColor: "Deep Onyx",
+    primaryColorHex: "#171717",
+    colorVariants: [
+      {
+        colorName: "Deep Onyx",
+        colorHex: "#171717",
+        images: [
+          "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "S",
+        stock: 15,
+        skuSuffix: "S-JOG",
+        measurementsInch: { waist: 29.0, inseam: 29.5, length: 39.0 },
+        measurementsCm: { waist: 73.7, inseam: 74.9, length: 99.1 }
+      },
+      {
+        sizeLabel: "M",
+        stock: 22,
+        skuSuffix: "M-JOG",
+        measurementsInch: { waist: 31.0, inseam: 30.0, length: 40.0 },
+        measurementsCm: { waist: 78.7, inseam: 76.2, length: 101.6 }
+      },
+      {
+        sizeLabel: "L",
+        stock: 18,
+        skuSuffix: "L-JOG",
+        measurementsInch: { waist: 33.0, inseam: 30.5, length: 41.0 },
+        measurementsCm: { waist: 83.8, inseam: 77.5, length: 104.1 }
+      },
+      {
+        sizeLabel: "XL",
+        stock: 10,
+        skuSuffix: "XL-JOG",
+        measurementsInch: { waist: 35.0, inseam: 31.0, length: 42.0 },
+        measurementsCm: { waist: 88.9, inseam: 78.7, length: 106.7 }
+      }
+    ],
+    isNewCollection: false,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.8,
+    reviewsCount: 39,
+    createdAt: "2026-03-18T10:00:00Z",
+    description: "Designed for seamless transitions between morning training and all-day commute. Crafted from durable nylon-elastane double-weave that stretches 4 ways without bagging out at the knees.",
+    editorialHighlights: ["4-Way Omnidirectional Stretch", "Concealed Phone Security Pocket", "Abrasion-Resistant Face Fabric", "Elastic Waistband with Dipped Cord"]
+  },
+
+  {
+    id: "prod-tech-cordura-daypack",
+    slug: "cordura-ballistic-utility-daypack-22l",
+    name: "Cordura® Ballistic Utility Daypack 22L",
+    subtitle: "500D water-resistant Cordura nylon with fidlock magnetic buckles and padded 16\" laptop chamber",
+    dressType: "Technical Bags & Caps",
+    mainCategory: "ACCESSORIES",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "Cordura® 500D Ballistic Nylon",
+    fabricWeightGsm: 500,
+    breathabilityRating: "Weather-resistant PU back-coating",
+    badge: "CORDURA® 500D",
+    careInstructions: "Spot clean with warm water and mild detergent. Air dry. Do not machine wash.",
+    fitType: "Adjustable",
+    basePrice: 4800,
+    discountPrice: 4200,
+    currency: "BDT",
+    primaryColor: "Tactical Black",
+    primaryColorHex: "#121314",
+    colorVariants: [
+      {
+        colorName: "Tactical Black",
+        colorHex: "#121314",
+        images: [
+          "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "22L",
+        stock: 14,
+        skuSuffix: "22L-BLK",
+        measurementsInch: { length: 19.0, shoulder: 12.0 },
+        measurementsCm: { length: 48.3, shoulder: 30.5 }
+      }
+    ],
+    isNewCollection: true,
+    isTrending: false,
+    isFeatured: true,
+    rating: 4.9,
+    reviewsCount: 31,
+    createdAt: "2026-03-24T10:00:00Z",
+    description: "Engineered from military-spec 500D Cordura® nylon. Features quick-release Fidlock® magnetic buckles, suspended and padded 16-inch laptop compartment, ergonomic EVA foam back-panel, and luggage pass-through.",
+    editorialHighlights: ["Invista Cordura® 500D Nylon", "German Fidlock® Magnetic Buckles", "Suspended 16-Inch Laptop Cradle", "Ergonomic Channel Airflow Backing"]
+  },
+
+  {
+    id: "prod-tech-transit-cap",
+    slug: "hydrophobic-technical-transit-cap",
+    name: "Hydrophobic Technical Transit Cap",
+    subtitle: "Laser-perforated lightweight ripstop cap with moisture-wicking headband and magnetic closure",
+    dressType: "Technical Bags & Caps",
+    mainCategory: "ACCESSORIES",
+    gender: "UNISEX",
+    ageGroup: "ADULT",
+    fabricType: "DWR 3-Layer Ripstop Nylon",
+    fabricWeightGsm: 95,
+    breathabilityRating: "Laser-cut 360° airflow perforation",
+    badge: "LOW WEIGHT",
+    careInstructions: "Hand rinse in cool water. Air dry away from direct heat.",
+    fitType: "Adjustable",
+    basePrice: 1450,
+    discountPrice: 1200,
+    currency: "BDT",
+    primaryColor: "Stealth Black",
+    primaryColorHex: "#0D0E10",
+    colorVariants: [
+      {
+        colorName: "Stealth Black",
+        colorHex: "#0D0E10",
+        images: [
+          "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=900&q=80",
+          "https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?auto=format&fit=crop&w=900&q=80"
+        ]
+      }
+    ],
+    sizes: [
+      {
+        sizeLabel: "OSFA",
+        stock: 25,
+        skuSuffix: "OSFA-BLK",
+        measurementsInch: { wristOrCase: 22.5 },
+        measurementsCm: { wristOrCase: 57.0 }
+      }
+    ],
+    isNewCollection: false,
+    isTrending: true,
+    isFeatured: true,
+    rating: 4.7,
+    reviewsCount: 28,
+    createdAt: "2026-03-19T10:00:00Z",
+    description: "Featherlight 45-gram cap engineered from water-repellent micro-ripstop. Features laser-cut ventilation temples, quick-drying internal sweatband, and flexible crushable brim that springs back into shape.",
+    editorialHighlights: ["Ultralight 45g Weight", "Laser-Cut Breathability Ports", "Crushable Packable Brim", "Micro-Adjustable Webbing"]
+  },
+
+  // ==========================================
   // 1. MEN'S ADULT GARMENTS
   // ==========================================
   {

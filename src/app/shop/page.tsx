@@ -1,29 +1,30 @@
 "use client";
 
 import React, { useState, useMemo, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X, RotateCcw, Check, ArrowUpDown } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { SlidersHorizontal, X, RotateCcw, Check, ArrowUpDown, Search, Filter } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Product, TargetGender, AgeGroup, MainCategory } from "@/types/commerce";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
 
 function ShopContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { products, currency } = useCommerceStore();
 
-  // URL query params initialization
+  // URL query params
   const initialCategory = searchParams.get("category");
   const initialGender = searchParams.get("gender") as TargetGender | null;
   const initialAgeGroup = searchParams.get("ageGroup") as AgeGroup | null;
   const initialCollection = searchParams.get("collection");
+  const initialQuery = searchParams.get("query") || "";
+  const initialDressType = searchParams.get("dressType");
 
   // Filters State
+  const [searchQuery, setSearchQuery] = useState<string>(initialQuery);
   const [selectedCollection, setSelectedCollection] = useState<string>(
     initialCollection || "all"
-  );
-  const [selectedDemographic, setSelectedDemographic] = useState<string>(
-    initialAgeGroup || "all"
   );
   const [selectedGender, setSelectedGender] = useState<string>(
     initialGender || "all"
@@ -31,57 +32,133 @@ function ShopContent() {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     initialCategory || "all"
   );
-  const [selectedDressType, setSelectedDressType] = useState<string>("all");
-  const [selectedFabric, setSelectedFabric] = useState<string>("all");
+  const [selectedDressType, setSelectedDressType] = useState<string>(
+    initialDressType || "all"
+  );
+  const [selectedFitType, setSelectedFitType] = useState<string>("all");
   const [selectedColor, setSelectedColor] = useState<string>("all");
   const [selectedSize, setSelectedSize] = useState<string>("all");
+  const [inStockOnly, setInStockOnly] = useState<boolean>(false);
+
+  // Price range slider state
+  const maxProductPrice = useMemo(() => {
+    return Math.max(...products.map((p) => p.discountPrice || p.basePrice), 6000);
+  }, [products]);
+  const [maxPrice, setMaxPrice] = useState<number>(maxProductPrice);
+
   const [sortBy, setSortBy] = useState<string>("featured");
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
 
-  // Extract unique filter options from live products
+  // Extract unique filter options from catalog
   const filterOptions = useMemo(() => {
     const dressTypes = Array.from(new Set(products.map((p) => p.dressType)));
+    const fitTypes = Array.from(new Set(products.map((p) => p.fitType).filter(Boolean)));
     const fabrics = Array.from(new Set(products.map((p) => p.fabricType)));
     const colors = Array.from(
       new Map(
         products.map((p) => [p.primaryColor, { name: p.primaryColor, hex: p.primaryColorHex }])
       ).values()
     );
-    const sizes = Array.from(
+    // Standard sizes sorted logically
+    const standardSizesOrder = ["XS", "S", "M", "L", "XL", "XXL", "22L", "OSFA"];
+    const allSizes = Array.from(
       new Set(products.flatMap((p) => p.sizes.map((s) => s.sizeLabel)))
     );
+    const sortedSizes = allSizes.sort((a, b) => {
+      const idxA = standardSizesOrder.indexOf(a);
+      const idxB = standardSizesOrder.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
 
-    return { dressTypes, fabrics, colors, sizes };
+    return { dressTypes, fitTypes, fabrics, colors, sizes: sortedSizes };
   }, [products]);
+
+  // Active filter count calculation
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (selectedCollection !== "all") count++;
+    if (selectedGender !== "all") count++;
+    if (selectedCategory !== "all") count++;
+    if (selectedDressType !== "all") count++;
+    if (selectedFitType !== "all") count++;
+    if (selectedColor !== "all") count++;
+    if (selectedSize !== "all") count++;
+    if (inStockOnly) count++;
+    if (maxPrice < maxProductPrice) count++;
+    if (searchQuery.trim() !== "") count++;
+    return count;
+  }, [
+    selectedCollection,
+    selectedGender,
+    selectedCategory,
+    selectedDressType,
+    selectedFitType,
+    selectedColor,
+    selectedSize,
+    inStockOnly,
+    maxPrice,
+    maxProductPrice,
+    searchQuery,
+  ]);
+
+  const handleResetFilters = () => {
+    setSelectedCollection("all");
+    setSelectedGender("all");
+    setSelectedCategory("all");
+    setSelectedDressType("all");
+    setSelectedFitType("all");
+    setSelectedColor("all");
+    setSelectedSize("all");
+    setInStockOnly(false);
+    setMaxPrice(maxProductPrice);
+    setSearchQuery("");
+  };
 
   // Filter & Sort Logic
   const filteredProducts = useMemo(() => {
     return products
       .filter((p) => {
+        // Text Search
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const matches =
+            p.name.toLowerCase().includes(q) ||
+            p.dressType.toLowerCase().includes(q) ||
+            p.fabricType.toLowerCase().includes(q) ||
+            p.primaryColor.toLowerCase().includes(q) ||
+            (p.badge && p.badge.toLowerCase().includes(q));
+          if (!matches) return false;
+        }
+
         // Collection
         if (selectedCollection === "new" && !p.isNewCollection) return false;
         if (selectedCollection === "trending" && !p.isTrending) return false;
 
-        // Demographic / Age Group
-        if (selectedDemographic !== "all" && p.ageGroup !== selectedDemographic)
-          return false;
-
         // Gender
-        if (selectedGender !== "all" && p.gender !== selectedGender) return false;
+        if (selectedGender !== "all" && p.gender !== selectedGender && p.gender !== "UNISEX")
+          return false;
 
         // Main Category
-        if (selectedCategory !== "all" && p.mainCategory !== selectedCategory)
-          return false;
+        if (selectedCategory !== "all") {
+          if (selectedCategory === "OUTERWEAR" && p.mainCategory !== "OUTERWEAR" && !p.dressType.includes("Windbreaker") && !p.dressType.includes("Cargo"))
+            return false;
+          if (selectedCategory === "BASICS" && p.mainCategory !== "BASICS" && !p.dressType.includes("Tee") && !p.dressType.includes("Crewneck") && !p.dressType.includes("Polo"))
+            return false;
+          if (selectedCategory === "ACCESSORIES" && p.mainCategory !== "ACCESSORIES" && p.mainCategory !== "WEARABLES" && !p.dressType.includes("Bag") && !p.dressType.includes("Cap"))
+            return false;
+          if (selectedCategory !== "OUTERWEAR" && selectedCategory !== "BASICS" && selectedCategory !== "ACCESSORIES" && p.mainCategory !== selectedCategory)
+            return false;
+        }
 
         // Dress Type
         if (selectedDressType !== "all" && p.dressType !== selectedDressType)
           return false;
 
-        // Fabric / Material
-        if (
-          selectedFabric !== "all" &&
-          !p.fabricType.toLowerCase().includes(selectedFabric.toLowerCase())
-        )
+        // Fit Type
+        if (selectedFitType !== "all" && p.fitType !== selectedFitType)
           return false;
 
         // Primary Color
@@ -91,9 +168,19 @@ function ShopContent() {
         // Size
         if (
           selectedSize !== "all" &&
-          !p.sizes.some((s) => s.sizeLabel === selectedSize)
+          !p.sizes.some((s) => s.sizeLabel === selectedSize && s.stock > 0)
         )
           return false;
+
+        // In Stock Only
+        if (inStockOnly) {
+          const totalStock = p.sizes.reduce((acc, s) => acc + s.stock, 0);
+          if (totalStock === 0) return false;
+        }
+
+        // Max Price Slider
+        const effectivePrice = p.discountPrice || p.basePrice;
+        if (effectivePrice > maxPrice) return false;
 
         return true;
       })
@@ -118,466 +205,444 @@ function ShopContent() {
       });
   }, [
     products,
+    searchQuery,
     selectedCollection,
-    selectedDemographic,
     selectedGender,
     selectedCategory,
     selectedDressType,
-    selectedFabric,
+    selectedFitType,
     selectedColor,
     selectedSize,
+    inStockOnly,
+    maxPrice,
     sortBy,
   ]);
 
-  const resetFilters = () => {
-    setSelectedCollection("all");
-    setSelectedDemographic("all");
-    setSelectedGender("all");
-    setSelectedCategory("all");
-    setSelectedDressType("all");
-    setSelectedFabric("all");
-    setSelectedColor("all");
-    setSelectedSize("all");
-    setSortBy("featured");
-  };
-
-  const hasActiveFilters =
-    selectedCollection !== "all" ||
-    selectedDemographic !== "all" ||
-    selectedGender !== "all" ||
-    selectedCategory !== "all" ||
-    selectedDressType !== "all" ||
-    selectedFabric !== "all" ||
-    selectedColor !== "all" ||
-    selectedSize !== "all";
-
   return (
-    <div className="w-full min-h-screen bg-canvas">
-      {/* Top Banner */}
-      <div className="border-b border-border-subtle bg-canvas-elevated py-8 sm:py-12 px-6 sm:px-8">
+    <div className="w-full min-h-screen bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50">
+      {/* Header Banner */}
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 py-8 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="text-[10px] font-mono tracking-editorial uppercase text-[#9E4733] block mb-1">
-              Atelier Discovery
+            <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 block mb-1">
+              SYSTEM CATALOG // RELEASE 04
             </span>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-ink">
-              The Curated Catalog
+            <h1 className="font-sans text-3xl sm:text-4xl font-black uppercase tracking-tightest text-zinc-950 dark:text-white">
+              Tactical Garments & Gear
             </h1>
-            <p className="text-xs sm:text-sm font-sans text-ink-muted mt-2 max-w-xl">
-              Filter by natural fabric origin, dual [INCH | CM] measurements, gender, and dress typology.
+            <p className="text-xs sm:text-sm font-sans text-zinc-600 dark:text-zinc-400 mt-1 max-w-xl">
+              Engineered everyday basics, DWR ripstop outerwear, and technical activewear built with military-grade precision.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono text-ink-muted">
-              Showing {filteredProducts.length} of {products.length} SKUs
+            <span className="text-xs font-mono text-zinc-500 tabular-nums">
+              Showing {filteredProducts.length} of {products.length} Items
             </span>
-
-            {/* Mobile Filter Trigger */}
-            <button
-              onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden px-4 py-2 bg-[#181816] text-[#FAF8F5] text-xs font-sans uppercase tracking-wider flex items-center gap-2"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Filters</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Workspace */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* =========================================================
-            DESKTOP FILTER SIDEBAR
-           ========================================================= */}
-        <aside className="hidden lg:block lg:col-span-3 space-y-6">
-          <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
-            <span className="text-xs font-sans uppercase tracking-editorial font-semibold text-ink">
-              Refine Matrix
-            </span>
-            {hasActiveFilters && (
+            {activeFilterCount > 0 && (
               <button
-                onClick={resetFilters}
-                className="text-[11px] font-mono text-[#9E4733] hover:underline flex items-center gap-1"
+                onClick={handleResetFilters}
+                className="px-2.5 py-1 text-xs font-mono uppercase bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 transition-colors flex items-center gap-1.5"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>Reset All</span>
+                <span>Reset ({activeFilterCount})</span>
               </button>
             )}
           </div>
-
-          {/* Collection Filter */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Collection Flags
-            </h4>
-            <div className="flex flex-col gap-1 text-xs font-sans">
-              {[
-                { id: "all", label: "All Items" },
-                { id: "new", label: "New Collection" },
-                { id: "trending", label: "Trending Now" },
-              ].map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setSelectedCollection(c.id)}
-                  className={`text-left py-1 px-2 transition-colors ${
-                    selectedCollection === c.id
-                      ? "bg-[#181816] text-[#FAF8F5] font-medium"
-                      : "text-ink hover:bg-canvas-elevated"
-                  }`}
-                >
-                  {c.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Demographic & Gender */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Demographic & Gender
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                { id: "all", label: "All" },
-                { id: "MALE", label: "Men" },
-                { id: "FEMALE", label: "Women" },
-                { id: "KIDS_BOY", label: "Kids (Boy)" },
-                { id: "KIDS_GIRL", label: "Kids (Girl)" },
-                { id: "UNISEX", label: "Unisex" },
-              ].map((g) => (
-                <button
-                  key={g.id}
-                  onClick={() => setSelectedGender(g.id)}
-                  className={`px-2.5 py-1 text-[11px] font-sans uppercase border transition-colors ${
-                    selectedGender === g.id
-                      ? "bg-[#181816] text-[#FAF8F5] border-[#181816]"
-                      : "bg-canvas-elevated text-ink border-border-subtle hover:border-neutral-400"
-                  }`}
-                >
-                  {g.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Category */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Department
-            </h4>
-            <div className="flex flex-col gap-1 text-xs font-sans">
-              {[
-                { id: "all", label: "All Departments" },
-                { id: "GARMENTS", label: "Apparel & Garments" },
-                { id: "WEARABLES", label: "Watches & Accessories" },
-                { id: "FOOTWEAR", label: "Handcrafted Footwear" },
-              ].map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`text-left py-1 px-2 transition-colors ${
-                    selectedCategory === cat.id
-                      ? "bg-[#181816] text-[#FAF8F5] font-medium"
-                      : "text-ink hover:bg-canvas-elevated"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Dress Typology */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Dress Typology
-            </h4>
-            <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
-              <button
-                onClick={() => setSelectedDressType("all")}
-                className={`px-2 py-1 text-[10px] font-mono uppercase border ${
-                  selectedDressType === "all"
-                    ? "bg-[#181816] text-white border-[#181816]"
-                    : "bg-canvas-elevated text-ink border-border-subtle"
-                }`}
-              >
-                All
-              </button>
-              {filterOptions.dressTypes.map((dt) => (
-                <button
-                  key={dt}
-                  onClick={() => setSelectedDressType(dt)}
-                  className={`px-2 py-1 text-[10px] font-mono uppercase border ${
-                    selectedDressType === dt
-                      ? "bg-[#181816] text-white border-[#181816]"
-                      : "bg-canvas-elevated text-ink border-border-subtle hover:border-neutral-400"
-                  }`}
-                >
-                  {dt}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Fabric Taxonomy */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Fabric & Material
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
-              {["all", "Linen", "Cotton", "Silk", "Muslin", "Leather", "Steel", "Wool"].map(
-                (fab) => (
-                  <button
-                    key={fab}
-                    onClick={() => setSelectedFabric(fab)}
-                    className={`px-2 py-1 text-[11px] font-sans capitalize border ${
-                      selectedFabric === fab
-                        ? "bg-[#2D4A3E] text-white border-[#2D4A3E]"
-                        : "bg-canvas-elevated text-ink border-border-subtle hover:border-neutral-400"
-                    }`}
-                  >
-                    {fab === "all" ? "All Fabrics" : fab}
-                  </button>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* Primary Color Swatches */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Primary Color Swatches
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedColor("all")}
-                className={`text-[10px] font-mono px-2 py-1 border ${
-                  selectedColor === "all"
-                    ? "bg-[#181816] text-white border-[#181816]"
-                    : "bg-canvas-elevated text-ink border-border-subtle"
-                }`}
-              >
-                ALL
-              </button>
-              {filterOptions.colors.map((c) => (
-                <button
-                  key={c.name}
-                  onClick={() => setSelectedColor(c.name)}
-                  title={c.name}
-                  className={`w-6 h-6 rounded-full border transition-all ${
-                    selectedColor === c.name
-                      ? "ring-2 ring-offset-2 ring-[#181816] scale-110"
-                      : "opacity-80 hover:opacity-100"
-                  }`}
-                  style={{ backgroundColor: c.hex }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Size Pills */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-              Size Matrix
-            </h4>
-            <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
-              <button
-                onClick={() => setSelectedSize("all")}
-                className={`px-2 py-1 text-[10px] font-mono border ${
-                  selectedSize === "all"
-                    ? "bg-[#181816] text-white border-[#181816]"
-                    : "bg-canvas-elevated text-ink border-border-subtle"
-                }`}
-              >
-                All
-              </button>
-              {filterOptions.sizes.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSelectedSize(s)}
-                  className={`px-2 py-1 text-[10px] font-mono border ${
-                    selectedSize === s
-                      ? "bg-[#181816] text-white border-[#181816]"
-                      : "bg-canvas-elevated text-ink border-border-subtle hover:border-neutral-400"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
-
-        {/* =========================================================
-            PRODUCT GRID & SORT BAR
-           ========================================================= */}
-        <div className="lg:col-span-9 space-y-6">
-          {/* Top Sort & Active Filter Pills Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border-subtle">
-            {/* Active Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              {hasActiveFilters && (
-                <span className="text-[11px] font-mono uppercase text-ink-muted mr-1">
-                  Active:
-                </span>
-              )}
-              {selectedCollection !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono bg-[#181816] text-white">
-                  Collection: {selectedCollection}
-                  <button onClick={() => setSelectedCollection("all")}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {selectedGender !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono bg-[#181816] text-white">
-                  Gender: {selectedGender}
-                  <button onClick={() => setSelectedGender("all")}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {selectedCategory !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono bg-[#181816] text-white">
-                  Dept: {selectedCategory}
-                  <button onClick={() => setSelectedCategory("all")}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {selectedFabric !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono bg-[#2D4A3E] text-white">
-                  Fabric: {selectedFabric}
-                  <button onClick={() => setSelectedFabric("all")}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {selectedColor !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono bg-[#181816] text-white">
-                  Color: {selectedColor}
-                  <button onClick={() => setSelectedColor("all")}>
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-            </div>
-
-            {/* Sort Select */}
-            <div className="flex items-center gap-2 ml-auto">
-              <span className="text-xs font-sans text-ink-muted uppercase">Sort By:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-canvas-elevated border border-border-subtle text-xs font-sans px-3 py-1.5 text-ink outline-none cursor-pointer"
-              >
-                <option value="featured">Featured Atelier Curation</option>
-                <option value="newest">Newest Collection First</option>
-                <option value="trending">Trending & Best Sellers</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Product Grid */}
-          {filteredProducts.length === 0 ? (
-            <div className="py-20 text-center bg-canvas-elevated border border-border-subtle p-8">
-              <h3 className="font-serif text-2xl text-ink">No Garments Match Selected Refinements</h3>
-              <p className="text-xs text-ink-muted mt-2 max-w-sm mx-auto font-sans">
-                Try widening your fabric, color, or demographic filters to view the full atelier collection.
-              </p>
-              <button
-                onClick={resetFilters}
-                className="mt-6 px-6 py-2.5 bg-[#181816] text-[#FAF8F5] text-xs font-sans uppercase tracking-editorial hover:bg-neutral-800 transition-colors"
-              >
-                Reset All Filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
-      {/* =========================================================
-          MOBILE FILTER MODAL
-         ========================================================= */}
+      {/* Main Catalog View: Sticky Sidebar Filters + 4-Column Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
+        {/* Mobile Filter Bar & Sort Controls */}
+        <div className="lg:hidden flex items-center justify-between gap-3 mb-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+          <button
+            onClick={() => setMobileFilterOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-2 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase tracking-wider font-semibold"
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>Filter Garments {activeFilterCount > 0 ? `(${activeFilterCount})` : ""}</span>
+          </button>
+
+          {/* Sort Dropdown */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono text-zinc-500 hidden sm:inline">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="text-xs font-sans bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-2 px-2.5 text-zinc-900 dark:text-zinc-100 focus:outline-none"
+            >
+              <option value="featured">Featured First</option>
+              <option value="newest">Newest Releases</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="trending">Trending Status</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Desktop Left Filter Sidebar */}
+          <aside className="hidden lg:block lg:col-span-3 space-y-6">
+            <div className="sticky top-24 space-y-6 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 no-scrollbar">
+              {/* Header with Clear button */}
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                <span className="text-xs font-sans font-bold uppercase tracking-wider text-zinc-950 dark:text-white flex items-center gap-1.5">
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  Filter Catalog
+                </span>
+                {activeFilterCount > 0 && (
+                  <button
+                    onClick={handleResetFilters}
+                    className="text-[11px] font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 underline"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
+
+              {/* 1. Size Filter (Chips XS to XXL) */}
+              <div className="space-y-2.5">
+                <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+                  Garment Size
+                </label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  <button
+                    onClick={() => setSelectedSize("all")}
+                    className={cn(
+                      "py-1.5 px-2 text-[11px] font-mono font-medium border text-center transition-colors",
+                      selectedSize === "all"
+                        ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
+                        : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
+                    )}
+                  >
+                    All
+                  </button>
+                  {filterOptions.sizes.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedSize(s)}
+                      className={cn(
+                        "py-1.5 px-2 text-[11px] font-mono font-medium border text-center transition-colors",
+                        selectedSize === s
+                          ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
+                          : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
+                      )}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Color Swatches Filter */}
+              <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white">
+                    Color Palette
+                  </label>
+                  {selectedColor !== "all" && (
+                    <button
+                      onClick={() => setSelectedColor("all")}
+                      className="text-[10px] font-mono text-zinc-400 hover:underline"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  {filterOptions.colors.map((c) => (
+                    <button
+                      key={c.name}
+                      onClick={() => setSelectedColor(selectedColor === c.name ? "all" : c.name)}
+                      title={c.name}
+                      aria-label={`Filter by ${c.name}`}
+                      className={cn(
+                        "w-6 h-6 rounded-full border-2 transition-all p-0.5 relative group",
+                        selectedColor === c.name
+                          ? "border-zinc-950 dark:border-white scale-110 ring-1 ring-zinc-400"
+                          : "border-transparent opacity-80 hover:opacity-100"
+                      )}
+                    >
+                      <div
+                        className="w-full h-full rounded-full border border-black/15"
+                        style={{ backgroundColor: c.hex }}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Price Range Slider */}
+              <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="flex justify-between items-center text-xs font-sans">
+                  <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white">
+                    Max Price
+                  </label>
+                  <span className="font-mono font-bold text-zinc-900 dark:text-white tabular-nums">
+                    {formatPrice(maxPrice, currency)}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="1000"
+                  max={maxProductPrice}
+                  step="250"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full accent-zinc-950 dark:accent-white cursor-pointer"
+                />
+              </div>
+
+              {/* 4. In-Stock Only Toggle */}
+              <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <span className="text-xs font-sans text-zinc-800 dark:text-zinc-200 font-medium">
+                    In-Stock Items Only
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={inStockOnly}
+                    onChange={(e) => setInStockOnly(e.target.checked)}
+                    className="w-4 h-4 accent-zinc-950 dark:accent-white cursor-pointer"
+                  />
+                </label>
+              </div>
+
+              {/* 5. Fit Type Filter */}
+              <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+                  Garment Fit Silhouette
+                </label>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setSelectedFitType("all")}
+                    className={cn(
+                      "w-full text-left px-2 py-1 text-xs transition-colors flex items-center justify-between",
+                      selectedFitType === "all"
+                        ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white font-bold"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                    )}
+                  >
+                    <span>All Silhouettes</span>
+                    {selectedFitType === "all" && <Check className="w-3.5 h-3.5" />}
+                  </button>
+                  {filterOptions.fitTypes.map((fit) => (
+                    <button
+                      key={fit}
+                      onClick={() => setSelectedFitType(fit)}
+                      className={cn(
+                        "w-full text-left px-2 py-1 text-xs transition-colors flex items-center justify-between",
+                        selectedFitType === fit
+                          ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white font-bold"
+                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                      )}
+                    >
+                      <span>{fit}</span>
+                      {selectedFitType === fit && <Check className="w-3.5 h-3.5" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 6. Main Category Filter */}
+              <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+                  Category
+                </label>
+                <div className="space-y-1">
+                  {[
+                    { label: "All Items", val: "all" },
+                    { label: "Technical Outerwear", val: "OUTERWEAR" },
+                    { label: "Everyday Basics", val: "BASICS" },
+                    { label: "Accessories & Bags", val: "ACCESSORIES" },
+                    { label: "Artisan Garments", val: "GARMENTS" },
+                    { label: "Horology & Wearables", val: "WEARABLES" },
+                  ].map((cat) => (
+                    <button
+                      key={cat.val}
+                      onClick={() => setSelectedCategory(cat.val)}
+                      className={cn(
+                        "w-full text-left px-2 py-1 text-xs transition-colors flex items-center justify-between",
+                        selectedCategory === cat.val
+                          ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white font-bold"
+                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                      )}
+                    >
+                      <span>{cat.label}</span>
+                      {selectedCategory === cat.val && <Check className="w-3.5 h-3.5" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* Catalog Grid Area */}
+          <main className="lg:col-span-9 space-y-6">
+            {/* Desktop Sort Controls & Search Query Display */}
+            <div className="hidden lg:flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono uppercase text-zinc-500">Active Criteria:</span>
+                {selectedCategory !== "all" && (
+                  <span className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700">
+                    Category: {selectedCategory}
+                  </span>
+                )}
+                {selectedSize !== "all" && (
+                  <span className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700">
+                    Size: {selectedSize}
+                  </span>
+                )}
+                {selectedFitType !== "all" && (
+                  <span className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700">
+                    Fit: {selectedFitType}
+                  </span>
+                )}
+                {searchQuery && (
+                  <span className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700">
+                    &quot;{searchQuery}&quot;
+                  </span>
+                )}
+              </div>
+
+              {/* Sort By */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="font-mono text-zinc-500 uppercase">Sort By:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-1 px-2 text-zinc-900 dark:text-zinc-100 focus:outline-none font-sans"
+                >
+                  <option value="featured">Featured First</option>
+                  <option value="newest">Newest First</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="trending">Trending Status</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Zero State */}
+            {filteredProducts.length === 0 ? (
+              <div className="py-20 text-center space-y-3 border border-dashed border-zinc-300 dark:border-zinc-800">
+                <p className="font-sans font-bold text-lg text-zinc-950 dark:text-white">
+                  No garments match the current criteria
+                </p>
+                <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                  Try widening your price range, clearing size filters, or resetting search tags.
+                </p>
+                <button
+                  onClick={handleResetFilters}
+                  className="px-5 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold tracking-wider hover:bg-zinc-800 transition-colors"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            ) : (
+              /* Balanced 4-Column Catalog Grid (2 cols mobile at 390px, 3 tablet at 768px, 4 desktop at 1440px) */
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+
+      {/* Mobile Filter Slide-Over Drawer */}
       {mobileFilterOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden lg:hidden">
           <div
             onClick={() => setMobileFilterOpen(false)}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
           />
-
           <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            <div className="w-screen max-w-xs bg-canvas shadow-drawer flex flex-col justify-between p-6 overflow-y-auto">
-              <div className="flex items-center justify-between pb-4 border-b border-border-subtle">
-                <span className="font-serif text-lg uppercase font-semibold text-ink">
-                  Refine Catalog
-                </span>
-                <button onClick={() => setMobileFilterOpen(false)}>
-                  <X className="w-5 h-5 text-ink" />
-                </button>
-              </div>
+            <div className="w-screen max-w-xs bg-white dark:bg-zinc-950 p-6 flex flex-col justify-between border-l border-zinc-200 dark:border-zinc-800 animate-in slide-in-from-right duration-200">
+              <div className="space-y-6 overflow-y-auto pr-1">
+                <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                  <h3 className="text-sm font-sans uppercase font-bold text-zinc-950 dark:text-white">
+                    Filter Garments
+                  </h3>
+                  <button onClick={() => setMobileFilterOpen(false)} className="p-1">
+                    <X className="w-4 h-4 text-zinc-500" />
+                  </button>
+                </div>
 
-              <div className="space-y-6 py-6">
-                <div>
-                  <h4 className="text-xs font-mono uppercase text-ink-muted mb-2">
-                    Demographic
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["all", "MALE", "FEMALE", "CHILDREN"].map((d) => (
+                {/* Size */}
+                <div className="space-y-2">
+                  <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+                    Size
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      onClick={() => setSelectedSize("all")}
+                      className={cn(
+                        "py-1 text-xs font-mono border",
+                        selectedSize === "all" ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "border-zinc-200 dark:border-zinc-800"
+                      )}
+                    >
+                      All
+                    </button>
+                    {filterOptions.sizes.map((s) => (
                       <button
-                        key={d}
-                        onClick={() => setSelectedGender(d)}
-                        className={`px-3 py-1 text-xs border ${
-                          selectedGender === d ? "bg-[#181816] text-white" : "border"
-                        }`}
+                        key={s}
+                        onClick={() => setSelectedSize(s)}
+                        className={cn(
+                          "py-1 text-xs font-mono border",
+                          selectedSize === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "border-zinc-200 dark:border-zinc-800"
+                        )}
                       >
-                        {d}
+                        {s}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div>
-                  <h4 className="text-xs font-mono uppercase text-ink-muted mb-2">
-                    Department
-                  </h4>
-                  <div className="flex flex-col gap-1 text-xs">
-                    {["all", "GARMENTS", "WEARABLES", "FOOTWEAR"].map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`text-left p-1.5 ${
-                          selectedCategory === cat ? "bg-[#181816] text-white" : ""
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
+                {/* Max Price */}
+                <div className="space-y-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                  <div className="flex justify-between text-xs font-mono">
+                    <span>Max: {formatPrice(maxPrice, currency)}</span>
                   </div>
+                  <input
+                    type="range"
+                    min="1000"
+                    max={maxProductPrice}
+                    step="250"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    className="w-full accent-zinc-950 dark:accent-white"
+                  />
+                </div>
+
+                {/* In Stock */}
+                <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                  <label className="flex items-center justify-between text-xs font-sans">
+                    <span>In-Stock Only</span>
+                    <input
+                      type="checkbox"
+                      checked={inStockOnly}
+                      onChange={(e) => setInStockOnly(e.target.checked)}
+                      className="w-4 h-4 accent-zinc-950 dark:accent-white"
+                    />
+                  </label>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-border-subtle flex gap-2">
+              <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
                 <button
-                  onClick={resetFilters}
-                  className="flex-1 py-2.5 border border-border-subtle text-xs uppercase"
+                  onClick={handleResetFilters}
+                  className="flex-1 py-2.5 border border-zinc-300 dark:border-zinc-700 text-xs font-sans uppercase font-bold"
                 >
                   Reset
                 </button>
                 <button
                   onClick={() => setMobileFilterOpen(false)}
-                  className="flex-1 py-2.5 bg-[#181816] text-white text-xs uppercase"
+                  className="flex-1 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold"
                 >
-                  Show Results
+                  Apply ({filteredProducts.length})
                 </button>
               </div>
             </div>
@@ -590,7 +655,7 @@ function ShopContent() {
 
 export default function ShopPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center font-mono">Loading Atelier Catalog...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-xs font-mono">Loading technical catalog...</div>}>
       <ShopContent />
     </Suspense>
   );
