@@ -1,38 +1,42 @@
 /**
- * Cloudinary & High-Resolution Fashion Asset Optimization Utilities
- * Atelier Vêtements / Aurelia Studio Enterprise Commerce Engine
+ * ECWEARABLE Image Optimization & Asset Utility
  */
+
+export const DEFAULT_PRODUCT_IMAGE = "/images/catalog/prod-men-linen-shirt-1_8830.webp";
 
 export interface CloudinaryTransformOptions {
   width?: number;
   height?: number;
-  crop?: 'fill' | 'scale' | 'fit' | 'thumb' | 'crop';
-  quality?: 'auto' | 'auto:best' | 'auto:good' | 'auto:eco' | number;
-  format?: 'auto' | 'webp' | 'avif' | 'png' | 'jpg';
+  crop?: "fill" | "scale" | "fit" | "thumb" | "crop";
+  quality?: "auto" | "auto:best" | "auto:good" | "auto:eco" | number;
+  format?: "auto" | "webp" | "avif" | "png" | "jpg";
   dpr?: number | string;
 }
 
 /**
- * Injects automatic Cloudinary transformations (`f_auto,q_auto`) or optimizes external Unsplash images
+ * Optimizes external Cloudinary/Unsplash URLs while preserving local public paths untouched.
  */
 export function optimizeCloudinaryUrl(
   url: string,
   options: CloudinaryTransformOptions = {}
 ): string {
-  if (!url) return '';
+  if (!url) return DEFAULT_PRODUCT_IMAGE;
+
+  if (url.startsWith("/")) {
+    return url;
+  }
 
   const {
     width,
     height,
-    crop = 'fill',
-    quality = 'auto',
-    format = 'auto',
-    dpr = 'auto',
+    crop = "fill",
+    quality = "auto",
+    format = "auto",
+    dpr = "auto",
   } = options;
 
-  // Handle Cloudinary URLs
-  if (url.includes('res.cloudinary.com')) {
-    const uploadIndex = url.indexOf('/upload/');
+  if (url.includes("res.cloudinary.com")) {
+    const uploadIndex = url.indexOf("/upload/");
     if (uploadIndex === -1) return url;
 
     const prefix = url.substring(0, uploadIndex + 8);
@@ -44,27 +48,25 @@ export function optimizeCloudinaryUrl(
     if (crop) transforms.push(`c_${crop}`);
     if (dpr) transforms.push(`dpr_${dpr}`);
 
-    // If existing transformation exists, don't duplicate
-    if (suffix.startsWith('f_auto') || suffix.startsWith('q_auto')) {
+    if (suffix.startsWith("f_auto") || suffix.startsWith("q_auto")) {
       return url;
     }
 
-    return `${prefix}${transforms.join(',')}/${suffix}`;
+    return `${prefix}${transforms.join(",")}/${suffix}`;
   }
 
-  // Handle Unsplash Images (Industry standard for high-res editorial mockups)
-  if (url.includes('images.unsplash.com')) {
+  if (url.includes("images.unsplash.com")) {
     try {
       const parsed = new URL(url);
-      parsed.searchParams.set('auto', 'format');
-      parsed.searchParams.set('fit', 'crop');
-      if (quality === 'auto' || quality === 'auto:best') {
-        parsed.searchParams.set('q', '85');
-      } else if (typeof quality === 'number') {
-        parsed.searchParams.set('q', quality.toString());
+      parsed.searchParams.set("auto", "format");
+      parsed.searchParams.set("fit", "crop");
+      if (quality === "auto" || quality === "auto:best") {
+        parsed.searchParams.set("q", "85");
+      } else if (typeof quality === "number") {
+        parsed.searchParams.set("q", quality.toString());
       }
-      if (width) parsed.searchParams.set('w', width.toString());
-      if (height) parsed.searchParams.set('h', height.toString());
+      if (width) parsed.searchParams.set("w", width.toString());
+      if (height) parsed.searchParams.set("h", height.toString());
       return parsed.toString();
     } catch {
       return url;
@@ -79,31 +81,25 @@ export function optimizeCloudinaryUrl(
  */
 export async function uploadImageToCloudinary(
   file: File | Blob | string,
-  cloudName: string = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'demo',
-  uploadPreset: string = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'aurelia_unsigned'
+  cloudName: string = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "demo",
+  uploadPreset: string = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "ecwearable_unsigned"
 ): Promise<{ url: string; public_id: string; secure_url: string }> {
   const formData = new FormData();
-
-  if (typeof file === 'string') {
-    formData.append('file', file);
-  } else {
-    formData.append('file', file);
-  }
-
-  formData.append('upload_preset', uploadPreset);
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
 
   try {
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
       {
-        method: 'POST',
+        method: "POST",
         body: formData,
       }
     );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error?.message || 'Failed to upload to Cloudinary');
+      throw new Error(errorData.error?.message || "Failed to upload to Cloudinary");
     }
 
     const data = await response.json();
@@ -112,13 +108,13 @@ export async function uploadImageToCloudinary(
       secure_url: data.secure_url,
       public_id: data.public_id,
     };
-  } catch (err: any) {
-    console.warn('Cloudinary direct upload fallback to local preview:', err.message);
-    // If running in development without live Cloudinary keys, provide safe fallback
-    if (typeof file === 'string') {
-      return { url: file, secure_url: file, public_id: 'mock_external' };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Unknown upload error";
+    console.warn("Cloudinary direct upload fallback to local preview:", msg);
+    if (typeof file === "string") {
+      return { url: file, secure_url: file, public_id: "ecwearable_external" };
     }
     const mockUrl = URL.createObjectURL(file as Blob);
-    return { url: mockUrl, secure_url: mockUrl, public_id: 'mock_local' };
+    return { url: mockUrl, secure_url: mockUrl, public_id: "ecwearable_local" };
   }
 }

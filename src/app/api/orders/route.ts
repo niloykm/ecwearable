@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const newOrder: Order = {
       ...orderData,
       id: `ord-${Date.now()}`,
-      orderNumber: `AUR-2603-${Math.floor(1000 + Math.random() * 9000)}`,
+      orderNumber: `ECW-${new Date().getFullYear().toString().slice(-2)}${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`,
       createdAt: new Date().toISOString(),
       timeline: [
         {

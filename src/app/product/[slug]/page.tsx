@@ -1,31 +1,26 @@
 "use client";
 
 import React, { useState, use, useMemo, useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   ShoppingBag,
   Ruler,
   Check,
-  ShieldCheck,
-  RotateCcw,
-  Sparkles,
   ChevronDown,
-  ChevronUp,
-  Share2,
   UserCheck,
   Droplets,
-  Wind,
 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
-import { formatPrice, cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/Badge";
+import { formatPrice, formatShippingThreshold, cn } from "@/lib/utils";
 import { ProductCard } from "@/components/product/ProductCard";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import { ColorVariant, SizeMeasurement } from "@/types/commerce";
-import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
 
 export default function ProductDetailPage({
   params,
@@ -52,7 +47,6 @@ export default function ProductDetailPage({
     notFound();
   }
 
-  // Active color variant
   const [selectedColor, setSelectedColor] = useState<ColorVariant>(
     product.colorVariants[0] || {
       colorName: product.primaryColor,
@@ -60,30 +54,29 @@ export default function ProductDetailPage({
       images: [],
     }
   );
-
-  // Active preview image
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
-
-  // Active size
-  const [selectedSize, setSelectedSize] = useState<SizeMeasurement>(
-    product.sizes[0]
-  );
-
-  // Quantity
+  const [selectedSize, setSelectedSize] = useState<SizeMeasurement>(product.sizes[0]);
   const [quantity, setQuantity] = useState<number>(1);
-
-  // Sizing guide modal
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
-
-  // Accordion collapses
   const [expandedSection, setExpandedSection] = useState<string>("specs");
-
-  // Feedback on added
   const [isAddedToast, setIsAddedToast] = useState<boolean>(false);
 
-  // Sticky mobile bar visibility trigger
   const mainCtaRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
+
+  // Sync local selection when navigating between products
+  useEffect(() => {
+    setSelectedColor(
+      product.colorVariants[0] || {
+        colorName: product.primaryColor,
+        colorHex: product.primaryColorHex,
+        images: [],
+      }
+    );
+    setSelectedSize(product.sizes[0]);
+    setActiveImageIndex(0);
+    setQuantity(1);
+  }, [product]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,12 +90,10 @@ export default function ProductDetailPage({
   }, []);
 
   const isWishlisted = isInWishlist(product.id);
+  const thresholdLabel = formatShippingThreshold(currency);
 
-  // Complete the Look: find 3 complementary products
   const completeTheLookProducts = useMemo(() => {
-    return products
-      .filter((p) => p.id !== product.id)
-      .slice(0, 3);
+    return products.filter((p) => p.id !== product.id).slice(0, 3);
   }, [products, product]);
 
   const handleAddToCart = () => {
@@ -122,56 +113,74 @@ export default function ProductDetailPage({
       ? selectedColor.images
       : product.colorVariants[0]?.images || [];
 
-  const activeImage = allImages[activeImageIndex] || allImages[0] || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80";
+  const activeImage = allImages[activeImageIndex] || allImages[0] || DEFAULT_PRODUCT_IMAGE;
+  const modelRef =
+    product.modelReference || 'Model is 6\'1" (185 cm) wearing size L / Regular Fit';
 
-  const modelRef = product.modelReference || 'Model is 6\'1" (185 cm) wearing size L / Regular Fit';
+  const savingsPercent =
+    product.discountPrice && product.discountPrice < product.basePrice
+      ? Math.round(((product.basePrice - product.discountPrice) / product.basePrice) * 100)
+      : 0;
 
   return (
     <div className="w-full min-h-screen bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 pb-20 sm:pb-0">
       {/* Breadcrumbs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 border-b border-zinc-200 dark:border-zinc-800 text-xs font-sans text-zinc-500 flex items-center gap-2">
-        <Link href="/" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+      <nav
+        aria-label="Breadcrumb"
+        className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 border-b border-zinc-200 dark:border-zinc-800 text-xs font-sans text-zinc-600 dark:text-zinc-400 flex items-center gap-2 overflow-hidden"
+      >
+        <Link href="/" className="hover:text-zinc-950 dark:hover:text-white transition-colors whitespace-nowrap">
           Home
         </Link>
-        <span>/</span>
-        <Link href="/shop" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+        <span aria-hidden="true">/</span>
+        <Link href="/shop" className="hover:text-zinc-950 dark:hover:text-white transition-colors whitespace-nowrap">
           Catalog
         </Link>
-        <span>/</span>
-        <span className="uppercase tracking-wider text-zinc-400">{product.dressType}</span>
-        <span>/</span>
-        <span className="text-zinc-900 dark:text-white font-medium truncate">{product.name}</span>
-      </div>
+        <span aria-hidden="true">/</span>
+        <span className="uppercase tracking-wider text-zinc-500 whitespace-nowrap">{product.dressType}</span>
+        <span aria-hidden="true">/</span>
+        <span className="text-zinc-950 dark:text-white font-semibold truncate">{product.name}</span>
+      </nav>
 
       {/* Main PDP Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
           {/* Left Column: Gallery */}
           <div className="lg:col-span-7 space-y-4">
-            {/* Primary Display */}
             <div className="relative aspect-[3/4] w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <Image
-                src={optimizeCloudinaryUrl(activeImage, { width: 1200, height: 1600, quality: "auto:best" })}
-                alt={product.name}
-                fill
-                priority
-                className="object-cover object-center"
-              />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeImage}
+                  initial={{ opacity: 0.4 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0.4 }}
+                  transition={{ duration: 0.24, ease: MOTION_EASE }}
+                  className="absolute inset-0"
+                >
+                  <SafeImage
+                    src={optimizeCloudinaryUrl(activeImage, { width: 1200, height: 1600, quality: "auto:best" })}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    priority
+                    className="object-cover object-top"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
-              {/* Status Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-                {product.badge && (
+              {/* Status Badge */}
+              <div className="absolute top-4 left-4 flex flex-wrap gap-2 z-10 pointer-events-none">
+                {product.badge ? (
                   <span className="px-2.5 py-1 text-[10px] font-mono tracking-widest uppercase font-bold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
                     {product.badge}
                   </span>
-                )}
-                {product.isNewCollection && !product.badge && (
+                ) : product.isNewCollection ? (
                   <span className="px-2.5 py-1 text-[10px] font-mono tracking-widest uppercase font-bold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
                     NEW RELEASE
                   </span>
-                )}
+                ) : null}
                 {product.fabricWeightGsm && (
-                  <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800">
+                  <span className="px-2.5 py-1 text-[10px] font-mono font-semibold bg-white/95 dark:bg-zinc-900/95 text-zinc-950 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 tabular-nums">
                     {product.fabricWeightGsm} GSM
                   </span>
                 )}
@@ -179,35 +188,37 @@ export default function ProductDetailPage({
 
               {/* Wishlist Button */}
               <button
+                type="button"
                 onClick={() => toggleWishlistProduct(product.id)}
-                className="absolute top-4 right-4 z-10 p-2.5 bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-950 hover:text-white transition-colors"
-                aria-label="Wishlist"
+                className="absolute top-4 right-4 z-10 p-2.5 bg-white/95 dark:bg-zinc-900/95 text-zinc-950 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-950 hover:text-white rounded-sm transition-colors"
+                aria-label={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
+                aria-pressed={isWishlisted}
               >
-                <Heart
-                  className={cn("w-4 h-4", isWishlisted && "fill-current text-red-500")}
-                />
+                <Heart className={cn("w-4 h-4", isWishlisted && "fill-current text-red-500")} />
               </button>
             </div>
 
-            {/* Thumbnail Strip */}
             {allImages.length > 1 && (
               <div className="grid grid-cols-4 gap-3">
                 {allImages.map((img, idx) => (
                   <button
-                    key={idx}
+                    key={`${img}-${idx}`}
+                    type="button"
                     onClick={() => setActiveImageIndex(idx)}
+                    aria-label={`View angle ${idx + 1}`}
                     className={cn(
-                      "relative aspect-[3/4] bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all",
+                      "relative aspect-[3/4] bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-200",
                       activeImageIndex === idx
                         ? "border-zinc-950 dark:border-white ring-1 ring-zinc-950 dark:ring-white"
-                        : "border-zinc-200 dark:border-zinc-800 opacity-70 hover:opacity-100"
+                        : "border-zinc-200 dark:border-zinc-800 opacity-75 hover:opacity-100"
                     )}
                   >
-                    <Image
+                    <SafeImage
                       src={optimizeCloudinaryUrl(img, { width: 300, height: 400 })}
                       alt={`${product.name} angle ${idx + 1}`}
                       fill
-                      className="object-cover"
+                      sizes="25vw"
+                      className="object-cover object-top"
                     />
                   </button>
                 ))}
@@ -215,53 +226,49 @@ export default function ProductDetailPage({
             )}
           </div>
 
-          {/* Right Column: Garment Specs, Sizing & Actions */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+          {/* Right Column: Specs, Sizing & Purchase */}
+          <div className="lg:col-span-5 flex flex-col space-y-6">
             <div className="space-y-4">
-              {/* Category & Status */}
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                   {product.mainCategory} // {product.dressType}
                 </span>
-                <span className="text-zinc-300 dark:text-zinc-700">•</span>
-                <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
-                  In Stock & Ready to Dispatch
+                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">·</span>
+                <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
+                  In Stock &amp; Ready to Dispatch
                 </span>
               </div>
 
-              {/* Title */}
-              <h1 className="font-sans text-2xl sm:text-3xl font-black uppercase tracking-tightest text-zinc-950 dark:text-white">
+              <h1 className="font-sans text-2xl sm:text-3xl font-black uppercase tracking-tightest text-zinc-950 dark:text-white leading-tight">
                 {product.name}
               </h1>
 
-              {/* Subtitle / Fabric Hook */}
-              <p className="text-xs sm:text-sm font-sans text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-sm font-sans text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {product.subtitle}
               </p>
 
               {/* Pricing */}
-              <div className="flex items-baseline gap-3 pt-1 border-t border-zinc-100 dark:border-zinc-800">
-                {product.discountPrice ? (
-                  <>
-                    <span className="font-mono text-2xl font-bold text-zinc-950 dark:text-white tabular-nums">
-                      {formatPrice(product.discountPrice, currency)}
-                    </span>
-                    <span className="font-mono text-sm text-zinc-400 line-through tabular-nums">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="flex items-baseline gap-3">
+                  <span className="font-mono text-2xl font-bold text-zinc-950 dark:text-white tabular-nums">
+                    {formatPrice(product.discountPrice || product.basePrice, currency)}
+                  </span>
+                  {product.discountPrice && product.discountPrice < product.basePrice && (
+                    <span className="font-mono text-sm text-zinc-500 line-through tabular-nums">
                       {formatPrice(product.basePrice, currency)}
                     </span>
-                    <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 ml-auto">
-                      Save {Math.round(((product.basePrice - product.discountPrice) / product.basePrice) * 100)}%
-                    </span>
-                  </>
-                ) : (
-                  <span className="font-mono text-2xl font-bold text-zinc-950 dark:text-white tabular-nums">
-                    {formatPrice(product.basePrice, currency)}
+                  )}
+                </div>
+
+                {savingsPercent > 0 && (
+                  <span className="px-2 py-0.5 text-xs font-mono font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 tabular-nums">
+                    SAVE {savingsPercent}%
                   </span>
                 )}
               </div>
 
-              {/* Editorial Model Reference Callout */}
-              <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center gap-2.5 text-xs font-sans text-zinc-700 dark:text-zinc-300">
+              {/* Fit Note */}
+              <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center gap-2.5 text-xs font-sans text-zinc-700 dark:text-zinc-300">
                 <UserCheck className="w-4 h-4 text-zinc-900 dark:text-zinc-100 flex-shrink-0" />
                 <span>
                   <strong className="font-semibold text-zinc-950 dark:text-white">Fit Note: </strong>
@@ -269,35 +276,41 @@ export default function ProductDetailPage({
                 </span>
               </div>
 
-              {/* Color Swatch Selection */}
-              <div className="pt-2">
-                <div className="flex items-center justify-between text-xs font-sans mb-2">
-                  <span className="uppercase text-zinc-500 tracking-wider">
-                    Color: <strong className="text-zinc-950 dark:text-white font-semibold">{selectedColor.colorName}</strong>
+              {/* Color Swatches */}
+              <div className="pt-2 space-y-2.5">
+                <div className="flex items-center justify-between text-xs font-sans">
+                  <span className="uppercase text-zinc-600 dark:text-zinc-400 tracking-wider">
+                    Color:{" "}
+                    <strong className="text-zinc-950 dark:text-white font-semibold">
+                      {selectedColor.colorName}
+                    </strong>
                   </span>
-                  <span className="font-mono text-[11px] text-zinc-500">
-                    {product.colorVariants.length} Palette Choices
+                  <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
+                    {product.colorVariants.length} {product.colorVariants.length === 1 ? "Colorway" : "Colorways"}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   {product.colorVariants.map((c) => (
                     <button
                       key={c.colorName}
+                      type="button"
                       onClick={() => {
                         setSelectedColor(c);
                         setActiveImageIndex(0);
                       }}
+                      aria-label={`Select color ${c.colorName}`}
+                      aria-pressed={selectedColor.colorName === c.colorName}
                       className={cn(
                         "w-8 h-8 rounded-full border-2 transition-all p-0.5",
                         selectedColor.colorName === c.colorName
                           ? "border-zinc-950 dark:border-white scale-110"
-                          : "border-transparent opacity-70 hover:opacity-100"
+                          : "border-transparent opacity-75 hover:opacity-100"
                       )}
                       title={c.colorName}
                     >
                       <div
-                        className="w-full h-full rounded-full border border-black/10"
+                        className="w-full h-full rounded-full border border-black/15"
                         style={{ backgroundColor: c.colorHex }}
                       />
                     </button>
@@ -305,52 +318,55 @@ export default function ProductDetailPage({
                 </div>
               </div>
 
-              {/* Size Selector with Live INCH/CM Toggle */}
+              {/* Size Selector + Live INCH/CM Toggle */}
               <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-sans uppercase text-zinc-500 tracking-wider font-semibold">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-sans uppercase text-zinc-600 dark:text-zinc-400 tracking-wider font-semibold">
                     Select Size
                   </span>
 
-                  {/* INCH / CM Toggle + Size Guide Modal Trigger */}
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px] font-mono">
-                      <button
-                        onClick={() => setUnit("INCH")}
-                        className={cn(
-                          "px-2 py-0.5 transition-colors",
-                          unit === "INCH"
-                            ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold"
-                            : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-                        )}
-                      >
-                        INCH
-                      </button>
-                      <button
-                        onClick={() => setUnit("CM")}
-                        className={cn(
-                          "px-2 py-0.5 transition-colors",
-                          unit === "CM"
-                            ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold"
-                            : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-                        )}
-                      >
-                        CM
-                      </button>
+                    <div className="flex items-center bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px] font-mono rounded-sm">
+                      {(["INCH", "CM"] as const).map((u) => {
+                        const active = unit === u;
+                        return (
+                          <button
+                            key={u}
+                            type="button"
+                            onClick={() => setUnit(u)}
+                            className={cn(
+                              "relative px-2.5 py-0.5 transition-colors rounded-[2px]",
+                              active
+                                ? "text-white dark:text-zinc-950 font-bold"
+                                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+                            )}
+                          >
+                            {active && (
+                              <motion.span
+                                layoutId="pdp-unit-pill"
+                                transition={SPRING_INDICATOR}
+                                className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                              />
+                            )}
+                            <span className="relative z-10">{u}</span>
+                          </button>
+                        );
+                      })}
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => setIsSizeGuideOpen(true)}
                       className="text-xs font-sans uppercase tracking-wider text-zinc-950 dark:text-white underline underline-offset-4 flex items-center gap-1 hover:text-zinc-600 dark:hover:text-zinc-300 font-semibold"
                     >
                       <Ruler className="w-3.5 h-3.5" />
-                      <span>Interactive Size Guide</span>
+                      <span>Size Guide</span>
                     </button>
                   </div>
                 </div>
 
-                {/* Size Grid Buttons */}
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {/* Size Grid */}
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {product.sizes.map((s) => {
                     const isSelected = selectedSize.sizeLabel === s.sizeLabel;
                     const isOutOfStock = s.stock === 0;
@@ -358,19 +374,21 @@ export default function ProductDetailPage({
                     return (
                       <button
                         key={s.sizeLabel}
+                        type="button"
                         disabled={isOutOfStock}
                         onClick={() => setSelectedSize(s)}
+                        aria-pressed={isSelected}
                         className={cn(
-                          "py-2.5 px-2 text-xs font-mono border transition-all text-center flex flex-col items-center justify-center gap-0.5",
+                          "py-2.5 px-2 text-xs font-mono border rounded-sm transition-all text-center flex flex-col items-center justify-center gap-0.5",
                           isOutOfStock
                             ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-400 line-through cursor-not-allowed"
                             : isSelected
                             ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-sm font-bold"
-                            : "bg-white dark:bg-zinc-900 hover:border-zinc-400 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
+                            : "bg-white dark:bg-zinc-900 hover:border-zinc-500 text-zinc-950 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
                         )}
                       >
                         <span>{s.sizeLabel}</span>
-                        <span className="text-[9px] opacity-70">
+                        <span className="text-[10px] opacity-80 tabular-nums">
                           {isOutOfStock ? "Out" : `${s.stock} left`}
                         </span>
                       </button>
@@ -378,63 +396,79 @@ export default function ProductDetailPage({
                   })}
                 </div>
 
-                {/* Dynamic Flat Measurements for Selected Size */}
-                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-mono space-y-1">
-                  <div className="flex items-center justify-between text-zinc-500 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-                    <span className="text-[10px] uppercase font-sans tracking-wider">
-                      Flat Dimensions for Size {selectedSize.sizeLabel} ({unitLabel}):
+                {/* Dynamic Flat Measurements */}
+                <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-mono space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-zinc-600 dark:text-zinc-400 pb-2 border-b border-zinc-200 dark:border-zinc-800">
+                    <span className="text-[10px] uppercase font-sans tracking-wider font-semibold">
+                      Flat Dimensions — Size {selectedSize.sizeLabel} ({unitLabel})
                     </span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+                    <span className="text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">
                       {product.fitType}
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 pt-1 text-[11px]">
+                  <div className="grid grid-cols-3 gap-3 pt-0.5 text-[11px]">
                     {currentMeasurements?.chest && (
                       <div>
-                        <span className="text-zinc-400 block text-[10px]">Chest:</span>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                        <span className="text-zinc-500 block text-[10px]">Chest</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.chest} {unit === "INCH" ? '"' : "cm"}
                         </span>
                       </div>
                     )}
                     {currentMeasurements?.waist && (
                       <div>
-                        <span className="text-zinc-400 block text-[10px]">Waist:</span>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                        <span className="text-zinc-500 block text-[10px]">Waist</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.waist} {unit === "INCH" ? '"' : "cm"}
                         </span>
                       </div>
                     )}
                     {currentMeasurements?.length && (
                       <div>
-                        <span className="text-zinc-400 block text-[10px]">Length:</span>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                        <span className="text-zinc-500 block text-[10px]">Length</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.length} {unit === "INCH" ? '"' : "cm"}
                         </span>
                       </div>
                     )}
                     {currentMeasurements?.shoulder && (
                       <div>
-                        <span className="text-zinc-400 block text-[10px]">Shoulder:</span>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                        <span className="text-zinc-500 block text-[10px]">Shoulder</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.shoulder} {unit === "INCH" ? '"' : "cm"}
                         </span>
                       </div>
                     )}
                     {currentMeasurements?.sleeve && (
                       <div>
-                        <span className="text-zinc-400 block text-[10px]">Sleeve:</span>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                        <span className="text-zinc-500 block text-[10px]">Sleeve</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.sleeve} {unit === "INCH" ? '"' : "cm"}
                         </span>
                       </div>
                     )}
                     {currentMeasurements?.inseam && (
                       <div>
-                        <span className="text-zinc-400 block text-[10px]">Inseam:</span>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                        <span className="text-zinc-500 block text-[10px]">Inseam</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.inseam} {unit === "INCH" ? '"' : "cm"}
+                        </span>
+                      </div>
+                    )}
+                    {currentMeasurements?.footLength && (
+                      <div>
+                        <span className="text-zinc-500 block text-[10px]">Foot Length</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
+                          {currentMeasurements.footLength} {unit === "INCH" ? '"' : "cm"}
+                        </span>
+                      </div>
+                    )}
+                    {currentMeasurements?.wristOrCase && (
+                      <div>
+                        <span className="text-zinc-500 block text-[10px]">Case / Fit</span>
+                        <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
+                          {currentMeasurements.wristOrCase} {unit === "INCH" ? '"' : "cm"}
                         </span>
                       </div>
                     )}
@@ -442,196 +476,210 @@ export default function ProductDetailPage({
                 </div>
               </div>
 
-              {/* Main CTA Container (Observed by ref for sticky bar) */}
-              <div ref={mainCtaRef} className="pt-4 space-y-3">
+              {/* Quantity & Add to Bag CTA */}
+              <div ref={mainCtaRef} className="pt-3 space-y-3">
                 <div className="flex gap-3">
-                  {/* Quantity */}
-                  <div className="flex items-center border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+                  <div className="flex items-center border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 rounded-sm">
                     <button
+                      type="button"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-3 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-sm"
+                      className="px-3.5 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-sm font-mono font-bold"
                       aria-label="Decrease quantity"
                     >
                       -
                     </button>
-                    <span className="px-3 font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+                    <span className="px-3 font-mono text-sm font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                       {quantity}
                     </span>
                     <button
+                      type="button"
                       onClick={() => setQuantity(quantity + 1)}
-                      className="px-3 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-sm"
+                      className="px-3.5 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-sm font-mono font-bold"
                       aria-label="Increase quantity"
                     >
                       +
                     </button>
                   </div>
 
-                  {/* Add to Bag CTA */}
                   <button
+                    type="button"
                     onClick={handleAddToCart}
                     disabled={selectedSize.stock === 0}
                     className={cn(
-                      "flex-1 py-4 px-6 text-xs font-sans uppercase tracking-wider font-semibold flex items-center justify-center gap-2 transition-all shadow-sm",
+                      "flex-1 py-4 px-6 text-xs font-sans uppercase tracking-wider font-semibold flex items-center justify-center gap-2 rounded-sm transition-all duration-200 shadow-sm",
                       selectedSize.stock === 0
-                        ? "bg-zinc-300 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                        : "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-100 active:scale-[0.99]"
+                        ? "bg-zinc-300 dark:bg-zinc-800 text-zinc-600 cursor-not-allowed"
+                        : "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 active:scale-[0.98]"
                     )}
                   >
                     <ShoppingBag className="w-4 h-4" />
-                    <span>
-                      {selectedSize.stock === 0 ? "Out of Stock" : "Add To Bag"}
-                    </span>
+                    <span>{selectedSize.stock === 0 ? "Out of Stock" : "Add To Bag"}</span>
                   </button>
                 </div>
 
-                {isAddedToast && (
-                  <div className="p-3 bg-emerald-600 text-white text-xs font-sans flex items-center justify-between animate-in fade-in slide-in-from-top-1">
-                    <span className="flex items-center gap-2 font-medium">
-                      <Check className="w-4 h-4" />
-                      Added {quantity}x ({selectedSize.sizeLabel}) to your bag
-                    </span>
-                    <button onClick={() => toggleCart(true)} className="underline font-mono uppercase text-[11px] font-bold">
-                      View Bag
-                    </button>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {isAddedToast && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.2, ease: MOTION_EASE }}
+                      className="p-3 bg-emerald-700 text-white text-xs font-sans flex items-center justify-between rounded-sm"
+                    >
+                      <span className="flex items-center gap-2 font-medium">
+                        <Check className="w-4 h-4" />
+                        Added {quantity}x ({selectedSize.sizeLabel}) to your bag
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleCart(true)}
+                        className="underline font-mono uppercase text-[11px] font-bold"
+                      >
+                        View Bag
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {/* Fabric & Technical Specs Accordion */}
-              <div className="border-t border-zinc-200 dark:border-zinc-800 pt-6 space-y-3 text-xs font-sans">
-                {/* 1. Technical Specs & Fabric Engineering */}
-                <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3">
-                  <button
-                    onClick={() =>
-                      setExpandedSection(expandedSection === "specs" ? "" : "specs")
-                    }
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-zinc-950 dark:text-white py-1"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Droplets className="w-3.5 h-3.5 text-zinc-500" />
-                      <span>Fabric Engineering & Technical Specs</span>
-                    </span>
-                    {expandedSection === "specs" ? (
-                      <ChevronUp className="w-4 h-4 text-zinc-500" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-zinc-500" />
-                    )}
-                  </button>
-
-                  {expandedSection === "specs" && (
-                    <div className="pt-3 space-y-3 text-zinc-600 dark:text-zinc-400">
-                      <div className="grid grid-cols-2 gap-3 font-mono text-[11px]">
-                        <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                          <span className="text-zinc-400 block text-[10px]">Fabric Blend:</span>
-                          <span className="font-semibold text-zinc-900 dark:text-zinc-100">{product.fabricType}</span>
-                        </div>
-                        {product.fabricWeightGsm && (
+              {/* Animated Accordions */}
+              <div className="border-t border-zinc-200 dark:border-zinc-800 pt-5 space-y-2 text-xs font-sans">
+                {[
+                  {
+                    id: "specs",
+                    title: "Fabric Engineering & Technical Specs",
+                    icon: Droplets,
+                    content: (
+                      <div className="pt-3 pb-2 space-y-3 text-zinc-600 dark:text-zinc-400">
+                        <div className="grid grid-cols-2 gap-3 font-mono text-[11px]">
                           <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                            <span className="text-zinc-400 block text-[10px]">Fabric Weight:</span>
-                            <span className="font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
-                              {product.fabricWeightGsm} GSM
+                            <span className="text-zinc-500 block text-[10px]">Fabric Blend</span>
+                            <span className="font-semibold text-zinc-950 dark:text-zinc-100">
+                              {product.fabricType}
                             </span>
                           </div>
-                        )}
-                        {product.breathabilityRating && (
-                          <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 col-span-2">
-                            <span className="text-zinc-400 block text-[10px]">Airflow / Hydrostatic Rating:</span>
-                            <span className="font-semibold text-zinc-900 dark:text-zinc-100">{product.breathabilityRating}</span>
-                          </div>
+                          {product.fabricWeightGsm && (
+                            <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                              <span className="text-zinc-500 block text-[10px]">Fabric Weight</span>
+                              <span className="font-semibold text-zinc-950 dark:text-zinc-100 tabular-nums">
+                                {product.fabricWeightGsm} GSM
+                              </span>
+                            </div>
+                          )}
+                          {product.breathabilityRating && (
+                            <div className="p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 col-span-2">
+                              <span className="text-zinc-500 block text-[10px]">
+                                Airflow / Hydrostatic Rating
+                              </span>
+                              <span className="font-semibold text-zinc-950 dark:text-zinc-100">
+                                {product.breathabilityRating}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="pt-1">
+                          <span className="text-zinc-950 dark:text-white font-semibold block mb-1">
+                            Care &amp; Maintenance
+                          </span>
+                          <p className="leading-relaxed">{product.careInstructions}</p>
+                        </div>
+                      </div>
+                    ),
+                  },
+                  {
+                    id: "desc",
+                    title: "Garment Silhouette & Construction",
+                    content: (
+                      <div className="pt-2.5 pb-2 text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
+                        <p>{product.description}</p>
+                        {product.editorialHighlights && (
+                          <ul className="list-disc pl-4 space-y-1 pt-1 font-mono text-[11px] text-zinc-900 dark:text-zinc-200">
+                            {product.editorialHighlights.map((h, i) => (
+                              <li key={i}>{h}</li>
+                            ))}
+                          </ul>
                         )}
                       </div>
-
-                      <div className="pt-1">
-                        <span className="text-zinc-900 dark:text-white font-semibold block mb-1">
-                          Care & Maintenance:
+                    ),
+                  },
+                  {
+                    id: "delivery",
+                    title: "Express Dispatch & 7-Day Exchange",
+                    content: (
+                      <div className="pt-2.5 pb-2 text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-1.5 tabular-nums">
+                        <p>
+                          <strong className="text-zinc-950 dark:text-zinc-100">Free Nationwide Shipping:</strong>{" "}
+                          On all orders over {thresholdLabel}.
+                        </p>
+                        <p>
+                          <strong className="text-zinc-950 dark:text-zinc-100">Rapid Dispatch:</strong>{" "}
+                          24 hours within Dhaka Metro, 48 hours nationwide.
+                        </p>
+                        <p>
+                          <strong className="text-zinc-950 dark:text-zinc-100">7-Day Sizing Guarantee:</strong>{" "}
+                          Instant courier doorstep swap for size adjustments.
+                        </p>
+                      </div>
+                    ),
+                  },
+                ].map((section) => {
+                  const isOpen = expandedSection === section.id;
+                  const Icon = section.icon;
+                  return (
+                    <div key={section.id} className="border-b border-zinc-200 dark:border-zinc-800 pb-3">
+                      <button
+                        type="button"
+                        onClick={() => setExpandedSection(isOpen ? "" : section.id)}
+                        aria-expanded={isOpen}
+                        className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-zinc-950 dark:text-white py-1.5 text-left"
+                      >
+                        <span className="flex items-center gap-2">
+                          {Icon && <Icon className="w-3.5 h-3.5 text-zinc-500" />}
+                          <span>{section.title}</span>
                         </span>
-                        <p className="leading-relaxed">{product.careInstructions}</p>
-                      </div>
+                        <ChevronDown
+                          className={cn(
+                            "w-4 h-4 text-zinc-500 transition-transform duration-200",
+                            isOpen && "rotate-180"
+                          )}
+                        />
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.24, ease: MOTION_EASE }}
+                            className="overflow-hidden"
+                          >
+                            {section.content}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  )}
-                </div>
-
-                {/* 2. Construction Highlights */}
-                <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3">
-                  <button
-                    onClick={() =>
-                      setExpandedSection(expandedSection === "desc" ? "" : "desc")
-                    }
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-zinc-950 dark:text-white py-1"
-                  >
-                    <span>Garment Silhouette & Construction</span>
-                    {expandedSection === "desc" ? (
-                      <ChevronUp className="w-4 h-4 text-zinc-500" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-zinc-500" />
-                    )}
-                  </button>
-
-                  {expandedSection === "desc" && (
-                    <div className="pt-2 text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                      <p>{product.description}</p>
-                      {product.editorialHighlights && (
-                        <ul className="list-disc pl-4 space-y-1 pt-1 font-mono text-[11px] text-zinc-900 dark:text-zinc-200">
-                          {product.editorialHighlights.map((h, i) => (
-                            <li key={i}>{h}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* 3. Delivery & Exchanges */}
-                <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3">
-                  <button
-                    onClick={() =>
-                      setExpandedSection(expandedSection === "delivery" ? "" : "delivery")
-                    }
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-zinc-950 dark:text-white py-1"
-                  >
-                    <span>Express Dispatch & 7-Day Exchange</span>
-                    {expandedSection === "delivery" ? (
-                      <ChevronUp className="w-4 h-4 text-zinc-500" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-zinc-500" />
-                    )}
-                  </button>
-
-                  {expandedSection === "delivery" && (
-                    <div className="pt-2 text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-1">
-                      <p>
-                        • <strong>Free Nationwide Shipping:</strong> On all orders over ৳ 1,500 / $50.
-                      </p>
-                      <p>
-                        • <strong>Rapid Dispatch:</strong> 24 hours within Dhaka Metro, 48 hours nationwide.
-                      </p>
-                      <p>
-                        • <strong>7-Day Sizing Guarantee:</strong> Instant courier doorstep swap for size adjustments.
-                      </p>
-                    </div>
-                  )}
-                </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* =========================================================
-          "COMPLETE THE LOOK" CROSS-SELL MODULE
-         ========================================================= */}
+      {/* Complete The Uniform */}
       <section className="w-full py-14 bg-zinc-50 dark:bg-zinc-900/40 border-t border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8">
             <div>
-              <span className="text-[10px] font-mono tracking-widest uppercase text-emerald-600 dark:text-emerald-400 block mb-1">
+              <span className="text-[10px] font-mono tracking-widest uppercase text-emerald-700 dark:text-emerald-400 font-semibold block mb-1">
                 TACTICAL PAIRINGS
               </span>
               <h2 className="font-sans text-2xl font-bold uppercase tracking-tight text-zinc-950 dark:text-white">
                 Complete The Uniform
               </h2>
             </div>
-            <p className="text-xs font-sans text-zinc-500 max-w-sm mt-1 sm:mt-0">
+            <p className="text-xs font-sans text-zinc-600 dark:text-zinc-400 max-w-sm">
               Field-tested technical pairings engineered for modular everyday transit.
             </p>
           </div>
@@ -644,12 +692,10 @@ export default function ProductDetailPage({
         </div>
       </section>
 
-      {/* =========================================================
-          STICKY MOBILE PURCHASE BAR (Bottom-docked on mobile)
-         ========================================================= */}
+      {/* Sticky Mobile Purchase Bar */}
       <div
         className={cn(
-          "sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl transition-all duration-300",
+          "sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl transition-all duration-250",
           showStickyBar ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
         )}
       >
@@ -668,14 +714,14 @@ export default function ProductDetailPage({
             </div>
           </div>
 
-          {/* Mobile Size Dropdown */}
           <select
+            aria-label="Select size"
             value={selectedSize.sizeLabel}
             onChange={(e) => {
               const s = product.sizes.find((item) => item.sizeLabel === e.target.value);
               if (s) setSelectedSize(s);
             }}
-            className="px-2 py-2 text-xs font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none"
+            className="px-2 py-2 text-xs font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-sm text-zinc-950 dark:text-zinc-100 focus:outline-none"
           >
             {product.sizes.map((s) => (
               <option key={s.sizeLabel} value={s.sizeLabel} disabled={s.stock === 0}>
@@ -684,18 +730,17 @@ export default function ProductDetailPage({
             ))}
           </select>
 
-          {/* Add to Bag Button */}
           <button
+            type="button"
             onClick={handleAddToCart}
             disabled={selectedSize.stock === 0}
-            className="px-4 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold tracking-wider hover:bg-zinc-800 transition-colors flex-shrink-0"
+            className="px-4 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold tracking-wider rounded-sm hover:bg-zinc-800 transition-colors flex-shrink-0"
           >
             Add
           </button>
         </div>
       </div>
 
-      {/* Interactive Size Guide Modal */}
       <SizeGuideModal
         product={product}
         isOpen={isSizeGuideOpen}

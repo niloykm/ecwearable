@@ -50,22 +50,22 @@ interface CommerceState {
 const INITIAL_SAMPLE_ORDERS: Order[] = [
   {
     id: "ord-1001",
-    orderNumber: "AUR-2603-9482",
+    orderNumber: "ECW-2603-9482",
     items: [
       {
-        id: "prod-men-linen-shirt-Ecru Alabaster-M",
+        id: "prod-tech-heavyweight-tee-Obsidian Black-M",
         product: SEED_PRODUCTS[0],
         selectedColor: SEED_PRODUCTS[0].colorVariants[0],
-        selectedSize: SEED_PRODUCTS[0].sizes[1],
+        selectedSize: SEED_PRODUCTS[0].sizes[1] || SEED_PRODUCTS[0].sizes[0],
         quantity: 1,
       },
       {
-        id: "prod-watch-chronograph-auto-Brushed Steel & Obsidian-40mm Case (Standard)",
-        product: SEED_PRODUCTS[14],
-        selectedColor: SEED_PRODUCTS[14].colorVariants[0],
-        selectedSize: SEED_PRODUCTS[14].sizes[0],
+        id: "prod-tech-cordura-daypack-Tactical Matte Black-22L",
+        product: SEED_PRODUCTS[5],
+        selectedColor: SEED_PRODUCTS[5].colorVariants[0],
+        selectedSize: SEED_PRODUCTS[5].sizes[0],
         quantity: 1,
-      }
+      },
     ],
     customer: {
       fullName: "Tahmid Rahman",
@@ -77,9 +77,9 @@ const INITIAL_SAMPLE_ORDERS: Order[] = [
       postalCode: "1213",
       deliveryNotes: "Call upon arrival at security gate",
     },
-    subtotal: 20350,
+    subtotal: 6450,
     shippingFee: 0,
-    total: 20350,
+    total: 6450,
     paymentMethod: "BKASH_NAGAD",
     paymentStatus: "PAID",
     orderStatus: "SHIPPED",
@@ -89,49 +89,49 @@ const INITIAL_SAMPLE_ORDERS: Order[] = [
       {
         status: "PENDING",
         timestamp: "2026-03-23T14:20:00Z",
-        note: "Order placed online via bKash Merchant Gateway",
+        note: "Order placed online via bKash Merchant Gateway.",
       },
       {
         status: "CONFIRMED",
         timestamp: "2026-03-23T15:00:00Z",
-        note: "Payment verified & allocated to inventory",
+        note: "Payment verified and allocated to ECWEARABLE inventory.",
       },
       {
         status: "PACKED",
         timestamp: "2026-03-24T09:30:00Z",
-        note: "Carefully wrapped in unbleached tissue & bespoke linen packaging",
+        note: "Inspected, sealed, and packed in recycled garment transit wrap.",
       },
       {
         status: "SHIPPED",
         timestamp: "2026-03-24T14:00:00Z",
-        note: "Dispatched with Dhaka Metro Express Courier (Tracking: DHK-8891)",
-      }
+        note: "Dispatched with Dhaka Metro Express Courier (Tracking: DHK-8891).",
+      },
     ],
   },
   {
     id: "ord-1002",
-    orderNumber: "AUR-2603-8120",
+    orderNumber: "ECW-2603-8120",
     items: [
       {
-        id: "prod-women-muslin-saree-Raw Silk Ecru-5.5M Standard",
-        product: SEED_PRODUCTS[5],
-        selectedColor: SEED_PRODUCTS[5].colorVariants[0],
-        selectedSize: SEED_PRODUCTS[5].sizes[0],
+        id: "prod-men-panjabi-festive-Sandstone Ivory-M",
+        product: SEED_PRODUCTS[8] || SEED_PRODUCTS[1],
+        selectedColor: (SEED_PRODUCTS[8] || SEED_PRODUCTS[1]).colorVariants[0],
+        selectedSize: (SEED_PRODUCTS[8] || SEED_PRODUCTS[1]).sizes[1] || (SEED_PRODUCTS[8] || SEED_PRODUCTS[1]).sizes[0],
         quantity: 1,
-      }
+      },
     ],
     customer: {
       fullName: "Nusrat Jahan",
-      email: "nusrat.atelier@gmail.com",
+      email: "nusrat.jahan@gmail.com",
       phone: "+880 1819 443210",
       address: "Apartment 7B, Green Valley, Sector 3, Uttara",
       city: "Dhaka",
       zone: "DHAKA_METRO",
       postalCode: "1230",
     },
-    subtotal: 12500,
+    subtotal: 6500,
     shippingFee: 0,
-    total: 12500,
+    total: 6500,
     paymentMethod: "CREDIT_CARD",
     paymentStatus: "PAID",
     orderStatus: "PACKED",
@@ -141,20 +141,20 @@ const INITIAL_SAMPLE_ORDERS: Order[] = [
       {
         status: "PENDING",
         timestamp: "2026-03-24T10:15:00Z",
-        note: "Order confirmed via Visa Platinum",
+        note: "Order confirmed via Visa Platinum.",
       },
       {
         status: "CONFIRMED",
         timestamp: "2026-03-24T10:30:00Z",
-        note: "Handloom quality certification verified",
+        note: "Fabric QC check and size calibration verified.",
       },
       {
         status: "PACKED",
         timestamp: "2026-03-24T16:00:00Z",
-        note: "Heirloom garment boxed in wooden keepsake presentation box",
-      }
+        note: "Garment boxed and staged for express courier pickup.",
+      },
     ],
-  }
+  },
 ];
 
 export const useCommerceStore = create<CommerceState>()(
@@ -162,7 +162,7 @@ export const useCommerceStore = create<CommerceState>()(
     (set, get) => ({
       products: SEED_PRODUCTS,
       cart: [],
-      wishlist: ["prod-men-linen-shirt", "prod-watch-chronograph-auto"],
+      wishlist: ["prod-tech-heavyweight-tee", "prod-tech-cordura-daypack"],
       orders: INITIAL_SAMPLE_ORDERS,
       unit: 'INCH',
       currency: 'BDT',
@@ -300,7 +300,7 @@ export const useCommerceStore = create<CommerceState>()(
             {
               status: orderData.orderStatus || 'PENDING',
               timestamp: now,
-              note: 'Order confirmed and registered in Aurelia fulfillment queue.',
+              note: 'Order confirmed and registered in ECWEARABLE fulfillment queue.',
             },
           ],
         };
@@ -358,14 +358,17 @@ export const useCommerceStore = create<CommerceState>()(
       },
     }),
     {
-      name: 'ecwearable-commerce-v4',
+      name: 'ecwearable-commerce-v5',
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        // Ensure new seed products are always available
-        if (!state.products || state.products.length < SEED_PRODUCTS.length) {
+        const hasLegacyAssets = state.products?.some((p) =>
+          p.colorVariants.some((v) =>
+            v.images.some((img) => img.includes('aurelia_studio') || img.includes('1542272604-780c96856592'))
+          )
+        );
+        if (!state.products || state.products.length < SEED_PRODUCTS.length || hasLegacyAssets) {
           state.products = SEED_PRODUCTS;
-          return;
         }
       },
     }

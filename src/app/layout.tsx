@@ -6,6 +6,7 @@ import { Footer } from "@/components/navigation/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
 import { SearchModal } from "@/components/search/SearchModal";
+import { MotionProvider, ScrollProgressBar } from "@/components/motion/MotionPrimitives";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -44,15 +45,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jakarta.variable} ${jetbrains.variable}`}>
-      <body className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 antialiased selection:bg-zinc-950 selection:text-white">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 font-sans antialiased selection:bg-zinc-950 selection:text-white">
+        <MotionProvider>
+          <ScrollProgressBar />
+          <Header />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
 
-        {/* Global Drawers & Modals */}
-        <CartDrawer />
-        <WishlistDrawer />
-        <SearchModal />
+          {/* Global Drawers & Modals */}
+          <CartDrawer />
+          <WishlistDrawer />
+          <SearchModal />
+        </MotionProvider>
       </body>
     </html>
   );

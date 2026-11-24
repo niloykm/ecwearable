@@ -140,7 +140,7 @@ export const SEED_PRODUCTS: Product[] = [
         colorHex: "#3A4333",
         images: [
           "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1542272604-780c96856592?auto=format&fit=crop&w=900&q=80"
+          "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=900&q=80"
         ]
       }
     ],
@@ -579,24 +579,24 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Ecru Alabaster",
         colorHex: "#F2EFE9",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640620/aurelia_studio/prod-men-linen-shirt-1_8830.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640620/aurelia_studio/prod-men-linen-shirt-2_8864.jpg"
+          "/images/catalog/prod-men-linen-shirt-1_8830.webp",
+          "/images/catalog/prod-men-linen-shirt-2_8864.webp"
         ]
       },
       {
         colorName: "Botanical Cypress",
         colorHex: "#2D4A3E",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640667/aurelia_studio/prod-men-linen-shirt-3_5438.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640620/aurelia_studio/prod-men-linen-shirt-4_8866.jpg"
+          "/images/catalog/prod-men-linen-shirt-3_5438.webp",
+          "/images/catalog/prod-men-linen-shirt-4_8866.webp"
         ]
       },
       {
         colorName: "Midnight Espresso",
         colorHex: "#181816",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640621/aurelia_studio/prod-men-linen-shirt-5_1129.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640621/aurelia_studio/prod-men-linen-shirt-6_1130.jpg"
+          "/images/catalog/prod-men-linen-shirt-5_1129.webp",
+          "/images/catalog/prod-men-linen-shirt-6_1130.webp"
         ]
       }
     ],
@@ -662,16 +662,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Warm Alabaster",
         colorHex: "#FAF8F5",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640621/aurelia_studio/prod-men-panjabi-festive-1_1130.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640621/aurelia_studio/prod-men-panjabi-festive-2_1130.jpg"
+          "/images/catalog/prod-men-panjabi-festive-1_1130.webp",
+          "/images/catalog/prod-men-panjabi-festive-2_1130.webp"
         ]
       },
       {
         colorName: "Midnight Navy",
         colorHex: "#1B2430",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640622/aurelia_studio/prod-men-panjabi-festive-3_2089.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640622/aurelia_studio/prod-men-panjabi-festive-4_2089.jpg"
+          "/images/catalog/prod-men-panjabi-festive-3_2089.webp",
+          "/images/catalog/prod-men-panjabi-festive-4_2089.webp"
         ]
       }
     ],
@@ -737,16 +737,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Terracotta Rust",
         colorHex: "#9E4733",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640622/aurelia_studio/prod-men-polo-egyptian-1_2090.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640622/aurelia_studio/prod-men-polo-egyptian-2_2090.jpg"
+          "/images/catalog/prod-men-polo-egyptian-1_2090.webp",
+          "/images/catalog/prod-men-polo-egyptian-2_2090.webp"
         ]
       },
       {
         colorName: "Obsidian Charcoal",
         colorHex: "#141413",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640623/aurelia_studio/prod-men-polo-egyptian-3_3582.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640623/aurelia_studio/prod-men-polo-egyptian-4_3582.jpg"
+          "/images/catalog/prod-men-polo-egyptian-3_3582.webp",
+          "/images/catalog/prod-men-polo-egyptian-4_3582.webp"
         ]
       }
     ],
@@ -812,16 +812,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Sand Stone",
         colorHex: "#D8D2C2",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640624/aurelia_studio/prod-men-chino-trouser-1_3582.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640624/aurelia_studio/prod-men-chino-trouser-2_3582.jpg"
+          "/images/catalog/prod-men-chino-trouser-1_3582.webp",
+          "/images/catalog/prod-men-chino-trouser-2_3582.webp"
         ]
       },
       {
         colorName: "Deep Espresso",
         colorHex: "#141413",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640625/aurelia_studio/prod-men-chino-trouser-3_4905.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640625/aurelia_studio/prod-men-chino-trouser-4_4905.jpg"
+          "/images/catalog/prod-men-chino-trouser-3_4905.webp",
+          "/images/catalog/prod-men-chino-trouser-4_4905.webp"
         ]
       }
     ],
@@ -887,8 +887,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Olive Sage",
         colorHex: "#3E4A3E",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640625/aurelia_studio/prod-men-merino-overshirt-1_4906.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640625/aurelia_studio/prod-men-merino-overshirt-2_4906.jpg"
+          "/images/catalog/prod-men-merino-overshirt-1_4906.webp",
+          "/images/catalog/prod-men-merino-overshirt-2_4906.webp"
         ]
       }
     ],
@@ -943,16 +943,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Raw Silk Ecru",
         colorHex: "#F5F1E8",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640626/aurelia_studio/prod-women-muslin-saree-1_6236.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640626/aurelia_studio/prod-women-muslin-saree-2_6237.jpg"
+          "/images/catalog/prod-women-muslin-saree-1_6236.webp",
+          "/images/catalog/prod-women-muslin-saree-2_6237.webp"
         ]
       },
       {
         colorName: "Crimson Rust",
         colorHex: "#8D3426",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640626/aurelia_studio/prod-women-muslin-saree-3_6237.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640667/aurelia_studio/prod-women-muslin-saree-4_5484.jpg"
+          "/images/catalog/prod-women-muslin-saree-3_6237.webp",
+          "/images/catalog/prod-women-muslin-saree-4_5484.webp"
         ]
       }
     ],
@@ -997,16 +997,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Cypress Green",
         colorHex: "#2D4A3E",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640627/aurelia_studio/prod-women-linen-midi-dress-1_7056.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640627/aurelia_studio/prod-women-linen-midi-dress-2_7056.jpg"
+          "/images/catalog/prod-women-linen-midi-dress-1_7056.webp",
+          "/images/catalog/prod-women-linen-midi-dress-2_7056.webp"
         ]
       },
       {
         colorName: "Warm Sand",
         colorHex: "#E5DEC9",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640627/aurelia_studio/prod-women-linen-midi-dress-3_7056.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640627/aurelia_studio/prod-women-linen-midi-dress-4_7056.jpg"
+          "/images/catalog/prod-women-linen-midi-dress-3_7056.webp",
+          "/images/catalog/prod-women-linen-midi-dress-4_7056.webp"
         ]
       }
     ],
@@ -1072,16 +1072,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Terracotta Earth",
         colorHex: "#9E4733",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640629/aurelia_studio/prod-women-silk-kurti-1_8698.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640629/aurelia_studio/prod-women-silk-kurti-2_8698.jpg"
+          "/images/catalog/prod-women-silk-kurti-1_8698.webp",
+          "/images/catalog/prod-women-silk-kurti-2_8698.webp"
         ]
       },
       {
         colorName: "Ecru Ivory",
         colorHex: "#F8F5EE",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617632/aurelia_studio/img_15391091368813be.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617633/aurelia_studio/img_1485968579580b6d.jpg"
+          "/images/catalog/img_15391091368813be.webp",
+          "/images/catalog/img_1485968579580b6d.webp"
         ]
       }
     ],
@@ -1140,8 +1140,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Oatmeal Stone",
         colorHex: "#D6CEBF",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640628/aurelia_studio/prod-women-linen-blazer-1_8698.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640629/aurelia_studio/prod-women-linen-blazer-2_8698.jpg"
+          "/images/catalog/prod-women-linen-blazer-1_8698.webp",
+          "/images/catalog/prod-women-linen-blazer-2_8698.webp"
         ]
       }
     ],
@@ -1200,8 +1200,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Deep Charcoal",
         colorHex: "#1C1C1B",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640629/aurelia_studio/prod-women-linen-trouser-1_9711.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640629/aurelia_studio/prod-women-linen-trouser-2_9711.jpg"
+          "/images/catalog/prod-women-linen-trouser-1_9711.webp",
+          "/images/catalog/prod-women-linen-trouser-2_9711.webp"
         ]
       }
     ],
@@ -1256,16 +1256,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Mustard Saffron",
         colorHex: "#DDA15E",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640630/aurelia_studio/prod-kids-cotton-panjabi-1_9711.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640630/aurelia_studio/prod-kids-cotton-panjabi-2_9711.jpg"
+          "/images/catalog/prod-kids-cotton-panjabi-1_9711.webp",
+          "/images/catalog/prod-kids-cotton-panjabi-2_9711.webp"
         ]
       },
       {
         colorName: "Raw Silk Off-White",
         colorHex: "#FAF6EF",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617642/aurelia_studio/img_1519689680058324.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617643/aurelia_studio/img_1503919545889aef.jpg"
+          "/images/catalog/img_1519689680058324.webp",
+          "/images/catalog/img_1503919545889aef.webp"
         ]
       }
     ],
@@ -1324,8 +1324,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Blush Clay",
         colorHex: "#D8A48F",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640631/aurelia_studio/prod-kids-linen-frock-1_1419.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640633/aurelia_studio/prod-kids-linen-frock-2_1420.jpg"
+          "/images/catalog/prod-kids-linen-frock-1_1419.webp",
+          "/images/catalog/prod-kids-linen-frock-2_1420.webp"
         ]
       }
     ],
@@ -1384,8 +1384,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Sage Mint",
         colorHex: "#B7C4B0",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640634/aurelia_studio/prod-kids-terry-romper-1_4304.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640634/aurelia_studio/prod-kids-terry-romper-2_4304.jpg"
+          "/images/catalog/prod-kids-terry-romper-1_4304.webp",
+          "/images/catalog/prod-kids-terry-romper-2_4304.webp"
         ]
       }
     ],
@@ -1444,8 +1444,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Washed Indigo",
         colorHex: "#3A506B",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640634/aurelia_studio/prod-kids-knit-cardigan-1_4304.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640634/aurelia_studio/prod-kids-knit-cardigan-2_4304.jpg"
+          "/images/catalog/prod-kids-knit-cardigan-1_4304.webp",
+          "/images/catalog/prod-kids-knit-cardigan-2_4304.webp"
         ]
       }
     ],
@@ -1507,16 +1507,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Brushed Steel & Obsidian",
         colorHex: "#C5A059",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640635/aurelia_studio/prod-wear-chronograph-40mm-1_5575.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640635/aurelia_studio/prod-wear-chronograph-40mm-2_5575.jpg"
+          "/images/catalog/prod-wear-chronograph-40mm-1_5575.webp",
+          "/images/catalog/prod-wear-chronograph-40mm-2_5575.webp"
         ]
       },
       {
         colorName: "Midnight Blackout",
         colorHex: "#141413",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640635/aurelia_studio/prod-wear-chronograph-40mm-3_5575.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640635/aurelia_studio/prod-wear-chronograph-40mm-4_5575.jpg"
+          "/images/catalog/prod-wear-chronograph-40mm-3_5575.webp",
+          "/images/catalog/prod-wear-chronograph-40mm-4_5575.webp"
         ]
       }
     ],
@@ -1560,8 +1560,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Cognac Brown & Brass",
         colorHex: "#99582A",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640636/aurelia_studio/prod-wear-bauhaus-dress-watch-1_6476.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640636/aurelia_studio/prod-wear-bauhaus-dress-watch-2_6476.jpg"
+          "/images/catalog/prod-wear-bauhaus-dress-watch-1_6476.webp",
+          "/images/catalog/prod-wear-bauhaus-dress-watch-2_6476.webp"
         ]
       }
     ],
@@ -1606,16 +1606,16 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Oxblood Espresso",
         colorHex: "#3D2B1F",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640636/aurelia_studio/prod-wear-chelsea-boots-1_6476.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640636/aurelia_studio/prod-wear-chelsea-boots-2_6476.jpg"
+          "/images/catalog/prod-wear-chelsea-boots-1_6476.webp",
+          "/images/catalog/prod-wear-chelsea-boots-2_6476.webp"
         ]
       },
       {
         colorName: "Obsidian Black",
         colorHex: "#141413",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617655/aurelia_studio/img_15431635211bf539.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617656/aurelia_studio/img_1520639888713785.jpg"
+          "/images/catalog/img_15431635211bf539.webp",
+          "/images/catalog/img_1520639888713785.webp"
         ]
       }
     ],
@@ -1687,8 +1687,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Snuff Suede Tobacco",
         colorHex: "#785338",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640640/aurelia_studio/prod-wear-braided-loafer-1_0035.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640640/aurelia_studio/prod-wear-braided-loafer-2_0035.jpg"
+          "/images/catalog/prod-wear-braided-loafer-1_0035.webp",
+          "/images/catalog/prod-wear-braided-loafer-2_0035.webp"
         ]
       }
     ],
@@ -1746,8 +1746,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Satin Silver",
         colorHex: "#D0D3D4",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640640/aurelia_studio/prod-wear-silver-cuff-1_0035.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640640/aurelia_studio/prod-wear-silver-cuff-2_0035.jpg"
+          "/images/catalog/prod-wear-silver-cuff-1_0035.webp",
+          "/images/catalog/prod-wear-silver-cuff-2_0035.webp"
         ]
       }
     ],
@@ -1798,8 +1798,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Espresso & Brass",
         colorHex: "#3E2723",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640641/aurelia_studio/prod-wear-leather-wrap-bracelet-1_1299.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793640641/aurelia_studio/prod-wear-leather-wrap-bracelet-2_1299.jpg"
+          "/images/catalog/prod-wear-leather-wrap-bracelet-1_1299.webp",
+          "/images/catalog/prod-wear-leather-wrap-bracelet-2_1299.webp"
         ]
       }
     ],
@@ -1845,8 +1845,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Oatmeal Flax",
         colorHex: "#D8C7B5",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644732/aurelia_studio/prod-men-linen-blazer-1.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644734/aurelia_studio/prod-men-linen-blazer-2.jpg"
+          "/images/catalog/prod-men-linen-blazer-1.webp",
+          "/images/catalog/prod-men-linen-blazer-2.webp"
         ]
       }
     ],
@@ -1906,8 +1906,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Caramel Honey",
         colorHex: "#C19A6B",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644736/aurelia_studio/prod-women-trench-1.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644737/aurelia_studio/prod-women-trench-2.jpg"
+          "/images/catalog/prod-women-trench-1.webp",
+          "/images/catalog/prod-women-trench-2.webp"
         ]
       }
     ],
@@ -1966,8 +1966,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Midnight Obsidian",
         colorHex: "#151515",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644738/aurelia_studio/prod-women-silk-gown-1.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644740/aurelia_studio/prod-women-silk-gown-2.jpg"
+          "/images/catalog/prod-women-silk-gown-1.webp",
+          "/images/catalog/prod-women-silk-gown-2.webp"
         ]
       }
     ],
@@ -2019,8 +2019,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Cognac Amber",
         colorHex: "#9E5B28",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644742/aurelia_studio/prod-bag-leather-duffel-1.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644744/aurelia_studio/prod-bag-leather-duffel-2.jpg"
+          "/images/catalog/prod-bag-leather-duffel-1.webp",
+          "/images/catalog/prod-bag-leather-duffel-2.webp"
         ]
       }
     ],
@@ -2064,8 +2064,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Gunmetal & Charcoal",
         colorHex: "#2C3539",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644745/aurelia_studio/prod-eyewear-aviator-1.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644747/aurelia_studio/prod-eyewear-aviator-2.jpg"
+          "/images/catalog/prod-eyewear-aviator-1.webp",
+          "/images/catalog/prod-eyewear-aviator-2.webp"
         ]
       }
     ],
@@ -2110,8 +2110,8 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Camel Ivory",
         colorHex: "#C19A6B",
         images: [
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644748/aurelia_studio/prod-wear-merino-scarf-1.jpg",
-          "https://res.cloudinary.com/dg5gwims9/image/upload/v1793644750/aurelia_studio/prod-wear-merino-scarf-2.jpg"
+          "/images/catalog/prod-wear-merino-scarf-1.webp",
+          "/images/catalog/prod-wear-merino-scarf-2.webp"
         ]
       }
     ],

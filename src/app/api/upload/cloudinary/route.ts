@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
         success: true,
         url: optimized,
         secure_url: optimized,
-        public_id: `aurelia_url_${Date.now()}`,
+        public_id: `ecwearable_url_${Date.now()}`,
       });
     }
 
@@ -24,19 +24,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // High quality mock optimization for uploaded images
-    const mockOptimizedUrl =
-      "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg";
-
     return NextResponse.json({
       success: true,
-      url: mockOptimizedUrl,
-      secure_url: mockOptimizedUrl,
-      public_id: `aurelia_img_${Date.now()}`,
+      url: DEFAULT_PRODUCT_IMAGE,
+      secure_url: DEFAULT_PRODUCT_IMAGE,
+      public_id: `ecwearable_img_${Date.now()}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : "Failed to process image upload";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to process image upload" },
+      { success: false, error: msg },
       { status: 500 }
     );
   }

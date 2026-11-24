@@ -1,67 +1,54 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-  Ruler,
-  UploadCloud,
-  Check,
-  Plus,
-  Trash2,
-  Sparkles,
-  ArrowRight,
-  RefreshCw,
-} from "lucide-react";
+import { Ruler, Check, Plus, Trash2 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import {
   Product,
   SizeMeasurement,
-  ColorVariant,
   TargetGender,
   AgeGroup,
   MainCategory,
   FabricOrMaterial,
 } from "@/types/commerce";
 import { inchToCm, cmToInch } from "@/lib/utils";
-import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function AdminNewProductPage() {
   const router = useRouter();
-  const { addProduct } = useCommerceStore();
+  const { addProduct, products } = useCommerceStore();
 
-  // Core product attributes
-  const [name, setName] = useState("Artisan Linen Summer Tunic");
-  const [subtitle, setSubtitle] = useState("Breathable 190 GSM French flax with mandarin collar");
-  const [dressType, setDressType] = useState("Linen Shirt");
-  const [mainCategory, setMainCategory] = useState<MainCategory>("GARMENTS");
-  const [gender, setGender] = useState<TargetGender>("MALE");
+  const [name, setName] = useState("Technical Merino Transit Overshirt");
+  const [subtitle, setSubtitle] = useState("280 GSM Heavyweight French Terry with articulated gussets");
+  const [dressType, setDressType] = useState("Overshirt");
+  const [mainCategory, setMainCategory] = useState<MainCategory>("OUTERWEAR");
+  const [gender, setGender] = useState<TargetGender>("UNISEX");
   const [ageGroup, setAgeGroup] = useState<AgeGroup>("ADULT");
-  const [fabricType, setFabricType] = useState<FabricOrMaterial>("Pure European Linen");
-  const [fabricWeightGsm, setFabricWeightGsm] = useState<number>(190);
-  const [fitType, setFitType] = useState<Product["fitType"]>("Relaxed Fit");
-  const [careInstructions, setCareInstructions] = useState("Machine wash cold inside out, hang to dry. Warm iron.");
+  const [fabricType, setFabricType] = useState<FabricOrMaterial>("Heavyweight French Terry (280 GSM)");
+  const [fabricWeightGsm, setFabricWeightGsm] = useState<number>(280);
+  const [fitType, setFitType] = useState<Product["fitType"]>("Boxy Fit");
+  const [careInstructions, setCareInstructions] = useState(
+    "Machine wash cold inside out, hang dry in shade. Do not bleach."
+  );
   const [basePrice, setBasePrice] = useState<number>(3650);
   const [discountPrice, setDiscountPrice] = useState<number | undefined>(undefined);
   const [isNewCollection, setIsNewCollection] = useState<boolean>(true);
   const [isTrending, setIsTrending] = useState<boolean>(true);
   const [isFeatured, setIsFeatured] = useState<boolean>(true);
   const [description, setDescription] = useState(
-    "A relaxed atelier tunic cut from organic Normandy flax. Breathable, durable, and naturally moisture-wicking."
+    "Structured everyday overshirt engineered for urban transit with reinforced flatlock seams and breathable thermal regulation."
   );
 
-  // Color & Image Builder
-  const [primaryColor, setPrimaryColor] = useState("Ecru Alabaster");
-  const [primaryColorHex, setPrimaryColorHex] = useState("#F2EFE9");
-  const [imageUrlInput, setImageUrlInput] = useState(
-    "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617661/aurelia_studio/img_1596755094514f87.jpg"
-  );
+  const [primaryColor, setPrimaryColor] = useState("Obsidian Charcoal");
+  const [primaryColorHex, setPrimaryColorHex] = useState("#18181B");
+  const [imageUrlInput, setImageUrlInput] = useState(DEFAULT_PRODUCT_IMAGE);
   const [hoverImageUrlInput, setHoverImageUrlInput] = useState(
-    "https://res.cloudinary.com/dg5gwims9/image/upload/v1793617662/aurelia_studio/img_1523275335684378.jpg"
+    "/images/catalog/prod-men-linen-shirt-2_8864.webp"
   );
 
-  // Dynamic Size Matrix Builder with Auto-Converting Dual-Unit Engine
   const [sizes, setSizes] = useState<SizeMeasurement[]>([
     {
       sizeLabel: "S",
@@ -86,7 +73,6 @@ export default function AdminNewProductPage() {
     },
   ]);
 
-  // Handler for entering an Inch measurement -> auto converts and populates CM
   const handleInchChange = (
     sizeIndex: number,
     field: keyof SizeMeasurement["measurementsInch"],
@@ -102,7 +88,7 @@ export default function AdminNewProductPage() {
       delete cmObj[field];
     } else {
       inchObj[field] = num;
-      cmObj[field] = inchToCm(num); // Auto calculate CM
+      cmObj[field] = inchToCm(num);
     }
 
     newSizes[sizeIndex] = {
@@ -113,7 +99,6 @@ export default function AdminNewProductPage() {
     setSizes(newSizes);
   };
 
-  // Handler for entering a CM measurement -> auto converts and populates Inches
   const handleCmChange = (
     sizeIndex: number,
     field: keyof SizeMeasurement["measurementsCm"],
@@ -129,7 +114,7 @@ export default function AdminNewProductPage() {
       delete cmObj[field];
     } else {
       cmObj[field] = num;
-      inchObj[field] = cmToInch(num); // Auto calculate Inches
+      inchObj[field] = cmToInch(num);
     }
 
     newSizes[sizeIndex] = {
@@ -143,17 +128,19 @@ export default function AdminNewProductPage() {
   const handleStockChange = (sizeIndex: number, val: string) => {
     const num = parseInt(val, 10);
     const newSizes = [...sizes];
-    newSizes[sizeIndex].stock = isNaN(num) ? 0 : num;
+    newSizes[sizeIndex] = { ...newSizes[sizeIndex], stock: isNaN(num) ? 0 : num };
     setSizes(newSizes);
   };
 
   const addNewSizeRow = () => {
+    const nextLabels = ["XL", "XXL", "XS", "3XL"];
+    const nextLabel = nextLabels.find((l) => !sizes.some((s) => s.sizeLabel === l)) || `S${sizes.length + 1}`;
     setSizes([
       ...sizes,
       {
-        sizeLabel: "XL",
+        sizeLabel: nextLabel,
         stock: 10,
-        skuSuffix: "XL",
+        skuSuffix: nextLabel,
         measurementsInch: { chest: 45, shoulder: 19.5, length: 31.5, sleeve: 26 },
         measurementsCm: { chest: 114.3, shoulder: 49.5, length: 80.0, sleeve: 66.0 },
       },
@@ -167,10 +154,12 @@ export default function AdminNewProductPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const slug = name
+    const baseSlug = name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
+    const slugExists = products.some((p) => p.slug === baseSlug);
+    const slug = slugExists ? `${baseSlug}-${Date.now().toString().slice(-4)}` : baseSlug;
 
     const newProduct: Product = {
       id: `prod-custom-${Date.now()}`,
@@ -206,10 +195,10 @@ export default function AdminNewProductPage() {
       createdAt: new Date().toISOString(),
       description,
       editorialHighlights: [
-        `${fabricType} provenance`,
+        `${fabricType} build`,
         `${fabricWeightGsm} GSM density`,
-        "Hand-finished French seams",
-        "Atelier guaranteed",
+        "Reinforced flatlock seam construction",
+        "ECWEARABLE quality certified",
       ],
     };
 
@@ -220,39 +209,34 @@ export default function AdminNewProductPage() {
   return (
     <AdminLayout>
       <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6">
           <div>
-            <span className="text-[10px] font-mono tracking-widest uppercase text-[#C5A059] block mb-1">
-              Garment & Wearable Engineering Studio
+            <span className="text-[10px] font-mono tracking-widest uppercase text-emerald-700 dark:text-emerald-400 font-semibold block mb-1">
+              GARMENT &amp; WEARABLE ENGINEERING STUDIO
             </span>
-            <h1 className="font-serif text-3xl font-light">
-              Create & Publish New SKU
+            <h1 className="font-sans text-2xl sm:text-3xl font-black uppercase tracking-tight">
+              Create &amp; Publish New SKU
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              type="submit"
-              className="px-6 py-3 bg-[#181816] text-[#FAF8F5] text-xs font-sans uppercase tracking-editorial font-medium hover:bg-neutral-800 transition-colors flex items-center gap-2"
-            >
-              <Check className="w-4 h-4 text-[#C5A059]" />
-              <span>Publish To Live Storefront</span>
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="px-6 py-3 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase tracking-wider font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-sm transition-colors flex items-center gap-2 self-start sm:self-auto"
+          >
+            <Check className="w-4 h-4" />
+            <span>Publish To Live Storefront</span>
+          </button>
         </div>
 
-        {/* =========================================================
-            SECTION 1: CORE IDENTITY
-           ========================================================= */}
-        <div className="p-6 bg-canvas-elevated border border-border-subtle space-y-4">
-          <h2 className="font-serif text-xl uppercase font-semibold text-ink border-b border-border-subtle pb-2">
-            1. Core Identity & Department
+        {/* Section 1: Core Identity */}
+        <div className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <h2 className="font-sans text-base uppercase font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
+            1. Core Identity &amp; Department
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Garment / Wearable Name *
               </label>
               <input
@@ -260,12 +244,12 @@ export default function AdminNewProductPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-sm outline-none font-medium"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-sm outline-none font-medium"
               />
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Subtitle / Texture Spec *
               </label>
               <input
@@ -273,27 +257,30 @@ export default function AdminNewProductPage() {
                 required
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-sm outline-none"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-sm outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Main Department *
               </label>
               <select
                 value={mainCategory}
                 onChange={(e) => setMainCategory(e.target.value as MainCategory)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none cursor-pointer"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none cursor-pointer"
               >
-                <option value="GARMENTS">Apparel & Garments</option>
-                <option value="WEARABLES">Wearables & Horology</option>
+                <option value="OUTERWEAR">Technical Outerwear</option>
+                <option value="BASICS">Everyday Basics</option>
+                <option value="ACCESSORIES">Technical Accessories</option>
+                <option value="GARMENTS">Apparel &amp; Garments</option>
+                <option value="WEARABLES">Wearables &amp; Horology</option>
                 <option value="FOOTWEAR">Footwear</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Specific Typology / Dress Type *
               </label>
               <input
@@ -301,97 +288,111 @@ export default function AdminNewProductPage() {
                 required
                 value={dressType}
                 onChange={(e) => setDressType(e.target.value)}
-                placeholder="Panjabi, Linen Shirt, Saree, Chronograph Watch, Chelsea Boots..."
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none"
+                placeholder="Heavyweight Tee, Cargo Pant, Windbreaker, Panjabi..."
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Target Gender *
               </label>
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value as TargetGender)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none cursor-pointer"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none cursor-pointer"
               >
+                <option value="UNISEX">Unisex</option>
                 <option value="MALE">Male (Men)</option>
                 <option value="FEMALE">Female (Women)</option>
                 <option value="KIDS_BOY">Kids (Boy)</option>
                 <option value="KIDS_GIRL">Kids (Girl)</option>
-                <option value="UNISEX">Unisex</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Age Demographic *
               </label>
               <select
                 value={ageGroup}
                 onChange={(e) => setAgeGroup(e.target.value as AgeGroup)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none cursor-pointer"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none cursor-pointer"
               >
                 <option value="ADULT">Adult</option>
                 <option value="CHILDREN">Children / Kids</option>
                 <option value="TODDLER">Toddler / Infant</option>
               </select>
             </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
+                Product Description
+              </label>
+              <textarea
+                rows={2}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none"
+              />
+            </div>
           </div>
         </div>
 
-        {/* =========================================================
-            SECTION 2: FABRIC & MATERIAL ENGINEERING
-           ========================================================= */}
-        <div className="p-6 bg-canvas-elevated border border-border-subtle space-y-4">
-          <h2 className="font-serif text-xl uppercase font-semibold text-ink border-b border-border-subtle pb-2">
-            2. Fabric & Material Engineering
+        {/* Section 2: Fabric & Material */}
+        <div className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <h2 className="font-sans text-base uppercase font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
+            2. Fabric &amp; Material Engineering
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-sans">
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Fabric / Material Taxonomy *
               </label>
               <select
                 value={fabricType}
                 onChange={(e) => setFabricType(e.target.value as FabricOrMaterial)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none cursor-pointer"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none cursor-pointer"
               >
+                <option value="Heavyweight French Terry (280 GSM)">Heavyweight French Terry (280 GSM)</option>
+                <option value="DWR 3-Layer Ripstop Nylon">DWR 3-Layer Ripstop Nylon</option>
+                <option value="4-Way Stretch Technical Knit">4-Way Stretch Technical Knit</option>
+                <option value="Cordura® 500D Ballistic Nylon">Cordura® 500D Ballistic Nylon</option>
+                <option value="Merino Wool Thermal Knit">Merino Wool Thermal Knit</option>
                 <option value="Pure European Linen">Pure European Linen</option>
                 <option value="100% Organic Cotton">100% Organic Cotton</option>
                 <option value="Egyptian Giza Cotton">Egyptian Giza Cotton</option>
                 <option value="Dhakai Jamdani / Muslin">Dhakai Jamdani / Muslin</option>
                 <option value="Mulberry Silk">Mulberry Silk</option>
-                <option value="Raw Japanese Denim">Raw Japanese Denim</option>
                 <option value="Merino Wool">Merino Wool</option>
                 <option value="Full-Grain Italian Leather">Full-Grain Italian Leather</option>
-                <option value="316L Surgical Stainless Steel">316L Surgical Stainless Steel</option>
-                <option value="Fine Cashmere Blend">Fine Cashmere Blend</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Fabric Weight (GSM)
               </label>
               <input
                 type="number"
                 value={fabricWeightGsm}
                 onChange={(e) => setFabricWeightGsm(Number(e.target.value))}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs font-mono tabular-nums outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Silhouette Fit Type *
               </label>
               <select
                 value={fitType}
-                onChange={(e) => setFitType(e.target.value as any)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none cursor-pointer"
+                onChange={(e) => setFitType(e.target.value as Product["fitType"])}
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none cursor-pointer"
               >
+                <option value="Boxy Fit">Boxy Fit</option>
+                <option value="Athletic Taper">Athletic Taper</option>
                 <option value="Relaxed Fit">Relaxed Fit</option>
                 <option value="Tailored Fit">Tailored Fit</option>
                 <option value="Regular Fit">Regular Fit</option>
@@ -401,40 +402,38 @@ export default function AdminNewProductPage() {
             </div>
 
             <div className="sm:col-span-3">
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
-                Care & Washing Instructions
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
+                Care &amp; Washing Instructions
               </label>
               <input
                 type="text"
                 value={careInstructions}
                 onChange={(e) => setCareInstructions(e.target.value)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none"
               />
             </div>
           </div>
         </div>
 
-        {/* =========================================================
-            SECTION 3: AUTO-CONVERTING DUAL-UNIT SIZE MATRIX BUILDER
-           ========================================================= */}
-        <div className="p-6 bg-canvas-elevated border border-border-subtle space-y-4">
-          <div className="flex items-center justify-between border-b border-border-subtle pb-2">
+        {/* Section 3: Auto-Converting Dual-Unit Size Matrix */}
+        <div className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
             <div>
               <div className="flex items-center gap-2">
-                <Ruler className="w-4 h-4 text-[#C5A059]" />
-                <h2 className="font-serif text-xl uppercase font-semibold text-ink">
-                  3. Size Matrix & Dual [INCH ↔ CM] Auto-Calculator
+                <Ruler className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
+                <h2 className="font-sans text-base uppercase font-bold">
+                  3. Size Matrix &amp; Dual INCH / CM Auto-Calculator
                 </h2>
               </div>
-              <p className="text-[11px] font-sans text-ink-muted mt-0.5">
-                Type in <strong>Inches</strong> and <strong>Centimeters</strong> automatically populates (`val * 2.54`), or vice-versa!
+              <p className="text-xs font-sans text-zinc-500 mt-0.5">
+                Type in Inches and Centimeters updates automatically (x 2.54), or vice-versa.
               </p>
             </div>
 
             <button
               type="button"
               onClick={addNewSizeRow}
-              className="px-3 py-1.5 bg-[#181816] text-[#FAF8F5] text-xs font-mono uppercase flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-mono uppercase font-semibold rounded-sm flex items-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Size Row</span>
@@ -445,34 +444,34 @@ export default function AdminNewProductPage() {
             {sizes.map((s, idx) => (
               <div
                 key={idx}
-                className="p-4 bg-canvas border border-border-subtle space-y-3"
+                className="p-4 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-3"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-sm font-bold text-ink">
-                      Size: {s.sizeLabel}
-                    </span>
+                    <span className="font-mono text-xs font-bold uppercase text-zinc-500">Size</span>
                     <input
                       type="text"
+                      aria-label={`Size label row ${idx + 1}`}
                       value={s.sizeLabel}
                       onChange={(e) => {
                         const newSizes = [...sizes];
-                        newSizes[idx].sizeLabel = e.target.value;
+                        newSizes[idx] = { ...newSizes[idx], sizeLabel: e.target.value, skuSuffix: e.target.value };
                         setSizes(newSizes);
                       }}
-                      className="w-20 bg-canvas-elevated border border-border-subtle px-2 py-1 text-xs font-mono text-center font-bold"
+                      className="w-20 bg-zinc-50 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-sm px-2 py-1 text-xs font-mono text-center font-bold"
                     />
                   </div>
 
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono text-ink-muted uppercase">Stock:</span>
+                      <span className="text-[10px] font-mono text-zinc-500 uppercase">Stock</span>
                       <input
                         type="number"
                         min="0"
+                        aria-label={`Stock for size ${s.sizeLabel}`}
                         value={s.stock}
                         onChange={(e) => handleStockChange(idx, e.target.value)}
-                        className="w-16 bg-canvas-elevated border border-border-subtle px-2 py-1 text-xs font-mono text-center font-bold"
+                        className="w-16 bg-zinc-50 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-sm px-2 py-1 text-xs font-mono text-center font-bold tabular-nums"
                       />
                     </div>
 
@@ -480,7 +479,8 @@ export default function AdminNewProductPage() {
                       <button
                         type="button"
                         onClick={() => removeSizeRow(idx)}
-                        className="text-ink-muted hover:text-[#9E4733] p-1"
+                        aria-label={`Remove size ${s.sizeLabel}`}
+                        className="text-zinc-500 hover:text-red-600 p-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -488,124 +488,49 @@ export default function AdminNewProductPage() {
                   </div>
                 </div>
 
-                {/* Dual Input Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-                  {/* Chest */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-ink-muted uppercase block">Chest:</span>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="Inches"
-                        value={s.measurementsInch.chest ?? ""}
-                        onChange={(e) => handleInchChange(idx, "chest", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">&quot;</span>
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="cm"
-                        value={s.measurementsCm.chest ?? ""}
-                        onChange={(e) => handleCmChange(idx, "chest", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">cm</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                  {(["chest", "length", "shoulder", "sleeve"] as const).map((field) => (
+                    <div key={field} className="space-y-1">
+                      <span className="text-[10px] text-zinc-500 uppercase block">{field}</span>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="number"
+                          step="0.1"
+                          placeholder="in"
+                          aria-label={`${s.sizeLabel} ${field} inches`}
+                          value={s.measurementsInch[field] ?? ""}
+                          onChange={(e) => handleInchChange(idx, field, e.target.value)}
+                          className="w-1/2 p-1.5 border border-zinc-300 dark:border-zinc-700 rounded-sm text-xs bg-zinc-50 dark:bg-zinc-900 tabular-nums"
+                        />
+                        <span className="text-[10px] text-zinc-500">&quot;</span>
+                        <input
+                          type="number"
+                          step="0.1"
+                          placeholder="cm"
+                          aria-label={`${s.sizeLabel} ${field} cm`}
+                          value={s.measurementsCm[field] ?? ""}
+                          onChange={(e) => handleCmChange(idx, field, e.target.value)}
+                          className="w-1/2 p-1.5 border border-zinc-300 dark:border-zinc-700 rounded-sm text-xs bg-zinc-50 dark:bg-zinc-900 tabular-nums"
+                        />
+                        <span className="text-[10px] text-zinc-500">cm</span>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Length */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-ink-muted uppercase block">Length:</span>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="Inches"
-                        value={s.measurementsInch.length ?? ""}
-                        onChange={(e) => handleInchChange(idx, "length", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">&quot;</span>
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="cm"
-                        value={s.measurementsCm.length ?? ""}
-                        onChange={(e) => handleCmChange(idx, "length", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">cm</span>
-                    </div>
-                  </div>
-
-                  {/* Shoulder */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-ink-muted uppercase block">Shoulder:</span>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="Inches"
-                        value={s.measurementsInch.shoulder ?? ""}
-                        onChange={(e) => handleInchChange(idx, "shoulder", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">&quot;</span>
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="cm"
-                        value={s.measurementsCm.shoulder ?? ""}
-                        onChange={(e) => handleCmChange(idx, "shoulder", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">cm</span>
-                    </div>
-                  </div>
-
-                  {/* Sleeve */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-ink-muted uppercase block">Sleeve:</span>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="Inches"
-                        value={s.measurementsInch.sleeve ?? ""}
-                        onChange={(e) => handleInchChange(idx, "sleeve", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">&quot;</span>
-                      <input
-                        type="number"
-                        step="0.1"
-                        placeholder="cm"
-                        value={s.measurementsCm.sleeve ?? ""}
-                        onChange={(e) => handleCmChange(idx, "sleeve", e.target.value)}
-                        className="w-1/2 p-1.5 border border-border-subtle text-xs bg-canvas-elevated"
-                      />
-                      <span className="text-[10px] text-ink-muted">cm</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* =========================================================
-            SECTION 4: COLOR SWATCH & CLOUDINARY IMAGES
-           ========================================================= */}
-        <div className="p-6 bg-canvas-elevated border border-border-subtle space-y-4">
-          <h2 className="font-serif text-xl uppercase font-semibold text-ink border-b border-border-subtle pb-2">
-            4. Color Swatch & Visual Asset Photography
+        {/* Section 4: Color Swatch & Images */}
+        <div className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <h2 className="font-sans text-base uppercase font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
+            4. Color Swatch &amp; Visual Asset Photography
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Color Name *
               </label>
               <input
@@ -613,80 +538,81 @@ export default function AdminNewProductPage() {
                 required
                 value={primaryColor}
                 onChange={(e) => setPrimaryColor(e.target.value)}
-                placeholder="Ecru Alabaster, Terracotta, Midnight Espresso..."
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs outline-none"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Color Hex Code *
               </label>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
+                  aria-label="Color swatch picker"
                   value={primaryColorHex}
                   onChange={(e) => setPrimaryColorHex(e.target.value)}
-                  className="w-10 h-10 border border-border-subtle cursor-pointer"
+                  className="w-10 h-10 border border-zinc-300 dark:border-zinc-700 cursor-pointer"
                 />
                 <input
                   type="text"
                   value={primaryColorHex}
                   onChange={(e) => setPrimaryColorHex(e.target.value)}
-                  className="w-full bg-canvas border border-border-subtle p-2.5 text-xs font-mono uppercase"
+                  className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs font-mono uppercase"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
-                Primary Editorial Image URL (Cloudinary / Unsplash) *
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
+                Primary Editorial Image Path / URL *
               </label>
               <input
-                type="url"
+                type="text"
                 required
                 value={imageUrlInput}
                 onChange={(e) => setImageUrlInput(e.target.value)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs font-mono"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs font-mono"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
-                Secondary / Hover Detail Image URL
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
+                Secondary / Hover Detail Image Path / URL
               </label>
               <input
-                type="url"
+                type="text"
                 value={hoverImageUrlInput}
                 onChange={(e) => setHoverImageUrlInput(e.target.value)}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-xs font-mono"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs font-mono"
               />
             </div>
           </div>
 
-          {/* Visual Preview */}
           <div className="pt-2">
-            <span className="text-[10px] font-mono uppercase text-ink-muted block mb-2">
-              Cloudinary f_auto,q_auto Optimized Preview:
+            <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-2">
+              Live Asset Preview
             </span>
             <div className="flex items-center gap-4">
               {imageUrlInput && (
-                <div className="relative w-20 h-26 bg-white overflow-hidden border border-border-subtle">
-                  <Image
+                <div className="relative w-20 h-28 bg-zinc-100 dark:bg-zinc-800 overflow-hidden border border-zinc-200 dark:border-zinc-700">
+                  <SafeImage
                     src={optimizeCloudinaryUrl(imageUrlInput, { width: 160, height: 210 })}
-                    alt="Preview"
+                    alt="Primary preview"
                     fill
-                    className="object-cover"
+                    sizes="80px"
+                    className="object-cover object-top"
                   />
                 </div>
               )}
               {hoverImageUrlInput && (
-                <div className="relative w-20 h-26 bg-white overflow-hidden border border-border-subtle">
-                  <Image
+                <div className="relative w-20 h-28 bg-zinc-100 dark:bg-zinc-800 overflow-hidden border border-zinc-200 dark:border-zinc-700">
+                  <SafeImage
                     src={optimizeCloudinaryUrl(hoverImageUrlInput, { width: 160, height: 210 })}
-                    alt="Hover Preview"
+                    alt="Hover preview"
                     fill
-                    className="object-cover"
+                    sizes="80px"
+                    className="object-cover object-top"
                   />
                 </div>
               )}
@@ -694,17 +620,15 @@ export default function AdminNewProductPage() {
           </div>
         </div>
 
-        {/* =========================================================
-            SECTION 5: PRICING & MERCHANDISING FLAGS
-           ========================================================= */}
-        <div className="p-6 bg-canvas-elevated border border-border-subtle space-y-4">
-          <h2 className="font-serif text-xl uppercase font-semibold text-ink border-b border-border-subtle pb-2">
-            5. Pricing & Merchandising Placement
+        {/* Section 5: Pricing & Placement */}
+        <div className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <h2 className="font-sans text-base uppercase font-bold border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
+            5. Pricing &amp; Merchandising Placement
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Base Retail Price (BDT) *
               </label>
               <input
@@ -712,12 +636,12 @@ export default function AdminNewProductPage() {
                 required
                 value={basePrice}
                 onChange={(e) => setBasePrice(Number(e.target.value))}
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-sm font-mono font-bold"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-sm font-mono font-bold tabular-nums"
               />
             </div>
 
             <div>
-              <label className="block text-ink-muted uppercase font-mono text-[10px] mb-1">
+              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
                 Discount / Sale Price (BDT, Optional)
               </label>
               <input
@@ -726,58 +650,50 @@ export default function AdminNewProductPage() {
                 onChange={(e) =>
                   setDiscountPrice(e.target.value ? Number(e.target.value) : undefined)
                 }
-                className="w-full bg-canvas border border-border-subtle p-2.5 text-sm font-mono"
+                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-sm font-mono tabular-nums"
               />
             </div>
           </div>
 
-          {/* Flags */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <label className="flex items-center gap-3 p-3 bg-canvas border border-border-subtle cursor-pointer">
+            <label className="flex items-center gap-3 p-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 cursor-pointer">
               <input
                 type="checkbox"
                 checked={isNewCollection}
                 onChange={(e) => setIsNewCollection(e.target.checked)}
-                className="w-4 h-4"
+                className="w-4 h-4 accent-zinc-950 dark:accent-white"
               />
-              <span className="text-xs font-sans font-medium text-ink">
-                New Collection Flag
-              </span>
+              <span className="text-xs font-sans font-medium">New Collection Flag</span>
             </label>
 
-            <label className="flex items-center gap-3 p-3 bg-canvas border border-border-subtle cursor-pointer">
+            <label className="flex items-center gap-3 p-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 cursor-pointer">
               <input
                 type="checkbox"
                 checked={isTrending}
                 onChange={(e) => setIsTrending(e.target.checked)}
-                className="w-4 h-4"
+                className="w-4 h-4 accent-zinc-950 dark:accent-white"
               />
-              <span className="text-xs font-sans font-medium text-ink">
-                Trending Now Flag
-              </span>
+              <span className="text-xs font-sans font-medium">Trending Now Flag</span>
             </label>
 
-            <label className="flex items-center gap-3 p-3 bg-canvas border border-border-subtle cursor-pointer">
+            <label className="flex items-center gap-3 p-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 cursor-pointer">
               <input
                 type="checkbox"
                 checked={isFeatured}
                 onChange={(e) => setIsFeatured(e.target.checked)}
-                className="w-4 h-4"
+                className="w-4 h-4 accent-zinc-950 dark:accent-white"
               />
-              <span className="text-xs font-sans font-medium text-ink">
-                Featured on Homepage
-              </span>
+              <span className="text-xs font-sans font-medium">Featured on Homepage</span>
             </label>
           </div>
         </div>
 
-        {/* Bottom Publish Bar */}
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-end pt-2">
           <button
             type="submit"
-            className="px-8 py-4 bg-[#181816] text-[#FAF8F5] text-xs font-sans uppercase tracking-editorial font-medium hover:bg-neutral-800 transition-colors flex items-center gap-2"
+            className="px-8 py-4 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase tracking-wider font-semibold hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-sm transition-colors flex items-center gap-2"
           >
-            <Check className="w-4 h-4 text-[#C5A059]" />
+            <Check className="w-4 h-4" />
             <span>Publish New SKU To Live Catalog</span>
           </button>
         </div>
