@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Ruler, Check, Plus, Trash2 } from "lucide-react";
+import { Ruler, Check, Plus, Trash2, Upload, Loader2 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import {
@@ -14,7 +14,12 @@ import {
   FabricOrMaterial,
 } from "@/types/commerce";
 import { inchToCm, cmToInch } from "@/lib/utils";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import {
+  DEFAULT_PRODUCT_IMAGE,
+  getGarmentObjectPosition,
+  optimizeCloudinaryUrl,
+  uploadImageToCloudinary,
+} from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function AdminNewProductPage() {
@@ -46,8 +51,33 @@ export default function AdminNewProductPage() {
   const [primaryColorHex, setPrimaryColorHex] = useState("#18181B");
   const [imageUrlInput, setImageUrlInput] = useState(DEFAULT_PRODUCT_IMAGE);
   const [hoverImageUrlInput, setHoverImageUrlInput] = useState(
-    "/images/catalog/prod-men-linen-shirt-2_8864.webp"
+    "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526180/ecwearable/editorial/cat-windbreakers.webp"
   );
+  const [uploadingSlot, setUploadingSlot] = useState<"primary" | "secondary" | null>(null);
+  const [uploadError, setUploadError] = useState<string>("");
+
+  const handleCloudinaryUpload = async (
+    slot: "primary" | "secondary",
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError("");
+    setUploadingSlot(slot);
+    try {
+      const uploaded = await uploadImageToCloudinary(file, "ecwearable/products/custom");
+      if (slot === "primary") {
+        setImageUrlInput(uploaded.secure_url);
+      } else {
+        setHoverImageUrlInput(uploaded.secure_url);
+      }
+    } catch (err: unknown) {
+      setUploadError(err instanceof Error ? err.message : "Cloudinary upload failed");
+    } finally {
+      setUploadingSlot(null);
+      e.target.value = "";
+    }
+  };
 
   const [sizes, setSizes] = useState<SizeMeasurement[]>([
     {
@@ -563,30 +593,72 @@ export default function AdminNewProductPage() {
               </div>
             </div>
 
-            <div className="sm:col-span-2">
-              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
-                Primary Editorial Image Path / URL *
-              </label>
+            <div className="sm:col-span-2 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold">
+                  Primary Editorial Image (Cloudinary URL) *
+                </label>
+                <label className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-[10px] font-mono uppercase font-semibold rounded-sm cursor-pointer hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
+                  {uploadingSlot === "primary" ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Upload className="w-3 h-3" />
+                  )}
+                  <span>{uploadingSlot === "primary" ? "Uploading..." : "Upload to Cloudinary"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingSlot !== null}
+                    onChange={(e) => handleCloudinaryUpload("primary", e)}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
               <input
-                type="text"
+                type="url"
                 required
                 value={imageUrlInput}
                 onChange={(e) => setImageUrlInput(e.target.value)}
+                placeholder="https://res.cloudinary.com/..."
                 className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs font-mono"
               />
             </div>
 
-            <div className="sm:col-span-2">
-              <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold mb-1.5">
-                Secondary / Hover Detail Image Path / URL
-              </label>
+            <div className="sm:col-span-2 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="block text-zinc-600 dark:text-zinc-400 uppercase font-mono text-[10px] font-semibold">
+                  Secondary / Hover Detail Image (Cloudinary URL)
+                </label>
+                <label className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-[10px] font-mono uppercase font-semibold rounded-sm cursor-pointer hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
+                  {uploadingSlot === "secondary" ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Upload className="w-3 h-3" />
+                  )}
+                  <span>{uploadingSlot === "secondary" ? "Uploading..." : "Upload to Cloudinary"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingSlot !== null}
+                    onChange={(e) => handleCloudinaryUpload("secondary", e)}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
               <input
-                type="text"
+                type="url"
                 value={hoverImageUrlInput}
                 onChange={(e) => setHoverImageUrlInput(e.target.value)}
+                placeholder="https://res.cloudinary.com/..."
                 className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-sm p-2.5 text-xs font-mono"
               />
             </div>
+
+            {uploadError && (
+              <div className="sm:col-span-2 p-2.5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-xs font-mono rounded-sm">
+                {uploadError}
+              </div>
+            )}
           </div>
 
           <div className="pt-2">
@@ -601,7 +673,7 @@ export default function AdminNewProductPage() {
                     alt="Primary preview"
                     fill
                     sizes="80px"
-                    className="object-cover object-top"
+                    className={getGarmentObjectPosition(mainCategory)}
                   />
                 </div>
               )}
@@ -612,7 +684,7 @@ export default function AdminNewProductPage() {
                     alt="Hover preview"
                     fill
                     sizes="80px"
-                    className="object-cover object-top"
+                    className={getGarmentObjectPosition(mainCategory)}
                   />
                 </div>
               )}

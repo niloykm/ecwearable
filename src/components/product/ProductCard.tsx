@@ -28,6 +28,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   const [justAddedSize, setJustAddedSize] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [hoverActivated, setHoverActivated] = useState<boolean>(false);
 
   const primaryImage =
     activeColor.images?.[0] ||
@@ -38,6 +39,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     activeColor.images?.[1] ||
     product.colorVariants?.[0]?.images?.[1] ||
     primaryImage;
+
+  const hasAlternateAngle = hoverImage !== primaryImage;
+  const isObjectItem =
+    product.mainCategory === "ACCESSORIES" ||
+    product.mainCategory === "WEARABLES" ||
+    product.mainCategory === "FOOTWEAR";
+  const imagePositionClass = isObjectItem ? "object-cover object-center" : "object-cover object-top";
 
   const handleQuickAdd = (e: React.MouseEvent, sizeLabel: string) => {
     e.preventDefault();
@@ -78,24 +86,48 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   return (
     <article className="group relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all duration-200 hover:border-zinc-400 dark:hover:border-zinc-600 hover:shadow-sm">
-      {/* Aspect 3:4 Image Frame */}
+      {/* Aspect 3:4 Image Frame with Smooth 220ms Layered Angle Swap */}
       <div
         className="relative aspect-[3/4] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800"
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => {
+          setHoverActivated(true);
+          setIsHovered(true);
+        }}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Link href={`/product/${product.slug}`} className="block h-full w-full">
+        <Link href={`/product/${product.slug}`} className="block h-full w-full relative">
           <SafeImage
-            src={optimizeCloudinaryUrl(
-              isHovered && hoverImage !== primaryImage ? hoverImage : primaryImage,
-              { width: 800, height: 1067, quality: "auto:best" }
-            )}
+            src={optimizeCloudinaryUrl(primaryImage, {
+              width: 800,
+              height: 1067,
+              quality: "auto:best",
+            })}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             priority={priority}
-            className="object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+            className={cn(
+              imagePositionClass,
+              "transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+            )}
           />
+          {hasAlternateAngle && hoverActivated && (
+            <SafeImage
+              src={optimizeCloudinaryUrl(hoverImage, {
+                width: 800,
+                height: 1067,
+                quality: "auto:best",
+              })}
+              alt={`${product.name} — alternate fit view`}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className={cn(
+                imagePositionClass,
+                "transition-opacity duration-[220ms] ease-out",
+                isHovered ? "opacity-100" : "opacity-0"
+              )}
+            />
+          )}
         </Link>
 
         {/* Single Primary Badge */}

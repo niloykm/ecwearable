@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Heart, ShoppingBag, Trash2 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
 
@@ -109,7 +109,7 @@ export function WishlistDrawer() {
                             alt={product.name}
                             fill
                             sizes="80px"
-                            className="object-cover object-top"
+                            className={getGarmentObjectPosition(product.mainCategory)}
                           />
                         </div>
 

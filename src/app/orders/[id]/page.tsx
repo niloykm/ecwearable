@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function OrderTrackingPage({
@@ -175,7 +175,7 @@ export default function OrderTrackingPage({
                       alt={item.product.name}
                       fill
                       sizes="96px"
-                      className="object-cover object-top"
+                      className={getGarmentObjectPosition(item.product.mainCategory)}
                     />
                   </div>
 

@@ -12,22 +12,24 @@ import {
   Menu,
   X,
   ArrowRight,
-  MoreVertical,
+  ChevronDown,
   Sliders,
   PackagePlus,
   Layers,
+  Ruler,
+  BookOpen,
 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { cn, formatPrice, formatShippingThreshold } from "@/lib/utils";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
 
 const NAV_LINKS = [
   { label: "Men", href: "/shop?gender=MALE", match: { path: "/shop", key: "gender", value: "MALE" } },
   { label: "Women", href: "/shop?gender=FEMALE", match: { path: "/shop", key: "gender", value: "FEMALE" } },
-  { label: "Technical Outerwear", href: "/shop?category=OUTERWEAR", match: { path: "/shop", key: "category", value: "OUTERWEAR" } },
-  { label: "Everyday Basics", href: "/shop?category=BASICS", match: { path: "/shop", key: "category", value: "BASICS" } },
+  { label: "Outerwear", href: "/shop?category=OUTERWEAR", match: { path: "/shop", key: "category", value: "OUTERWEAR" } },
+  { label: "Basics", href: "/shop?category=BASICS", match: { path: "/shop", key: "category", value: "BASICS" } },
   { label: "Accessories", href: "/shop?category=ACCESSORIES", match: { path: "/shop", key: "category", value: "ACCESSORIES" } },
   { label: "Fabric Guide", href: "/fabric-guide", match: { path: "/fabric-guide", key: null, value: null } },
 ] as const;
@@ -159,56 +161,69 @@ export function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" aria-hidden="true" />
-            <p className="tracking-wide uppercase font-medium text-zinc-200 truncate tabular-nums">
-              Free nationwide shipping on orders over {thresholdLabel}{" "}
-              <span className="text-zinc-500 mx-1.5" aria-hidden="true">·</span>
-              7-Day Hassle-Free Size Exchanges
+            <p className="hidden sm:block tracking-wide uppercase font-medium text-zinc-200 truncate tabular-nums">
+              <span>Free nationwide shipping on orders over {thresholdLabel}</span>
+              <span className="text-zinc-500 mx-2" aria-hidden="true"> · </span>
+              <span>7-Day Hassle-Free Size Exchanges</span>
+            </p>
+            <p className="sm:hidden text-[10px] tracking-wide uppercase font-medium text-zinc-200 truncate tabular-nums">
+              <span>Free shipping over {thresholdLabel}</span>
+              <span className="text-zinc-500 mx-1.5" aria-hidden="true"> · </span>
+              <span>7-Day Size Exchanges</span>
             </p>
           </div>
 
           <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-            {/* INCH / CM Segmented Control */}
-            <div
-              className="flex items-center gap-1.5 bg-zinc-900 px-2 py-1 border border-zinc-800 text-[10px] font-mono rounded-sm"
-              role="group"
-              aria-label="Measurement unit"
-            >
-              <span className="text-zinc-400 uppercase pr-1">Unit</span>
-              {(["INCH", "CM"] as const).map((u) => {
-                const active = unit === u;
-                return (
-                  <button
-                    key={u}
-                    type="button"
-                    onClick={() => setUnit(u)}
-                    aria-pressed={active}
-                    className={cn(
-                      "relative px-2 py-0.5 rounded-[2px] transition-colors duration-200",
-                      active ? "text-zinc-950 font-bold" : "text-zinc-300 hover:text-white"
-                    )}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="header-unit-pill"
-                        transition={SPRING_INDICATOR}
-                        className="absolute inset-0 bg-white rounded-[2px]"
-                      />
-                    )}
-                    <span className="relative z-10">{u}</span>
-                  </button>
-                );
-              })}
+            {/* IN / CM Segmented Control */}
+            <div className="flex items-center gap-1.5">
+              <Ruler className="w-3 h-3 text-zinc-400 flex-shrink-0" aria-hidden="true" />
+              <div
+                className="inline-flex items-center gap-0.5 bg-zinc-900 p-0.5 border border-zinc-700/80 text-[10px] font-mono rounded-sm"
+                role="group"
+                aria-label="Measurement unit"
+              >
+                {([
+                  { value: "INCH", label: "IN" },
+                  { value: "CM", label: "CM" },
+                ] as const).map((u) => {
+                  const active = unit === u.value;
+                  return (
+                    <button
+                      key={u.value}
+                      type="button"
+                      onClick={() => setUnit(u.value)}
+                      aria-pressed={active}
+                      aria-label={`Use ${u.value === "INCH" ? "inches" : "centimeters"}`}
+                      className={cn(
+                        "relative px-2 py-0.5 rounded-[2px] transition-colors duration-200 whitespace-nowrap",
+                        active ? "text-zinc-950 font-bold" : "text-zinc-300 hover:text-white"
+                      )}
+                    >
+                      {active && (
+                        <motion.span
+                          layoutId="header-unit-pill"
+                          transition={SPRING_INDICATOR}
+                          className="absolute inset-0 bg-white rounded-[2px]"
+                        />
+                      )}
+                      <span className="relative z-10">{u.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+
+            <span className="h-3.5 w-px bg-zinc-800 flex-shrink-0" aria-hidden="true" />
 
             {/* Currency Segmented Control */}
             <div
-              className="flex items-center gap-1 bg-zinc-900 p-1 border border-zinc-800 text-[10px] font-mono rounded-sm"
+              className="inline-flex items-center gap-0.5 bg-zinc-900 p-0.5 border border-zinc-700/80 text-[10px] font-mono rounded-sm"
               role="group"
               aria-label="Display currency"
             >
               {([
-                { code: "BDT", label: "BDT (৳)" },
-                { code: "USD", label: "USD ($)" },
+                { code: "BDT", label: "৳ BDT" },
+                { code: "USD", label: "$ USD" },
               ] as const).map((c) => {
                 const active = currency === c.code;
                 return (
@@ -235,17 +250,25 @@ export function Header() {
               })}
             </div>
 
-            {/* Lab Tools / Admin Menu */}
+            <span className="h-3.5 w-px bg-zinc-800 flex-shrink-0" aria-hidden="true" />
+
+            {/* Store Admin & Lab Dropdown */}
             <div className="relative" ref={adminDropdownRef}>
               <button
                 type="button"
                 onClick={() => setAdminMenuOpen((prev) => !prev)}
                 aria-expanded={adminMenuOpen}
                 aria-haspopup="menu"
-                className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono uppercase bg-zinc-900 text-zinc-200 hover:text-white hover:border-zinc-600 border border-zinc-800 rounded-sm transition-colors duration-200 whitespace-nowrap"
+                className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider bg-zinc-900 text-zinc-200 hover:text-white hover:border-zinc-500 border border-zinc-700/80 rounded-sm transition-colors duration-200 whitespace-nowrap"
               >
-                <MoreVertical className="w-3 h-3 text-zinc-400" />
-                <span>Lab Tools</span>
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>Store Admin</span>
+                <ChevronDown
+                  className={cn(
+                    "w-3 h-3 text-zinc-400 transition-transform duration-200",
+                    adminMenuOpen && "rotate-180"
+                  )}
+                />
               </button>
 
               <AnimatePresence>
@@ -256,14 +279,26 @@ export function Header() {
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.18, ease: MOTION_EASE }}
                     role="menu"
-                    className="absolute right-0 mt-1.5 w-56 bg-zinc-950 border border-zinc-800 shadow-2xl py-1.5 z-50 text-left rounded-sm"
+                    className="absolute right-0 mt-1.5 w-60 bg-zinc-950 border border-zinc-800 shadow-2xl py-1.5 z-50 text-left rounded-sm"
                   >
                     <div className="px-3.5 py-1.5 border-b border-zinc-800">
                       <p className="text-[10px] font-mono uppercase text-zinc-400 font-semibold tracking-wider">
-                        Management &amp; Inventory
+                        Operations &amp; Material Lab
                       </p>
                     </div>
                     <div className="py-1 text-xs font-sans">
+                      <Link
+                        href="/fabric-guide"
+                        role="menuitem"
+                        onClick={() => setAdminMenuOpen(false)}
+                        className="flex items-center justify-between px-3.5 py-2 text-zinc-200 hover:bg-zinc-900 hover:text-white transition-colors border-b border-zinc-800/80 mb-1"
+                      >
+                        <span className="flex items-center gap-2">
+                          <BookOpen className="w-3.5 h-3.5 text-zinc-400" />
+                          <span>Fabric Taxonomy &amp; Lab Specs</span>
+                        </span>
+                        <ArrowRight className="w-3 h-3 text-zinc-500" />
+                      </Link>
                       <Link
                         href="/admin"
                         role="menuitem"
@@ -458,7 +493,7 @@ export function Header() {
                                     alt={p.name}
                                     fill
                                     sizes="40px"
-                                    className="object-cover object-top"
+                                    className={getGarmentObjectPosition(p.mainCategory)}
                                   />
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -539,21 +574,25 @@ export function Header() {
               {/* Mobile Unit & Currency Switchers */}
               <div className="space-y-3 pt-1">
                 <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-zinc-500 uppercase">Unit</span>
-                  <div className="flex items-center gap-1.5">
-                    {(["INCH", "CM"] as const).map((u) => (
+                  <span className="text-zinc-500 uppercase">Measurements</span>
+                  <div className="flex items-center gap-1.5" role="group" aria-label="Mobile measurement unit">
+                    {([
+                      { value: "INCH", label: "IN" },
+                      { value: "CM", label: "CM" },
+                    ] as const).map((u) => (
                       <button
-                        key={u}
+                        key={u.value}
                         type="button"
-                        onClick={() => setUnit(u)}
+                        onClick={() => setUnit(u.value)}
+                        aria-pressed={unit === u.value}
                         className={cn(
                           "px-3 py-1 border rounded-sm transition-colors",
-                          unit === u
+                          unit === u.value
                             ? "bg-zinc-950 text-white border-zinc-950 dark:bg-white dark:text-zinc-950 font-bold"
                             : "border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                         )}
                       >
-                        {u}
+                        {u.label}
                       </button>
                     ))}
                   </div>
@@ -561,15 +600,16 @@ export function Header() {
 
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-zinc-500 uppercase">Currency</span>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5" role="group" aria-label="Mobile currency">
                     {([
-                      { code: "BDT", label: "BDT (৳)" },
-                      { code: "USD", label: "USD ($)" },
+                      { code: "BDT", label: "৳ BDT" },
+                      { code: "USD", label: "$ USD" },
                     ] as const).map((c) => (
                       <button
                         key={c.code}
                         type="button"
                         onClick={() => setCurrency(c.code)}
+                        aria-pressed={currency === c.code}
                         className={cn(
                           "px-3 py-1 border rounded-sm transition-colors",
                           currency === c.code
@@ -584,29 +624,41 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Mobile Lab Tools Quick Links */}
-              <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap gap-2">
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
-                >
-                  Admin Dashboard
-                </Link>
-                <Link
-                  href="/admin/products/new"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
-                >
-                  New SKU Studio
-                </Link>
-                <Link
-                  href="/admin/orders"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
-                >
-                  Orders CRM
-                </Link>
+              {/* Mobile Store Admin Quick Links */}
+              <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 tracking-wider block">
+                  Store Admin
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
+                  >
+                    Command Dashboard
+                  </Link>
+                  <Link
+                    href="/admin/products"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
+                  >
+                    SKU Catalog
+                  </Link>
+                  <Link
+                    href="/admin/products/new"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
+                  >
+                    Add New Garment
+                  </Link>
+                  <Link
+                    href="/admin/orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
+                  >
+                    Orders Fulfillment
+                  </Link>
+                </div>
               </div>
             </div>
           </motion.div>

@@ -19,8 +19,7 @@ const FABRIC_CATALOG = [
     weave: "Dual-Interlock Circular Knit",
     breathability: "42 CFM Balanced Airflow",
     shopQuery: "French Terry",
-    image:
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/fabric-french-terry.webp",
     description:
       "Knitted on high-density circular gauge machines from double-twisted organic cotton yarn. The 280 GSM weight creates a silhouette that never clings or sags, anchored by a twin-needle reinforced tension collar that maintains form through hundreds of wash cycles.",
     bestFor: "Heavyweight boxy tees, transit crewnecks, structural everyday layers",
@@ -32,8 +31,7 @@ const FABRIC_CATALOG = [
     weave: "Cross-Grid Reinforced Ripstop with Hydrostatic Membrane",
     breathability: "10,000mm Hydrostatic / 10,000 g/m² Vapor Venting",
     shopQuery: "Ripstop",
-    image:
-      "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/fabric-dwr-ripstop.webp",
     description:
       "Constructed with a micro-grid lattice that stops tears and abrasions from spreading. Bonded to a monolithic waterproof membrane with fluorocarbon-free DWR coating. Fully compatible with taped seam engineering for storm-ready city transit.",
     bestFor: "All-weather windbreakers, transit cargo trousers, tactical storm parkas",
@@ -45,8 +43,7 @@ const FABRIC_CATALOG = [
     weave: "Single Jersey Thermal Knit",
     breathability: "Dynamic Micro-Climate Equilibrium",
     shopQuery: "Merino",
-    image:
-      "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526183/ecwearable/editorial/fabric-merino-wool.webp",
     description:
       "Spun from 18.5-micron fine fibers that bend against skin without microscopic pricking. The natural keratin structure binds and neutralizes odor-causing bacteria while absorbing up to 35% of its weight in vapor before feeling damp.",
     bestFor: "Thermal transit crewnecks, base-layers, year-round travel tops",
@@ -58,8 +55,7 @@ const FABRIC_CATALOG = [
     weave: "Air-Textured Dense Canvas with PU Back-Coating",
     breathability: "Weatherproof Barrier Membrane",
     shopQuery: "Cordura",
-    image:
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/fabric-cordura-ballistic.webp",
     description:
       "Engineered to survive heavy abrasion, concrete scrape, and monsoon rainfall. Coated with a dual-pass polyurethane internal film and finished with Fidlock® magnetic compatibility.",
     bestFor: "Ballistic utility daypacks, field bags, modular strap hardware",

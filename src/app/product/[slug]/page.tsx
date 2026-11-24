@@ -10,8 +10,14 @@ import {
   Ruler,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   UserCheck,
   Droplets,
+  ZoomIn,
+  ZoomOut,
+  X,
+  Maximize2,
 } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice, formatShippingThreshold, cn } from "@/lib/utils";
@@ -60,6 +66,9 @@ export default function ProductDetailPage({
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
   const [expandedSection, setExpandedSection] = useState<string>("specs");
   const [isAddedToast, setIsAddedToast] = useState<boolean>(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+  const [isZoomed, setIsZoomed] = useState<boolean>(false);
+  const [zoomOrigin, setZoomOrigin] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
   const mainCtaRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
@@ -76,7 +85,39 @@ export default function ProductDetailPage({
     setSelectedSize(product.sizes[0]);
     setActiveImageIndex(0);
     setQuantity(1);
+    setIsLightboxOpen(false);
+    setIsZoomed(false);
   }, [product]);
+
+  const allImages =
+    selectedColor.images && selectedColor.images.length > 0
+      ? selectedColor.images
+      : product.colorVariants[0]?.images || [];
+
+  const getAngleLabel = (idx: number, total: number): string => {
+    if (idx === 0) return "Front";
+    if (idx === 1) return total >= 3 ? "Fit / Angle" : "Alternate View";
+    if (idx === 2) return "Fabric & Seam Detail";
+    return `Detail ${idx + 1}`;
+  };
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsLightboxOpen(false);
+        setIsZoomed(false);
+      } else if (e.key === "ArrowRight" && allImages.length > 1) {
+        setActiveImageIndex((prev) => (prev + 1) % allImages.length);
+        setIsZoomed(false);
+      } else if (e.key === "ArrowLeft" && allImages.length > 1) {
+        setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+        setIsZoomed(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isLightboxOpen, allImages.length]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,12 +149,14 @@ export default function ProductDetailPage({
 
   const unitLabel = unit === "INCH" ? 'in (")' : "cm";
 
-  const allImages =
-    selectedColor.images && selectedColor.images.length > 0
-      ? selectedColor.images
-      : product.colorVariants[0]?.images || [];
-
   const activeImage = allImages[activeImageIndex] || allImages[0] || DEFAULT_PRODUCT_IMAGE;
+  const isObjectItem =
+    product.mainCategory === "ACCESSORIES" ||
+    product.mainCategory === "WEARABLES" ||
+    product.mainCategory === "FOOTWEAR";
+  const isDetailShot = activeImageIndex >= 2;
+  const mainImagePositionClass =
+    isObjectItem || isDetailShot ? "object-cover object-center" : "object-cover object-top";
   const modelRef =
     product.modelReference || 'Model is 6\'1" (185 cm) wearing size L / Regular Fit';
 
@@ -145,28 +188,82 @@ export default function ProductDetailPage({
       {/* Main PDP Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
-          {/* Left Column: Gallery */}
+          {/* Left Column: Multi-Angle Gallery + Lightbox Trigger */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="relative aspect-[3/4] w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeImage}
-                  initial={{ opacity: 0.4 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0.4 }}
-                  transition={{ duration: 0.24, ease: MOTION_EASE }}
-                  className="absolute inset-0"
+            {/* Multi-Angle Segmented Switcher (Front / Fit / Fabric & Seam Detail) */}
+            {allImages.length > 1 && (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div
+                  role="tablist"
+                  aria-label="Garment inspection angles"
+                  className="inline-flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-1 rounded-sm overflow-x-auto max-w-full"
                 >
-                  <SafeImage
-                    src={optimizeCloudinaryUrl(activeImage, { width: 1200, height: 1600, quality: "auto:best" })}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 58vw"
-                    priority
-                    className="object-cover object-top"
-                  />
-                </motion.div>
-              </AnimatePresence>
+                  {allImages.map((_, idx) => {
+                    const isSelected = activeImageIndex === idx;
+                    const label = getAngleLabel(idx, allImages.length);
+                    return (
+                      <button
+                        key={`${selectedColor.colorName}-tab-${idx}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={isSelected}
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={cn(
+                          "relative px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-[2px] transition-colors duration-200 whitespace-nowrap",
+                          isSelected
+                            ? "text-white dark:text-zinc-950 font-bold"
+                            : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                        )}
+                      >
+                        {isSelected && (
+                          <motion.span
+                            layoutId="pdp-angle-indicator"
+                            transition={SPRING_INDICATOR}
+                            className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                          />
+                        )}
+                        <span className="relative z-10">{label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <span className="text-[11px] font-mono text-zinc-500 tabular-nums">
+                  {String(activeImageIndex + 1).padStart(2, "0")} / {String(allImages.length).padStart(2, "0")}
+                </span>
+              </div>
+            )}
+
+            <div className="relative aspect-[3/4] w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden group">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLightboxOpen(true);
+                  setIsZoomed(false);
+                }}
+                aria-label={`Inspect ${product.name} (${getAngleLabel(activeImageIndex, allImages.length)}) in full-screen zoom`}
+                className="relative block w-full h-full cursor-zoom-in text-left"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`${selectedColor.colorName}-${activeImageIndex}-${activeImage}`}
+                    initial={{ opacity: 0, scale: 1.01 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.24, ease: MOTION_EASE }}
+                    className="absolute inset-0"
+                  >
+                    <SafeImage
+                      src={optimizeCloudinaryUrl(activeImage, { width: 1200, height: 1600, quality: "auto:best" })}
+                      alt={`${product.name} — ${getAngleLabel(activeImageIndex, allImages.length)}`}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 58vw"
+                      priority
+                      className={cn(mainImagePositionClass, "transition-transform duration-300 group-hover:scale-[1.015]")}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </button>
 
               {/* Status Badge */}
               <div className="absolute top-4 left-4 flex flex-wrap gap-2 z-10 pointer-events-none">
@@ -196,32 +293,87 @@ export default function ProductDetailPage({
               >
                 <Heart className={cn("w-4 h-4", isWishlisted && "fill-current text-red-500")} />
               </button>
+
+              {/* Bottom Controls: Prev/Next Arrows & Zoom Inspect Pill */}
+              {allImages.length > 1 && (
+                <div className="absolute bottom-4 left-4 z-10 flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+                    }
+                    aria-label="Previous garment angle"
+                    className="p-2 bg-white/95 dark:bg-zinc-950/90 text-zinc-950 dark:text-white border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 rounded-sm transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveImageIndex((prev) => (prev + 1) % allImages.length)}
+                    aria-label="Next garment angle"
+                    className="p-2 bg-white/95 dark:bg-zinc-950/90 text-zinc-950 dark:text-white border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 rounded-sm transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLightboxOpen(true);
+                  setIsZoomed(false);
+                }}
+                aria-label="Open full-screen inspection zoom"
+                className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-1.5 px-3 py-2 bg-white/95 dark:bg-zinc-950/90 text-zinc-950 dark:text-white border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 text-[11px] font-mono uppercase tracking-wider font-semibold rounded-sm transition-colors shadow-sm"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Inspect / Zoom</span>
+              </button>
             </div>
 
             {allImages.length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
-                {allImages.map((img, idx) => (
-                  <button
-                    key={`${img}-${idx}`}
-                    type="button"
-                    onClick={() => setActiveImageIndex(idx)}
-                    aria-label={`View angle ${idx + 1}`}
-                    className={cn(
-                      "relative aspect-[3/4] bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-200",
-                      activeImageIndex === idx
-                        ? "border-zinc-950 dark:border-white ring-1 ring-zinc-950 dark:ring-white"
-                        : "border-zinc-200 dark:border-zinc-800 opacity-75 hover:opacity-100"
-                    )}
-                  >
-                    <SafeImage
-                      src={optimizeCloudinaryUrl(img, { width: 300, height: 400 })}
-                      alt={`${product.name} angle ${idx + 1}`}
-                      fill
-                      sizes="25vw"
-                      className="object-cover object-top"
-                    />
-                  </button>
-                ))}
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                {allImages.map((img, idx) => {
+                  const isActiveThumb = activeImageIndex === idx;
+                  const label = getAngleLabel(idx, allImages.length);
+                  const thumbPos = isObjectItem || idx >= 2 ? "object-cover object-center" : "object-cover object-top";
+                  return (
+                    <button
+                      key={`${selectedColor.colorName}-thumb-${idx}`}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      aria-label={`Select ${label}`}
+                      aria-pressed={isActiveThumb}
+                      className={cn(
+                        "group/thumb relative flex flex-col bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-200 rounded-sm text-left",
+                        isActiveThumb
+                          ? "border-zinc-950 dark:border-white ring-1 ring-zinc-950 dark:ring-white"
+                          : "border-zinc-200 dark:border-zinc-800 opacity-80 hover:opacity-100 hover:border-zinc-400"
+                      )}
+                    >
+                      <div className="relative aspect-[3/4] w-full overflow-hidden">
+                        <SafeImage
+                          src={optimizeCloudinaryUrl(img, { width: 320, height: 426 })}
+                          alt={`${product.name} — ${label}`}
+                          fill
+                          sizes="(max-width: 640px) 33vw, 18vw"
+                          className={thumbPos}
+                        />
+                      </div>
+                      <span
+                        className={cn(
+                          "px-2 py-1 text-[10px] font-mono uppercase tracking-wider truncate w-full border-t transition-colors",
+                          isActiveThumb
+                            ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-semibold"
+                            : "bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800"
+                        )}
+                      >
+                        {label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -326,14 +478,18 @@ export default function ProductDetailPage({
                   </span>
 
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px] font-mono rounded-sm">
-                      {(["INCH", "CM"] as const).map((u) => {
-                        const active = unit === u;
+                    <div className="flex items-center bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px] font-mono rounded-sm" role="group" aria-label="Measurement unit">
+                      {([
+                        { value: "INCH", label: "IN" },
+                        { value: "CM", label: "CM" },
+                      ] as const).map((u) => {
+                        const active = unit === u.value;
                         return (
                           <button
-                            key={u}
+                            key={u.value}
                             type="button"
-                            onClick={() => setUnit(u)}
+                            onClick={() => setUnit(u.value)}
+                            aria-pressed={active}
                             className={cn(
                               "relative px-2.5 py-0.5 transition-colors rounded-[2px]",
                               active
@@ -348,7 +504,7 @@ export default function ProductDetailPage({
                                 className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
                               />
                             )}
-                            <span className="relative z-10">{u}</span>
+                            <span className="relative z-10">{u.label}</span>
                           </button>
                         );
                       })}
@@ -746,6 +902,169 @@ export default function ProductDetailPage({
         isOpen={isSizeGuideOpen}
         onClose={() => setIsSizeGuideOpen(false)}
       />
+
+      {/* Full-Screen Inspection & Zoom Lightbox Modal */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: MOTION_EASE }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${product.name} image inspection lightbox`}
+            className="fixed inset-0 z-50 bg-zinc-950/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6"
+          >
+            {/* Lightbox Top Bar */}
+            <div className="flex items-center justify-between gap-4 text-white border-b border-zinc-800 pb-3">
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm font-sans font-bold uppercase tracking-tight truncate">
+                  {product.name} — {selectedColor.colorName}
+                </p>
+                <p className="text-[11px] font-mono text-zinc-400 tabular-nums">
+                  {String(activeImageIndex + 1).padStart(2, "0")} / {String(allImages.length).padStart(2, "0")} ·{" "}
+                  {getAngleLabel(activeImageIndex, allImages.length)} · Use ← / → or click image to zoom
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsZoomed((prev) => !prev)}
+                  aria-label={isZoomed ? "Zoom out" : "Zoom in 2x"}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-100 text-[11px] font-mono uppercase rounded-sm transition-colors"
+                >
+                  {isZoomed ? <ZoomOut className="w-3.5 h-3.5" /> : <ZoomIn className="w-3.5 h-3.5" />}
+                  <span>{isZoomed ? "1x Fit" : "2x Zoom"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLightboxOpen(false);
+                    setIsZoomed(false);
+                  }}
+                  aria-label="Close inspection lightbox"
+                  className="p-2 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-100 rounded-sm transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Lightbox Center Stage */}
+            <div className="relative flex-1 flex items-center justify-center my-4 overflow-hidden select-none">
+              {allImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+                    setIsZoomed(false);
+                  }}
+                  aria-label="Previous image"
+                  className="absolute left-2 sm:left-4 z-20 p-2.5 bg-zinc-900/90 border border-zinc-700 hover:border-white text-white rounded-sm transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+              )}
+
+              <div
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setZoomOrigin({ x, y });
+                  setIsZoomed((prev) => !prev);
+                }}
+                onMouseMove={(e) => {
+                  if (!isZoomed) return;
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+                  const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+                  setZoomOrigin({ x, y });
+                }}
+                className={cn(
+                  "relative w-full max-w-2xl h-full max-h-[72vh] aspect-[3/4] overflow-hidden bg-zinc-900 border border-zinc-800",
+                  isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+                )}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`lightbox-${activeImageIndex}-${activeImage}`}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: MOTION_EASE }}
+                    className="absolute inset-0"
+                  >
+                    <SafeImage
+                      src={optimizeCloudinaryUrl(activeImage, { width: 1600, height: 2133, quality: "auto:best" })}
+                      alt={`${product.name} — ${getAngleLabel(activeImageIndex, allImages.length)}`}
+                      fill
+                      sizes="(max-width: 768px) 95vw, 720px"
+                      className="object-contain transition-transform duration-200 ease-out"
+                      style={{
+                        transform: isZoomed ? "scale(2.1)" : "scale(1)",
+                        transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                      }}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {allImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveImageIndex((prev) => (prev + 1) % allImages.length);
+                    setIsZoomed(false);
+                  }}
+                  aria-label="Next image"
+                  className="absolute right-2 sm:right-4 z-20 p-2.5 bg-zinc-900/90 border border-zinc-700 hover:border-white text-white rounded-sm transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+
+            {/* Lightbox Bottom Angle Switcher */}
+            {allImages.length > 1 && (
+              <div className="flex items-center justify-center gap-2 overflow-x-auto pt-2 border-t border-zinc-800">
+                {allImages.map((img, idx) => {
+                  const isActive = activeImageIndex === idx;
+                  return (
+                    <button
+                      key={`lb-thumb-${idx}`}
+                      type="button"
+                      onClick={() => {
+                        setActiveImageIndex(idx);
+                        setIsZoomed(false);
+                      }}
+                      className={cn(
+                        "flex items-center gap-2 px-2.5 py-1.5 border rounded-sm text-[11px] font-mono uppercase transition-colors whitespace-nowrap",
+                        isActive
+                          ? "bg-white text-zinc-950 border-white font-bold"
+                          : "bg-zinc-900 text-zinc-300 border-zinc-700 hover:border-zinc-500"
+                      )}
+                    >
+                      <span className="relative w-6 h-8 overflow-hidden bg-zinc-800 flex-shrink-0">
+                        <SafeImage
+                          src={optimizeCloudinaryUrl(img, { width: 64, height: 86 })}
+                          alt=""
+                          fill
+                          sizes="24px"
+                          className="object-cover object-top"
+                        />
+                      </span>
+                      <span>{getAngleLabel(idx, allImages.length)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -20,7 +20,7 @@ import {
   formatShippingThreshold,
 } from "@/lib/utils";
 import { OrderCustomer, PaymentMethod } from "@/types/commerce";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
 
@@ -439,7 +439,7 @@ export default function CheckoutPage() {
                       alt={item.product.name}
                       fill
                       sizes="64px"
-                      className="object-cover object-top"
+                      className={getGarmentObjectPosition(item.product.mainCategory)}
                     />
                   </div>
 

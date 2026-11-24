@@ -358,16 +358,18 @@ export const useCommerceStore = create<CommerceState>()(
       },
     }),
     {
-      name: 'ecwearable-commerce-v5',
+      name: 'ecwearable-commerce-v7',
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        const hasLegacyAssets = state.products?.some((p) =>
+        const hasNonCloudinaryAssets = state.products?.some((p) =>
           p.colorVariants.some((v) =>
-            v.images.some((img) => img.includes('aurelia_studio') || img.includes('1542272604-780c96856592'))
+            v.images.some(
+              (img) => !img.startsWith('https://res.cloudinary.com/')
+            )
           )
         );
-        if (!state.products || state.products.length < SEED_PRODUCTS.length || hasLegacyAssets) {
+        if (!state.products || state.products.length < SEED_PRODUCTS.length || hasNonCloudinaryAssets) {
           state.products = SEED_PRODUCTS;
         }
       },

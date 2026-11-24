@@ -8,7 +8,7 @@ import { useCommerceStore } from "@/store/useCommerceStore";
 import { ProductCard } from "@/components/product/ProductCard";
 import { TargetGender } from "@/types/commerce";
 import { formatPrice, cn } from "@/lib/utils";
-import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
+import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
 
 const CATEGORY_OPTIONS = [
   { label: "All Items", val: "all" },
@@ -288,22 +288,33 @@ function ShopContent() {
         <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
           Department
         </label>
-        <div className="grid grid-cols-2 gap-1.5">
-          {GENDER_OPTIONS.map((g) => (
-            <button
-              key={g.val}
-              type="button"
-              onClick={() => setSelectedGender(g.val)}
-              className={cn(
-                "py-1.5 px-2.5 text-xs font-mono border rounded-sm text-center transition-colors",
-                selectedGender === g.val
-                  ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
-                  : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
-              )}
-            >
-              {g.label}
-            </button>
-          ))}
+        <div className="grid grid-cols-2 gap-1.5" role="group" aria-label="Department filter">
+          {GENDER_OPTIONS.map((g) => {
+            const active = selectedGender === g.val;
+            return (
+              <button
+                key={g.val}
+                type="button"
+                onClick={() => setSelectedGender(g.val)}
+                aria-pressed={active}
+                className={cn(
+                  "relative py-1.5 px-2.5 text-xs font-mono border rounded-sm text-center transition-colors duration-200 overflow-hidden",
+                  active
+                    ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
+                    : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="shop-gender-pill"
+                    transition={SPRING_INDICATOR}
+                    className="absolute inset-0 bg-zinc-950 dark:bg-white"
+                  />
+                )}
+                <span className="relative z-10">{g.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

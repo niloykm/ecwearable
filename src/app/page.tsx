@@ -33,8 +33,7 @@ const FABRIC_MATRIX = [
     metric: "42 CFM Airflow",
     shopQuery: "French Terry",
     icon: Feather,
-    image:
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/fabric-french-terry.webp",
   },
   {
     name: "DWR 3-Layer Ripstop",
@@ -44,8 +43,7 @@ const FABRIC_MATRIX = [
     metric: "10,000 g/m² Breathability",
     shopQuery: "Ripstop",
     icon: Droplets,
-    image:
-      "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=900&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/fabric-dwr-ripstop.webp",
   },
   {
     name: "18.5µ Australian Merino",
@@ -55,8 +53,7 @@ const FABRIC_MATRIX = [
     metric: "18.5 Micron Fineness",
     shopQuery: "Merino",
     icon: Wind,
-    image:
-      "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=900&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526183/ecwearable/editorial/fabric-merino-wool.webp",
   },
   {
     name: "Cordura® 500D Ballistic",
@@ -66,8 +63,7 @@ const FABRIC_MATRIX = [
     metric: "500 Denier Toughness",
     shopQuery: "Cordura",
     icon: Layers,
-    image:
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
+    image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/fabric-cordura-ballistic.webp",
   },
 ] as const;
 
@@ -92,21 +88,21 @@ export default function HomePage() {
       id: "tee" as const,
       num: "1",
       tag: "280 GSM FRENCH TERRY",
-      position: "top-[34%] left-[44%]",
+      position: "top-[42%] left-[48%]",
       product: products.find((p) => p.id === "prod-tech-heavyweight-tee") || products[0],
     },
     {
       id: "cargo" as const,
       num: "2",
       tag: "DWR 3-LAYER RIPSTOP",
-      position: "top-[66%] left-[52%]",
+      position: "top-[78%] left-[48%]",
       product: products.find((p) => p.id === "prod-tech-ripstop-cargo") || products[1],
     },
     {
       id: "daypack" as const,
       num: "3",
       tag: "500D CORDURA® BALLISTIC",
-      position: "top-[48%] left-[72%]",
+      position: "top-[44%] left-[72%]",
       product: products.find((p) => p.id === "prod-tech-cordura-daypack") || products[5],
     },
   ];
@@ -209,16 +205,16 @@ export default function HomePage() {
           </div>
 
           {/* Right Column: Editorial Lookbook with Viewport-Safe Interactive Garment Pins */}
-          <div className="lg:col-span-7 relative min-h-[460px] sm:min-h-[540px] lg:min-h-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
+          <div className="lg:col-span-7 relative min-h-[480px] sm:min-h-[580px] lg:min-h-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
             <SafeImage
-              src="https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=1400&q=85"
-              alt="ECWEARABLE Technical Apparel Transit Editorial"
+              src="https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526182/ecwearable/editorial/hero-transit-editorial.webp"
+              alt="ECWEARABLE Technical Apparel Transit Editorial — 280 GSM Heavyweight Tee, DWR Ripstop Cargo Pant, and 500D Cordura Daypack"
               fill
               sizes="(max-width: 1024px) 100vw, 58vw"
               priority
               className="object-cover object-top"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/25 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30 pointer-events-none" />
 
             {/* Top Editorial Label */}
             <div className="absolute top-5 left-5 right-5 z-10 pointer-events-none flex items-start justify-between gap-4">
@@ -374,42 +370,45 @@ export default function HomePage() {
                 title: "Heavyweight Tees",
                 spec: "280 GSM French Terry",
                 href: "/shop?dressType=Heavyweight%20Tee",
-                image:
-                  "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=700&q=80",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/cat-heavyweight-tees.webp",
+                objectPosition: "object-top",
               },
               {
                 title: "Cargo Pants & Joggers",
                 spec: "Articulated Knee Shells",
                 href: "/shop?query=Cargo",
-                image:
-                  "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=700&q=80",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526180/ecwearable/editorial/cat-cargo-joggers.webp",
+                objectPosition: "object-top",
               },
               {
                 title: "Water-Resistant Windbreakers",
                 spec: "10K Hydrostatic Shell",
                 href: "/shop?dressType=Water-Resistant%20Windbreaker",
-                image:
-                  "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=700&q=80",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526180/ecwearable/editorial/cat-windbreakers.webp",
+                objectPosition: "object-top",
               },
               {
                 title: "Technical Bags & Caps",
                 spec: "500D Cordura® & Fidlock®",
                 href: "/shop?category=ACCESSORIES",
-                image:
-                  "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=80",
+                image: "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/cat-bags-caps.webp",
+                objectPosition: "object-center",
               },
             ].map((cat, idx) => (
               <ScrollReveal key={cat.title} delay={idx * 0.05}>
                 <Link
                   href={cat.href}
-                  className="group relative aspect-[4/5] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4 transition-all duration-200 hover:border-zinc-500"
+                  className="group relative aspect-[3/4] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4 transition-all duration-200 hover:border-zinc-500"
                 >
                   <SafeImage
                     src={cat.image}
                     alt={cat.title}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover object-top group-hover:scale-105 transition-transform duration-500 opacity-85 group-hover:opacity-95"
+                    className={cn(
+                      "object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100",
+                      cat.objectPosition
+                    )}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                   <div className="relative z-10 text-white space-y-1">
@@ -485,13 +484,13 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
-              <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-25 hidden md:block pointer-events-none">
+              <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-40 hidden md:block pointer-events-none">
                 <SafeImage
-                  src="https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80"
-                  alt="Technical ripstop weave texture"
+                  src="https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526181/ecwearable/editorial/banner-monsoon-lab.webp"
+                  alt="Hydrostatic waterproof ripstop membrane with taped seam detail"
                   fill
                   sizes="50vw"
-                  className="object-cover"
+                  className="object-cover object-center"
                 />
               </div>
             </div>

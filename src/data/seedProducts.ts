@@ -30,24 +30,27 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Obsidian Black",
         colorHex: "#111111",
         images: [
-          "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526208/ecwearable/products/prod-tech-heavyweight-tee/obsidian-black-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526209/ecwearable/products/prod-tech-heavyweight-tee/obsidian-black-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526210/ecwearable/products/prod-tech-heavyweight-tee/obsidian-black-3-detail.webp"
         ]
       },
       {
         colorName: "Washed Olive",
         colorHex: "#36453B",
         images: [
-          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526210/ecwearable/products/prod-tech-heavyweight-tee/washed-olive-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526211/ecwearable/products/prod-tech-heavyweight-tee/washed-olive-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526211/ecwearable/products/prod-tech-heavyweight-tee/washed-olive-3-detail.webp"
         ]
       },
       {
         colorName: "Warm Stone",
         colorHex: "#8E8A82",
         images: [
-          "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526211/ecwearable/products/prod-tech-heavyweight-tee/warm-stone-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526210/ecwearable/products/prod-tech-heavyweight-tee/warm-stone-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526210/ecwearable/products/prod-tech-heavyweight-tee/warm-stone-3-detail.webp"
         ]
       }
     ],
@@ -131,16 +134,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Tactical Charcoal",
         colorHex: "#22252A",
         images: [
-          "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526214/ecwearable/products/prod-tech-ripstop-cargo/tactical-charcoal-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526214/ecwearable/products/prod-tech-ripstop-cargo/tactical-charcoal-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526215/ecwearable/products/prod-tech-ripstop-cargo/tactical-charcoal-3-detail.webp"
         ]
       },
       {
         colorName: "Olive Drab",
         colorHex: "#3A4333",
         images: [
-          "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526213/ecwearable/products/prod-tech-ripstop-cargo/olive-drab-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526213/ecwearable/products/prod-tech-ripstop-cargo/olive-drab-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526214/ecwearable/products/prod-tech-ripstop-cargo/olive-drab-3-detail.webp"
         ]
       }
     ],
@@ -224,16 +229,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Deep Heather Charcoal",
         colorHex: "#282828",
         images: [
-          "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526212/ecwearable/products/prod-tech-merino-crewneck/heather-charcoal-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526212/ecwearable/products/prod-tech-merino-crewneck/heather-charcoal-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526212/ecwearable/products/prod-tech-merino-crewneck/heather-charcoal-3-detail.webp"
         ]
       },
       {
         colorName: "Pine Forest",
         colorHex: "#1E3024",
         images: [
-          "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526212/ecwearable/products/prod-tech-merino-crewneck/pine-forest-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526212/ecwearable/products/prod-tech-merino-crewneck/pine-forest-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526213/ecwearable/products/prod-tech-merino-crewneck/pine-forest-3-detail.webp"
         ]
       }
     ],
@@ -317,16 +324,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Stealth Black",
         colorHex: "#0F1012",
         images: [
-          "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526216/ecwearable/products/prod-tech-storm-windbreaker/stealth-black-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526216/ecwearable/products/prod-tech-storm-windbreaker/stealth-black-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526216/ecwearable/products/prod-tech-storm-windbreaker/stealth-black-3-detail.webp"
         ]
       },
       {
         colorName: "Signal Ember",
         colorHex: "#C74B28",
         images: [
-          "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526215/ecwearable/products/prod-tech-storm-windbreaker/signal-ember-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526215/ecwearable/products/prod-tech-storm-windbreaker/signal-ember-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526215/ecwearable/products/prod-tech-storm-windbreaker/signal-ember-3-detail.webp"
         ]
       }
     ],
@@ -410,8 +419,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Deep Onyx",
         colorHex: "#171717",
         images: [
-          "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526208/ecwearable/products/prod-tech-active-jogger/deep-onyx-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526208/ecwearable/products/prod-tech-active-jogger/deep-onyx-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526209/ecwearable/products/prod-tech-active-jogger/deep-onyx-3-detail.webp"
         ]
       }
     ],
@@ -480,8 +490,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Tactical Black",
         colorHex: "#121314",
         images: [
-          "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526208/ecwearable/products/prod-tech-cordura-daypack/tactical-black-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526209/ecwearable/products/prod-tech-cordura-daypack/tactical-black-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526209/ecwearable/products/prod-tech-cordura-daypack/tactical-black-3-detail.webp"
         ]
       }
     ],
@@ -529,8 +540,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Stealth Black",
         colorHex: "#0D0E10",
         images: [
-          "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=900&q=80",
-          "https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?auto=format&fit=crop&w=900&q=80"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526216/ecwearable/products/prod-tech-transit-cap/stealth-black-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526217/ecwearable/products/prod-tech-transit-cap/stealth-black-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526218/ecwearable/products/prod-tech-transit-cap/stealth-black-3-detail.webp"
         ]
       }
     ],
@@ -579,24 +591,27 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Ecru Alabaster",
         colorHex: "#F2EFE9",
         images: [
-          "/images/catalog/prod-men-linen-shirt-1_8830.webp",
-          "/images/catalog/prod-men-linen-shirt-2_8864.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526200/ecwearable/products/prod-men-linen-shirt/ecru-alabaster-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526197/ecwearable/products/prod-men-linen-shirt/ecru-alabaster-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526198/ecwearable/products/prod-men-linen-shirt/ecru-alabaster-3-detail.webp"
         ]
       },
       {
         colorName: "Botanical Cypress",
         colorHex: "#2D4A3E",
         images: [
-          "/images/catalog/prod-men-linen-shirt-3_5438.webp",
-          "/images/catalog/prod-men-linen-shirt-4_8866.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526196/ecwearable/products/prod-men-linen-shirt/botanical-cypress-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526196/ecwearable/products/prod-men-linen-shirt/botanical-cypress-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526196/ecwearable/products/prod-men-linen-shirt/botanical-cypress-3-detail.webp"
         ]
       },
       {
         colorName: "Midnight Espresso",
         colorHex: "#181816",
         images: [
-          "/images/catalog/prod-men-linen-shirt-5_1129.webp",
-          "/images/catalog/prod-men-linen-shirt-6_1130.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526198/ecwearable/products/prod-men-linen-shirt/midnight-espresso-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526200/ecwearable/products/prod-men-linen-shirt/midnight-espresso-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526200/ecwearable/products/prod-men-linen-shirt/midnight-espresso-3-detail.webp"
         ]
       }
     ],
@@ -662,16 +677,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Warm Alabaster",
         colorHex: "#FAF8F5",
         images: [
-          "/images/catalog/prod-men-panjabi-festive-1_1130.webp",
-          "/images/catalog/prod-men-panjabi-festive-2_1130.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526202/ecwearable/products/prod-men-panjabi-festive/warm-alabaster-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526202/ecwearable/products/prod-men-panjabi-festive/warm-alabaster-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526204/ecwearable/products/prod-men-panjabi-festive/warm-alabaster-3-detail.webp"
         ]
       },
       {
         colorName: "Midnight Navy",
         colorHex: "#1B2430",
         images: [
-          "/images/catalog/prod-men-panjabi-festive-3_2089.webp",
-          "/images/catalog/prod-men-panjabi-festive-4_2089.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526200/ecwearable/products/prod-men-panjabi-festive/midnight-navy-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526202/ecwearable/products/prod-men-panjabi-festive/midnight-navy-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526202/ecwearable/products/prod-men-panjabi-festive/midnight-navy-3-detail.webp"
         ]
       }
     ],
@@ -737,16 +754,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Terracotta Rust",
         colorHex: "#9E4733",
         images: [
-          "/images/catalog/prod-men-polo-egyptian-1_2090.webp",
-          "/images/catalog/prod-men-polo-egyptian-2_2090.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526197/ecwearable/products/prod-men-egyptian-polo/terracotta-rust-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526201/ecwearable/products/prod-men-egyptian-polo/terracotta-rust-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526193/ecwearable/products/prod-men-egyptian-polo/terracotta-rust-3-detail.webp"
         ]
       },
       {
         colorName: "Obsidian Charcoal",
         colorHex: "#141413",
         images: [
-          "/images/catalog/prod-men-polo-egyptian-3_3582.webp",
-          "/images/catalog/prod-men-polo-egyptian-4_3582.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526190/ecwearable/products/prod-men-egyptian-polo/obsidian-charcoal-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526192/ecwearable/products/prod-men-egyptian-polo/obsidian-charcoal-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526195/ecwearable/products/prod-men-egyptian-polo/obsidian-charcoal-3-detail.webp"
         ]
       }
     ],
@@ -812,16 +831,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Sand Stone",
         colorHex: "#D8D2C2",
         images: [
-          "/images/catalog/prod-men-chino-trouser-1_3582.webp",
-          "/images/catalog/prod-men-chino-trouser-2_3582.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526204/ecwearable/products/prod-men-pleated-chino/sand-stone-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526204/ecwearable/products/prod-men-pleated-chino/sand-stone-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526204/ecwearable/products/prod-men-pleated-chino/sand-stone-3-detail.webp"
         ]
       },
       {
         colorName: "Deep Espresso",
         colorHex: "#141413",
         images: [
-          "/images/catalog/prod-men-chino-trouser-3_4905.webp",
-          "/images/catalog/prod-men-chino-trouser-4_4905.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526204/ecwearable/products/prod-men-pleated-chino/deep-espresso-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526203/ecwearable/products/prod-men-pleated-chino/deep-espresso-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526204/ecwearable/products/prod-men-pleated-chino/deep-espresso-3-detail.webp"
         ]
       }
     ],
@@ -887,8 +908,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Olive Sage",
         colorHex: "#3E4A3E",
         images: [
-          "/images/catalog/prod-men-merino-overshirt-1_4906.webp",
-          "/images/catalog/prod-men-merino-overshirt-2_4906.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526202/ecwearable/products/prod-men-merino-overshirt/olive-sage-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526201/ecwearable/products/prod-men-merino-overshirt/olive-sage-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526202/ecwearable/products/prod-men-merino-overshirt/olive-sage-3-detail.webp"
         ]
       }
     ],
@@ -943,16 +965,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Raw Silk Ecru",
         colorHex: "#F5F1E8",
         images: [
-          "/images/catalog/prod-women-muslin-saree-1_6236.webp",
-          "/images/catalog/prod-women-muslin-saree-2_6237.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526227/ecwearable/products/prod-women-muslin-saree/raw-silk-ecru-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526227/ecwearable/products/prod-women-muslin-saree/raw-silk-ecru-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526228/ecwearable/products/prod-women-muslin-saree/raw-silk-ecru-3-detail.webp"
         ]
       },
       {
         colorName: "Crimson Rust",
         colorHex: "#8D3426",
         images: [
-          "/images/catalog/prod-women-muslin-saree-3_6237.webp",
-          "/images/catalog/prod-women-muslin-saree-4_5484.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526226/ecwearable/products/prod-women-muslin-saree/crimson-rust-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526227/ecwearable/products/prod-women-muslin-saree/crimson-rust-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526227/ecwearable/products/prod-women-muslin-saree/crimson-rust-3-detail.webp"
         ]
       }
     ],
@@ -997,16 +1021,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Cypress Green",
         colorHex: "#2D4A3E",
         images: [
-          "/images/catalog/prod-women-linen-midi-dress-1_7056.webp",
-          "/images/catalog/prod-women-linen-midi-dress-2_7056.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526224/ecwearable/products/prod-women-linen-midi-dress/cypress-green-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526224/ecwearable/products/prod-women-linen-midi-dress/cypress-green-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526225/ecwearable/products/prod-women-linen-midi-dress/cypress-green-3-detail.webp"
         ]
       },
       {
         colorName: "Warm Sand",
         colorHex: "#E5DEC9",
         images: [
-          "/images/catalog/prod-women-linen-midi-dress-3_7056.webp",
-          "/images/catalog/prod-women-linen-midi-dress-4_7056.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526226/ecwearable/products/prod-women-linen-midi-dress/warm-sand-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526226/ecwearable/products/prod-women-linen-midi-dress/warm-sand-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526225/ecwearable/products/prod-women-linen-midi-dress/warm-sand-3-detail.webp"
         ]
       }
     ],
@@ -1072,16 +1098,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Terracotta Earth",
         colorHex: "#9E4733",
         images: [
-          "/images/catalog/prod-women-silk-kurti-1_8698.webp",
-          "/images/catalog/prod-women-silk-kurti-2_8698.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526223/ecwearable/products/prod-women-embroidered-kurti/terracotta-earth-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526223/ecwearable/products/prod-women-embroidered-kurti/terracotta-earth-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526223/ecwearable/products/prod-women-embroidered-kurti/terracotta-earth-3-detail.webp"
         ]
       },
       {
         colorName: "Ecru Ivory",
         colorHex: "#F8F5EE",
         images: [
-          "/images/catalog/img_15391091368813be.webp",
-          "/images/catalog/img_1485968579580b6d.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526222/ecwearable/products/prod-women-embroidered-kurti/ecru-ivory-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526222/ecwearable/products/prod-women-embroidered-kurti/ecru-ivory-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526223/ecwearable/products/prod-women-embroidered-kurti/ecru-ivory-3-detail.webp"
         ]
       }
     ],
@@ -1140,8 +1168,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Oatmeal Stone",
         colorHex: "#D6CEBF",
         images: [
-          "/images/catalog/prod-women-linen-blazer-1_8698.webp",
-          "/images/catalog/prod-women-linen-blazer-2_8698.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526224/ecwearable/products/prod-women-linen-coord/oatmeal-stone-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526223/ecwearable/products/prod-women-linen-coord/oatmeal-stone-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526224/ecwearable/products/prod-women-linen-coord/oatmeal-stone-3-detail.webp"
         ]
       }
     ],
@@ -1200,8 +1229,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Deep Charcoal",
         colorHex: "#1C1C1B",
         images: [
-          "/images/catalog/prod-women-linen-trouser-1_9711.webp",
-          "/images/catalog/prod-women-linen-trouser-2_9711.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526221/ecwearable/products/prod-women-cashmere-abaya/deep-charcoal-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526221/ecwearable/products/prod-women-cashmere-abaya/deep-charcoal-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526221/ecwearable/products/prod-women-cashmere-abaya/deep-charcoal-3-detail.webp"
         ]
       }
     ],
@@ -1256,16 +1286,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Mustard Saffron",
         colorHex: "#DDA15E",
         images: [
-          "/images/catalog/prod-kids-cotton-panjabi-1_9711.webp",
-          "/images/catalog/prod-kids-cotton-panjabi-2_9711.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526188/ecwearable/products/prod-kids-panjabi-boy/mustard-saffron-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526190/ecwearable/products/prod-kids-panjabi-boy/mustard-saffron-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526189/ecwearable/products/prod-kids-panjabi-boy/mustard-saffron-3-detail.webp"
         ]
       },
       {
         colorName: "Raw Silk Off-White",
         colorHex: "#FAF6EF",
         images: [
-          "/images/catalog/img_1519689680058324.webp",
-          "/images/catalog/img_1503919545889aef.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526190/ecwearable/products/prod-kids-panjabi-boy/raw-silk-off-white-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526189/ecwearable/products/prod-kids-panjabi-boy/raw-silk-off-white-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526190/ecwearable/products/prod-kids-panjabi-boy/raw-silk-off-white-3-detail.webp"
         ]
       }
     ],
@@ -1324,8 +1356,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Blush Clay",
         colorHex: "#D8A48F",
         images: [
-          "/images/catalog/prod-kids-linen-frock-1_1419.webp",
-          "/images/catalog/prod-kids-linen-frock-2_1420.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526187/ecwearable/products/prod-kids-linen-frock/blush-clay-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526187/ecwearable/products/prod-kids-linen-frock/blush-clay-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526188/ecwearable/products/prod-kids-linen-frock/blush-clay-3-detail.webp"
         ]
       }
     ],
@@ -1384,8 +1417,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Sage Mint",
         colorHex: "#B7C4B0",
         images: [
-          "/images/catalog/prod-kids-terry-romper-1_4304.webp",
-          "/images/catalog/prod-kids-terry-romper-2_4304.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526190/ecwearable/products/prod-kids-romper-toddler/sage-mint-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526190/ecwearable/products/prod-kids-romper-toddler/sage-mint-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526191/ecwearable/products/prod-kids-romper-toddler/sage-mint-3-detail.webp"
         ]
       }
     ],
@@ -1444,8 +1478,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Washed Indigo",
         colorHex: "#3A506B",
         images: [
-          "/images/catalog/prod-kids-knit-cardigan-1_4304.webp",
-          "/images/catalog/prod-kids-knit-cardigan-2_4304.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526187/ecwearable/products/prod-kids-denim-jacket/washed-indigo-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526187/ecwearable/products/prod-kids-denim-jacket/washed-indigo-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526187/ecwearable/products/prod-kids-denim-jacket/washed-indigo-3-detail.webp"
         ]
       }
     ],
@@ -1507,16 +1542,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Brushed Steel & Obsidian",
         colorHex: "#C5A059",
         images: [
-          "/images/catalog/prod-wear-chronograph-40mm-1_5575.webp",
-          "/images/catalog/prod-wear-chronograph-40mm-2_5575.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526217/ecwearable/products/prod-watch-chronograph-auto/brushed-steel-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526218/ecwearable/products/prod-watch-chronograph-auto/brushed-steel-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526218/ecwearable/products/prod-watch-chronograph-auto/brushed-steel-3-detail.webp"
         ]
       },
       {
         colorName: "Midnight Blackout",
         colorHex: "#141413",
         images: [
-          "/images/catalog/prod-wear-chronograph-40mm-3_5575.webp",
-          "/images/catalog/prod-wear-chronograph-40mm-4_5575.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526218/ecwearable/products/prod-watch-chronograph-auto/midnight-blackout-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526218/ecwearable/products/prod-watch-chronograph-auto/midnight-blackout-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526218/ecwearable/products/prod-watch-chronograph-auto/midnight-blackout-3-detail.webp"
         ]
       }
     ],
@@ -1560,8 +1597,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Cognac Brown & Brass",
         colorHex: "#99582A",
         images: [
-          "/images/catalog/prod-wear-bauhaus-dress-watch-1_6476.webp",
-          "/images/catalog/prod-wear-bauhaus-dress-watch-2_6476.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526219/ecwearable/products/prod-watch-heritage-leather/cognac-brass-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526219/ecwearable/products/prod-watch-heritage-leather/cognac-brass-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526220/ecwearable/products/prod-watch-heritage-leather/cognac-brass-3-detail.webp"
         ]
       }
     ],
@@ -1606,16 +1644,18 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Oxblood Espresso",
         colorHex: "#3D2B1F",
         images: [
-          "/images/catalog/prod-wear-chelsea-boots-1_6476.webp",
-          "/images/catalog/prod-wear-chelsea-boots-2_6476.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-chelsea-boot/oxblood-espresso-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-chelsea-boot/oxblood-espresso-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-chelsea-boot/oxblood-espresso-3-detail.webp"
         ]
       },
       {
         colorName: "Obsidian Black",
         colorHex: "#141413",
         images: [
-          "/images/catalog/img_15431635211bf539.webp",
-          "/images/catalog/img_1520639888713785.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526205/ecwearable/products/prod-shoe-chelsea-boot/obsidian-black-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-chelsea-boot/obsidian-black-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-chelsea-boot/obsidian-black-3-detail.webp"
         ]
       }
     ],
@@ -1687,8 +1727,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Snuff Suede Tobacco",
         colorHex: "#785338",
         images: [
-          "/images/catalog/prod-wear-braided-loafer-1_0035.webp",
-          "/images/catalog/prod-wear-braided-loafer-2_0035.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-suede-loafer/snuff-suede-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526206/ecwearable/products/prod-shoe-suede-loafer/snuff-suede-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526207/ecwearable/products/prod-shoe-suede-loafer/snuff-suede-3-detail.webp"
         ]
       }
     ],
@@ -1746,8 +1787,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Satin Silver",
         colorHex: "#D0D3D4",
         images: [
-          "/images/catalog/prod-wear-silver-cuff-1_0035.webp",
-          "/images/catalog/prod-wear-silver-cuff-2_0035.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526185/ecwearable/products/prod-jewelry-silver-cuff/satin-silver-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526185/ecwearable/products/prod-jewelry-silver-cuff/satin-silver-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526187/ecwearable/products/prod-jewelry-silver-cuff/satin-silver-3-detail.webp"
         ]
       }
     ],
@@ -1798,8 +1840,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Espresso & Brass",
         colorHex: "#3E2723",
         images: [
-          "/images/catalog/prod-wear-leather-wrap-bracelet-1_1299.webp",
-          "/images/catalog/prod-wear-leather-wrap-bracelet-2_1299.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526184/ecwearable/products/prod-jewelry-braided-wristband/espresso-brass-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526185/ecwearable/products/prod-jewelry-braided-wristband/espresso-brass-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526185/ecwearable/products/prod-jewelry-braided-wristband/espresso-brass-3-detail.webp"
         ]
       }
     ],
@@ -1845,8 +1888,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Oatmeal Flax",
         colorHex: "#D8C7B5",
         images: [
-          "/images/catalog/prod-men-linen-blazer-1.webp",
-          "/images/catalog/prod-men-linen-blazer-2.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526196/ecwearable/products/prod-men-linen-blazer/oatmeal-flax-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526194/ecwearable/products/prod-men-linen-blazer/oatmeal-flax-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526194/ecwearable/products/prod-men-linen-blazer/oatmeal-flax-3-detail.webp"
         ]
       }
     ],
@@ -1906,8 +1950,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Caramel Honey",
         colorHex: "#C19A6B",
         images: [
-          "/images/catalog/prod-women-trench-1.webp",
-          "/images/catalog/prod-women-trench-2.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526229/ecwearable/products/prod-women-trench-coat/caramel-honey-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526228/ecwearable/products/prod-women-trench-coat/caramel-honey-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526229/ecwearable/products/prod-women-trench-coat/caramel-honey-3-detail.webp"
         ]
       }
     ],
@@ -1966,8 +2011,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Midnight Obsidian",
         colorHex: "#151515",
         images: [
-          "/images/catalog/prod-women-silk-gown-1.webp",
-          "/images/catalog/prod-women-silk-gown-2.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526227/ecwearable/products/prod-women-silk-gown/midnight-obsidian-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526228/ecwearable/products/prod-women-silk-gown/midnight-obsidian-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526228/ecwearable/products/prod-women-silk-gown/midnight-obsidian-3-detail.webp"
         ]
       }
     ],
@@ -2019,8 +2065,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Cognac Amber",
         colorHex: "#9E5B28",
         images: [
-          "/images/catalog/prod-bag-leather-duffel-1.webp",
-          "/images/catalog/prod-bag-leather-duffel-2.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526182/ecwearable/products/prod-bag-leather-duffel/cognac-amber-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526182/ecwearable/products/prod-bag-leather-duffel/cognac-amber-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526183/ecwearable/products/prod-bag-leather-duffel/cognac-amber-3-detail.webp"
         ]
       }
     ],
@@ -2064,8 +2111,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Gunmetal & Charcoal",
         colorHex: "#2C3539",
         images: [
-          "/images/catalog/prod-eyewear-aviator-1.webp",
-          "/images/catalog/prod-eyewear-aviator-2.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526182/ecwearable/products/prod-eyewear-aviator/gunmetal-charcoal-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526183/ecwearable/products/prod-eyewear-aviator/gunmetal-charcoal-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526184/ecwearable/products/prod-eyewear-aviator/gunmetal-charcoal-3-detail.webp"
         ]
       }
     ],
@@ -2110,8 +2158,9 @@ export const SEED_PRODUCTS: Product[] = [
         colorName: "Camel Ivory",
         colorHex: "#C19A6B",
         images: [
-          "/images/catalog/prod-wear-merino-scarf-1.webp",
-          "/images/catalog/prod-wear-merino-scarf-2.webp"
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526220/ecwearable/products/prod-wear-merino-scarf/camel-ivory-1-front.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526220/ecwearable/products/prod-wear-merino-scarf/camel-ivory-2-angle.webp",
+          "https://res.cloudinary.com/dg5gwims9/image/upload/f_auto,q_auto/v1795526221/ecwearable/products/prod-wear-merino-scarf/camel-ivory-3-detail.webp"
         ]
       }
     ],

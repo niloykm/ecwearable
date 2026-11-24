@@ -6,7 +6,7 @@ import { PackagePlus, Trash2, ExternalLink, Search } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function AdminProductsPage() {
@@ -112,7 +112,7 @@ export default function AdminProductsPage() {
                             alt={product.name}
                             fill
                             sizes="48px"
-                            className="object-cover object-top"
+                            className={getGarmentObjectPosition(product.mainCategory)}
                           />
                         </div>
                         <div className="min-w-0">

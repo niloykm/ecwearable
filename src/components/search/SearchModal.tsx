@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, ArrowRight } from "lucide-react";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
 
@@ -130,7 +130,7 @@ export function SearchModal() {
                             alt={p.name}
                             fill
                             sizes="48px"
-                            className="object-cover object-top"
+                            className={getGarmentObjectPosition(p.mainCategory)}
                           />
                         </div>
                         <div className="min-w-0">

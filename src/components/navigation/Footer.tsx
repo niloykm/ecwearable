@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Droplets, Feather, Shield, RefreshCw } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export function Footer() {
   return (
@@ -111,10 +111,10 @@ export function Footer() {
         {/* Bottom Bar: Copyright & Payment Guarantees */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
           <p>© 2026 ECWEARABLE Systems Inc. All rights reserved.</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             <span>7-Day Sizing Guarantee</span>
             <span>256-Bit SSL Encrypted</span>
-            <span>Dhaka Metro & Nationwide</span>
+            <span>Dhaka Metro &amp; Nationwide</span>
           </div>
         </div>
       </div>

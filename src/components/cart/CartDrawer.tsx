@@ -10,7 +10,7 @@ import {
   SHIPPING_FEES_BDT,
   formatPrice,
 } from "@/lib/utils";
-import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
+import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
 
@@ -162,7 +162,7 @@ export function CartDrawer() {
                             alt={item.product.name}
                             fill
                             sizes="80px"
-                            className="object-cover object-top"
+                            className={getGarmentObjectPosition(item.product.mainCategory)}
                           />
                         </div>
 
