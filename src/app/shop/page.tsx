@@ -8,7 +8,12 @@ import { useCommerceStore } from "@/store/useCommerceStore";
 import { ProductCard } from "@/components/product/ProductCard";
 import { TargetGender } from "@/types/commerce";
 import { formatPrice, cn } from "@/lib/utils";
-import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  PANEL_TRANSITION,
+  SPRING_INDICATOR,
+} from "@/components/motion/MotionPrimitives";
 
 const CATEGORY_OPTIONS = [
   { label: "All Items", val: "all" },
@@ -26,6 +31,315 @@ const GENDER_OPTIONS = [
   { label: "Women", val: "FEMALE" },
   { label: "Unisex", val: "UNISEX" },
 ] as const;
+
+interface ShopFilterControlsProps {
+  idPrefix: "desktop" | "mobile";
+  searchQuery: string;
+  setSearchQuery: (v: string) => void;
+  selectedGender: string;
+  setSelectedGender: (v: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (v: string) => void;
+  setSelectedDressType: (v: string) => void;
+  selectedSize: string;
+  setSelectedSize: (v: string) => void;
+  selectedColor: string;
+  setSelectedColor: (v: string) => void;
+  selectedFitType: string;
+  setSelectedFitType: (v: string) => void;
+  inStockOnly: boolean;
+  setInStockOnly: (v: boolean) => void;
+  maxPrice: number;
+  setMaxPrice: (v: number) => void;
+  maxProductPrice: number;
+  currency: "BDT" | "USD";
+  filterOptions: {
+    dressTypes: string[];
+    fitTypes: string[];
+    colors: { name: string; hex: string }[];
+    sizes: string[];
+  };
+}
+
+function ShopFilterControls({
+  idPrefix,
+  searchQuery,
+  setSearchQuery,
+  selectedGender,
+  setSelectedGender,
+  selectedCategory,
+  setSelectedCategory,
+  setSelectedDressType,
+  selectedSize,
+  setSelectedSize,
+  selectedColor,
+  setSelectedColor,
+  selectedFitType,
+  setSelectedFitType,
+  inStockOnly,
+  setInStockOnly,
+  maxPrice,
+  setMaxPrice,
+  maxProductPrice,
+  currency,
+  filterOptions,
+}: ShopFilterControlsProps) {
+  return (
+    <div className="space-y-6">
+      {/* Inline Catalog Search */}
+      <div className="space-y-2">
+        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+          Keyword Filter
+        </label>
+        <div className="relative">
+          <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="280 GSM, Ripstop, Merino..."
+            className="w-full pl-8 pr-7 py-2 text-xs bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-sm text-zinc-950 dark:text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-400 transition-colors duration-200"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear keyword"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors duration-200"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Department Filter */}
+      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+          Department
+        </label>
+        <div className="grid grid-cols-2 gap-1.5" role="group" aria-label="Department filter">
+          {GENDER_OPTIONS.map((g) => {
+            const active = selectedGender === g.val;
+            return (
+              <button
+                key={g.val}
+                type="button"
+                onClick={() => setSelectedGender(g.val)}
+                aria-pressed={active}
+                className={cn(
+                  "relative py-1.5 px-2.5 text-xs font-mono border rounded-sm text-center transition-colors duration-200 overflow-hidden",
+                  active
+                    ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
+                    : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId={`${idPrefix}-shop-gender-pill`}
+                    transition={SPRING_INDICATOR}
+                    className="absolute inset-0 bg-zinc-950 dark:bg-white"
+                  />
+                )}
+                <span className="relative z-10">{g.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Category Filter */}
+      <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+          Category
+        </label>
+        <div className="space-y-1" role="group" aria-label="Category filter">
+          {CATEGORY_OPTIONS.map((cat) => {
+            const active = selectedCategory === cat.val;
+            return (
+              <button
+                key={cat.val}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(cat.val);
+                  setSelectedDressType("all");
+                }}
+                aria-pressed={active}
+                className={cn(
+                  "relative w-full text-left px-2.5 py-1.5 text-xs rounded-sm transition-colors duration-200 flex items-center justify-between overflow-hidden",
+                  active
+                    ? "text-white dark:text-zinc-950 font-semibold"
+                    : "text-zinc-700 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-950 dark:hover:text-white"
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId={`${idPrefix}-shop-category-pill`}
+                    transition={SPRING_INDICATOR}
+                    className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-sm"
+                  />
+                )}
+                <span className="relative z-10">{cat.label}</span>
+                {active && <Check className="w-3.5 h-3.5 relative z-10" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Size Filter */}
+      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+          Garment Size
+        </label>
+        <div className="grid grid-cols-3 gap-1.5" role="group" aria-label="Garment size filter">
+          {["all", ...filterOptions.sizes.slice(0, 14)].map((s) => {
+            const active = selectedSize === s;
+            const label = s === "all" ? "All" : s;
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSelectedSize(s)}
+                aria-pressed={active}
+                className={cn(
+                  "relative py-1.5 px-1.5 text-[11px] font-mono font-medium border rounded-sm text-center truncate transition-colors duration-200 overflow-hidden",
+                  active
+                    ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
+                    : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
+                )}
+                title={label}
+              >
+                {active && (
+                  <motion.span
+                    layoutId={`${idPrefix}-shop-size-pill`}
+                    transition={SPRING_INDICATOR}
+                    className="absolute inset-0 bg-zinc-950 dark:bg-white"
+                  />
+                )}
+                <span className="relative z-10">{label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Color Swatches */}
+      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex justify-between items-center">
+          <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white">
+            Color Palette
+          </label>
+          {selectedColor !== "all" && (
+            <button
+              type="button"
+              onClick={() => setSelectedColor("all")}
+              className="text-[10px] font-mono text-zinc-500 hover:text-zinc-950 dark:hover:text-white hover:underline transition-colors duration-200"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {filterOptions.colors.map((c) => (
+            <button
+              key={c.name}
+              type="button"
+              onClick={() => setSelectedColor(selectedColor === c.name ? "all" : c.name)}
+              title={c.name}
+              aria-label={`Filter by color ${c.name}`}
+              aria-pressed={selectedColor === c.name}
+              className={cn(
+                "w-6 h-6 rounded-full border-2 transition-all duration-200 ease-editorial p-0.5",
+                selectedColor === c.name
+                  ? "border-zinc-950 dark:border-white scale-110 ring-1 ring-zinc-400"
+                  : "border-transparent opacity-80 hover:opacity-100 hover:scale-105"
+              )}
+            >
+              <div
+                className="w-full h-full rounded-full border border-black/15"
+                style={{ backgroundColor: c.hex }}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Max Price Slider */}
+      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex justify-between items-center text-xs font-sans">
+          <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white">
+            Max Price
+          </label>
+          <span className="font-mono font-bold text-zinc-950 dark:text-white tabular-nums">
+            {formatPrice(maxPrice, currency)}
+          </span>
+        </div>
+        <input
+          type="range"
+          aria-label="Maximum price filter"
+          min="1000"
+          max={maxProductPrice}
+          step="250"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(Number(e.target.value))}
+          className="w-full accent-zinc-950 dark:accent-white cursor-pointer"
+        />
+      </div>
+
+      {/* In-Stock Toggle */}
+      <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <label className="flex items-center justify-between cursor-pointer">
+          <span className="text-xs font-sans text-zinc-800 dark:text-zinc-200 font-medium">
+            In-Stock Items Only
+          </span>
+          <input
+            type="checkbox"
+            checked={inStockOnly}
+            onChange={(e) => setInStockOnly(e.target.checked)}
+            className="w-4 h-4 accent-zinc-950 dark:accent-white cursor-pointer"
+          />
+        </label>
+      </div>
+
+      {/* Fit Silhouette */}
+      <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
+          Garment Fit Silhouette
+        </label>
+        <div className="space-y-1" role="group" aria-label="Garment fit silhouette">
+          {["all", ...filterOptions.fitTypes].map((fit) => {
+            const active = selectedFitType === fit;
+            return (
+              <button
+                key={fit}
+                type="button"
+                onClick={() => setSelectedFitType(fit)}
+                aria-pressed={active}
+                className={cn(
+                  "relative w-full text-left px-2.5 py-1.5 text-xs rounded-sm transition-colors duration-200 flex items-center justify-between overflow-hidden",
+                  active
+                    ? "text-zinc-950 dark:text-white font-bold"
+                    : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId={`${idPrefix}-shop-fit-pill`}
+                    transition={SPRING_INDICATOR}
+                    className="absolute inset-0 bg-zinc-100 dark:bg-zinc-900 rounded-sm"
+                  />
+                )}
+                <span className="relative z-10">{fit === "all" ? "All Silhouettes" : fit}</span>
+                {active && <Check className="w-3.5 h-3.5 relative z-10" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -98,6 +412,58 @@ function ShopContent() {
 
     return { dressTypes, fitTypes, colors, sizes: sortedSizes };
   }, [products]);
+
+  // Context-aware garment typology pills (scoped to active department/category so strip stays scannable)
+  const visibleDressTypes = useMemo(() => {
+    const scoped = products.filter((p) => {
+      if (selectedGender !== "all") {
+        if (selectedGender === "UNISEX") {
+          if (p.gender !== "UNISEX") return false;
+        } else if (p.gender !== selectedGender && p.gender !== "UNISEX") {
+          return false;
+        }
+      }
+      if (selectedCategory !== "all") {
+        if (
+          selectedCategory === "OUTERWEAR" &&
+          p.mainCategory !== "OUTERWEAR" &&
+          !p.dressType.includes("Windbreaker") &&
+          !p.dressType.includes("Cargo")
+        )
+          return false;
+        if (
+          selectedCategory === "BASICS" &&
+          p.mainCategory !== "BASICS" &&
+          !p.dressType.includes("Tee") &&
+          !p.dressType.includes("Crewneck") &&
+          !p.dressType.includes("Polo")
+        )
+          return false;
+        if (
+          selectedCategory === "ACCESSORIES" &&
+          p.mainCategory !== "ACCESSORIES" &&
+          p.mainCategory !== "WEARABLES" &&
+          !p.dressType.includes("Bag") &&
+          !p.dressType.includes("Cap")
+        )
+          return false;
+        if (
+          selectedCategory !== "OUTERWEAR" &&
+          selectedCategory !== "BASICS" &&
+          selectedCategory !== "ACCESSORIES" &&
+          p.mainCategory !== selectedCategory
+        )
+          return false;
+      }
+      return true;
+    });
+
+    const types = Array.from(new Set(scoped.map((p) => p.dressType))).slice(0, 12);
+    if (selectedDressType !== "all" && !types.includes(selectedDressType)) {
+      types.unshift(selectedDressType);
+    }
+    return types;
+  }, [products, selectedGender, selectedCategory, selectedDressType]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -254,251 +620,30 @@ function ShopContent() {
     sortBy,
   ]);
 
-  const FilterControls = () => (
-    <div className="space-y-6">
-      {/* Inline Catalog Search */}
-      <div className="space-y-2">
-        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
-          Keyword Filter
-        </label>
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="280 GSM, Ripstop, Merino..."
-            className="w-full pl-8 pr-7 py-2 text-xs bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-sm text-zinc-950 dark:text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-400"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              aria-label="Clear keyword"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-950"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-      </div>
+  const gridTransitionKey = `${selectedCollection}|${selectedGender}|${selectedCategory}|${selectedDressType}|${selectedFitType}|${selectedColor}|${selectedSize}|${inStockOnly}|${sortBy}|${filteredProducts.length === 0 ? "empty" : "list"}`;
 
-      {/* Gender Filter */}
-      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
-          Department
-        </label>
-        <div className="grid grid-cols-2 gap-1.5" role="group" aria-label="Department filter">
-          {GENDER_OPTIONS.map((g) => {
-            const active = selectedGender === g.val;
-            return (
-              <button
-                key={g.val}
-                type="button"
-                onClick={() => setSelectedGender(g.val)}
-                aria-pressed={active}
-                className={cn(
-                  "relative py-1.5 px-2.5 text-xs font-mono border rounded-sm text-center transition-colors duration-200 overflow-hidden",
-                  active
-                    ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
-                    : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
-                )}
-              >
-                {active && (
-                  <motion.span
-                    layoutId="shop-gender-pill"
-                    transition={SPRING_INDICATOR}
-                    className="absolute inset-0 bg-zinc-950 dark:bg-white"
-                  />
-                )}
-                <span className="relative z-10">{g.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Category Filter */}
-      <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
-          Category
-        </label>
-        <div className="space-y-1">
-          {CATEGORY_OPTIONS.map((cat) => (
-            <button
-              key={cat.val}
-              type="button"
-              onClick={() => {
-                setSelectedCategory(cat.val);
-                setSelectedDressType("all");
-              }}
-              className={cn(
-                "w-full text-left px-2.5 py-1.5 text-xs rounded-sm transition-colors flex items-center justify-between",
-                selectedCategory === cat.val
-                  ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-semibold"
-                  : "text-zinc-700 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-950 dark:hover:text-white"
-              )}
-            >
-              <span>{cat.label}</span>
-              {selectedCategory === cat.val && <Check className="w-3.5 h-3.5" />}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Size Filter */}
-      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
-          Garment Size
-        </label>
-        <div className="grid grid-cols-3 gap-1.5">
-          <button
-            type="button"
-            onClick={() => setSelectedSize("all")}
-            className={cn(
-              "py-1.5 px-2 text-[11px] font-mono font-medium border rounded-sm text-center transition-colors",
-              selectedSize === "all"
-                ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
-                : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
-            )}
-          >
-            All
-          </button>
-          {filterOptions.sizes.slice(0, 14).map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setSelectedSize(s)}
-              className={cn(
-                "py-1.5 px-1.5 text-[11px] font-mono font-medium border rounded-sm text-center truncate transition-colors",
-                selectedSize === s
-                  ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
-                  : "border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
-              )}
-              title={s}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Color Swatches */}
-      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <div className="flex justify-between items-center">
-          <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white">
-            Color Palette
-          </label>
-          {selectedColor !== "all" && (
-            <button
-              type="button"
-              onClick={() => setSelectedColor("all")}
-              className="text-[10px] font-mono text-zinc-500 hover:underline"
-            >
-              Reset
-            </button>
-          )}
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {filterOptions.colors.map((c) => (
-            <button
-              key={c.name}
-              type="button"
-              onClick={() => setSelectedColor(selectedColor === c.name ? "all" : c.name)}
-              title={c.name}
-              aria-label={`Filter by color ${c.name}`}
-              className={cn(
-                "w-6 h-6 rounded-full border-2 transition-all p-0.5",
-                selectedColor === c.name
-                  ? "border-zinc-950 dark:border-white scale-110 ring-1 ring-zinc-400"
-                  : "border-transparent opacity-80 hover:opacity-100"
-              )}
-            >
-              <div
-                className="w-full h-full rounded-full border border-black/15"
-                style={{ backgroundColor: c.hex }}
-              />
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Max Price Slider */}
-      <div className="space-y-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <div className="flex justify-between items-center text-xs font-sans">
-          <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white">
-            Max Price
-          </label>
-          <span className="font-mono font-bold text-zinc-950 dark:text-white tabular-nums">
-            {formatPrice(maxPrice, currency)}
-          </span>
-        </div>
-        <input
-          type="range"
-          aria-label="Maximum price filter"
-          min="1000"
-          max={maxProductPrice}
-          step="250"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full accent-zinc-950 dark:accent-white cursor-pointer"
-        />
-      </div>
-
-      {/* In-Stock Toggle */}
-      <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <label className="flex items-center justify-between cursor-pointer">
-          <span className="text-xs font-sans text-zinc-800 dark:text-zinc-200 font-medium">
-            In-Stock Items Only
-          </span>
-          <input
-            type="checkbox"
-            checked={inStockOnly}
-            onChange={(e) => setInStockOnly(e.target.checked)}
-            className="w-4 h-4 accent-zinc-950 dark:accent-white cursor-pointer"
-          />
-        </label>
-      </div>
-
-      {/* Fit Silhouette */}
-      <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-        <label className="text-[11px] uppercase font-mono tracking-wider font-semibold text-zinc-950 dark:text-white block">
-          Garment Fit Silhouette
-        </label>
-        <div className="space-y-1">
-          <button
-            type="button"
-            onClick={() => setSelectedFitType("all")}
-            className={cn(
-              "w-full text-left px-2.5 py-1.5 text-xs rounded-sm transition-colors flex items-center justify-between",
-              selectedFitType === "all"
-                ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white font-bold"
-                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-            )}
-          >
-            <span>All Silhouettes</span>
-            {selectedFitType === "all" && <Check className="w-3.5 h-3.5" />}
-          </button>
-          {filterOptions.fitTypes.map((fit) => (
-            <button
-              key={fit}
-              type="button"
-              onClick={() => setSelectedFitType(fit)}
-              className={cn(
-                "w-full text-left px-2.5 py-1.5 text-xs rounded-sm transition-colors flex items-center justify-between",
-                selectedFitType === fit
-                  ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white font-bold"
-                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-              )}
-            >
-              <span>{fit}</span>
-              {selectedFitType === fit && <Check className="w-3.5 h-3.5" />}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  const sharedFilterProps = {
+    searchQuery,
+    setSearchQuery,
+    selectedGender,
+    setSelectedGender,
+    selectedCategory,
+    setSelectedCategory,
+    setSelectedDressType,
+    selectedSize,
+    setSelectedSize,
+    selectedColor,
+    setSelectedColor,
+    selectedFitType,
+    setSelectedFitType,
+    inStockOnly,
+    setInStockOnly,
+    maxPrice,
+    setMaxPrice,
+    maxProductPrice,
+    currency,
+    filterOptions,
+  };
 
   return (
     <div className="w-full min-h-screen bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50">
@@ -525,7 +670,7 @@ function ShopContent() {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="px-3 py-1.5 text-xs font-mono uppercase bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-300 dark:hover:bg-zinc-700 rounded-sm transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 text-xs font-mono uppercase bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-300 dark:hover:bg-zinc-700 active:scale-[0.98] rounded-sm transition-all duration-200 flex items-center gap-1.5"
               >
                 <RotateCcw className="w-3 h-3" />
                 <span>Reset ({activeFilterCount})</span>
@@ -538,11 +683,11 @@ function ShopContent() {
       {/* Main Catalog Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
         {/* Mobile Controls */}
-        <div className="lg:hidden flex items-center justify-between gap-3 mb-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="lg:hidden flex items-center justify-between gap-3 mb-5 pb-4 border-b border-zinc-200 dark:border-zinc-800">
           <button
             type="button"
             onClick={() => setMobileFilterOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase tracking-wider font-semibold rounded-sm"
+            className="flex items-center gap-2 px-3.5 py-2 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase tracking-wider font-semibold rounded-sm active:scale-[0.98] transition-all duration-200"
           >
             <Filter className="w-3.5 h-3.5" />
             <span>Filters {activeFilterCount > 0 ? `(${activeFilterCount})` : ""}</span>
@@ -556,7 +701,7 @@ function ShopContent() {
               id="mobile-sort"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="text-xs font-sans bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-2 px-2.5 rounded-sm text-zinc-950 dark:text-zinc-100 focus:outline-none"
+              className="text-xs font-sans bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-2 px-2.5 rounded-sm text-zinc-950 dark:text-zinc-100 focus:outline-none transition-colors duration-200"
             >
               <option value="featured">Featured First</option>
               <option value="newest">Newest Releases</option>
@@ -580,18 +725,52 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={handleResetFilters}
-                    className="text-[11px] font-mono text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-200 underline"
+                    className="text-[11px] font-mono text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-200 underline transition-colors duration-200"
                   >
                     Clear All
                   </button>
                 )}
               </div>
-              <FilterControls />
+              <ShopFilterControls idPrefix="desktop" {...sharedFilterProps} />
             </div>
           </aside>
 
           {/* Product Grid */}
-          <div className="lg:col-span-9 space-y-6">
+          <div className="lg:col-span-9 space-y-5">
+            {/* Garment Type (dressType) Quick Filter Ribbon with Shared Indicator */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="tablist" aria-label="Garment type filter">
+              {["all", ...visibleDressTypes].map((dtype) => {
+                const active =
+                  dtype === "all"
+                    ? selectedDressType === "all"
+                    : selectedDressType.toLowerCase() === dtype.toLowerCase();
+                return (
+                  <button
+                    key={dtype}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setSelectedDressType(dtype)}
+                    className={cn(
+                      "relative px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider border rounded-sm whitespace-nowrap transition-colors duration-200 flex-shrink-0 overflow-hidden",
+                      active
+                        ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-bold"
+                        : "bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                    )}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="shop-dresstype-pill"
+                        transition={SPRING_INDICATOR}
+                        className="absolute inset-0 bg-zinc-950 dark:bg-white"
+                      />
+                    )}
+                    <span className="relative z-10">{dtype === "all" ? "All Types" : dtype}</span>
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Desktop Criteria & Sort */}
             <div className="hidden lg:flex items-center justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
               <div className="flex flex-wrap items-center gap-2">
@@ -600,7 +779,7 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={() => setSelectedGender("all")}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 rounded-sm"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 dark:hover:border-white rounded-sm transition-colors duration-200"
                   >
                     <span>Dept: {selectedGender}</span>
                     <X className="w-3 h-3" />
@@ -610,7 +789,7 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={() => setSelectedCategory("all")}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 rounded-sm"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 dark:hover:border-white rounded-sm transition-colors duration-200"
                   >
                     <span>Category: {selectedCategory}</span>
                     <X className="w-3 h-3" />
@@ -620,7 +799,7 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={() => setSelectedDressType("all")}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 rounded-sm"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 dark:hover:border-white rounded-sm transition-colors duration-200"
                   >
                     <span>Type: {selectedDressType}</span>
                     <X className="w-3 h-3" />
@@ -630,7 +809,7 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={() => setSelectedCollection("all")}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 rounded-sm"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 dark:hover:border-white rounded-sm transition-colors duration-200"
                   >
                     <span>Collection: {selectedCollection}</span>
                     <X className="w-3 h-3" />
@@ -640,7 +819,7 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={() => setSelectedSize("all")}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 rounded-sm"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 dark:hover:border-white rounded-sm transition-colors duration-200"
                   >
                     <span>Size: {selectedSize}</span>
                     <X className="w-3 h-3" />
@@ -650,7 +829,7 @@ function ShopContent() {
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 rounded-sm"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-zinc-950 dark:hover:border-white rounded-sm transition-colors duration-200"
                   >
                     <span>&quot;{searchQuery}&quot;</span>
                     <X className="w-3 h-3" />
@@ -669,7 +848,7 @@ function ShopContent() {
                   id="desktop-sort"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-1.5 px-2.5 rounded-sm text-zinc-950 dark:text-zinc-100 focus:outline-none font-sans"
+                  className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-1.5 px-2.5 rounded-sm text-zinc-950 dark:text-zinc-100 focus:outline-none font-sans transition-colors duration-200"
                 >
                   <option value="featured">Featured First</option>
                   <option value="newest">Newest First</option>
@@ -680,29 +859,46 @@ function ShopContent() {
               </div>
             </div>
 
-            {filteredProducts.length === 0 ? (
-              <div className="py-20 px-6 text-center space-y-3 border border-dashed border-zinc-300 dark:border-zinc-800">
-                <p className="font-sans font-bold text-lg text-zinc-950 dark:text-white">
-                  No garments match the current criteria
-                </p>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
-                  Try widening your price range, clearing size filters, or resetting search criteria.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleResetFilters}
-                  className="px-5 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold tracking-wider hover:bg-zinc-800 rounded-sm transition-colors"
+            {/* Smoothly Transitioning Filtered Grid */}
+            <AnimatePresence mode="wait">
+              {filteredProducts.length === 0 ? (
+                <motion.div
+                  key={gridTransitionKey}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={PANEL_TRANSITION}
+                  className="py-20 px-6 text-center space-y-3 border border-dashed border-zinc-300 dark:border-zinc-800"
                 >
-                  Reset All Filters
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-5">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            )}
+                  <p className="font-sans font-bold text-lg text-zinc-950 dark:text-white">
+                    No garments match the current criteria
+                  </p>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
+                    Try widening your price range, clearing size filters, or resetting search criteria.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                    className="px-5 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold tracking-wider hover:bg-zinc-800 dark:hover:bg-zinc-200 active:scale-[0.98] rounded-sm transition-all duration-200"
+                  >
+                    Reset All Filters
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={gridTransitionKey}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={PANEL_TRANSITION}
+                  className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-5"
+                >
+                  {filteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -715,7 +911,7 @@ function ShopContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: MOTION_EASE }}
+              transition={BACKDROP_TRANSITION}
               onClick={() => setMobileFilterOpen(false)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             />
@@ -724,7 +920,7 @@ function ShopContent() {
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
-                transition={{ duration: 0.28, ease: MOTION_EASE }}
+                transition={DRAWER_TRANSITION}
                 className="pointer-events-auto w-screen max-w-xs bg-white dark:bg-zinc-950 p-5 flex flex-col justify-between border-l border-zinc-200 dark:border-zinc-800"
               >
                 <div className="flex items-center justify-between pb-3.5 border-b border-zinc-200 dark:border-zinc-800">
@@ -735,28 +931,28 @@ function ShopContent() {
                     type="button"
                     onClick={() => setMobileFilterOpen(false)}
                     aria-label="Close Filters"
-                    className="p-1 text-zinc-600 hover:text-zinc-950"
+                    className="p-1 text-zinc-600 hover:text-zinc-950 dark:hover:text-white transition-colors duration-200"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto py-4 pr-1">
-                  <FilterControls />
+                  <ShopFilterControls idPrefix="mobile" {...sharedFilterProps} />
                 </div>
 
                 <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
                   <button
                     type="button"
                     onClick={handleResetFilters}
-                    className="flex-1 py-2.5 border border-zinc-300 dark:border-zinc-700 text-xs font-sans uppercase font-bold rounded-sm"
+                    className="flex-1 py-2.5 border border-zinc-300 dark:border-zinc-700 text-xs font-sans uppercase font-bold rounded-sm hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors duration-200"
                   >
                     Reset
                   </button>
                   <button
                     type="button"
                     onClick={() => setMobileFilterOpen(false)}
-                    className="flex-1 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold rounded-sm tabular-nums"
+                    className="flex-1 py-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-sans uppercase font-bold rounded-sm tabular-nums active:scale-[0.98] transition-all duration-200"
                   >
                     Apply ({filteredProducts.length})
                   </button>
@@ -770,9 +966,37 @@ function ShopContent() {
   );
 }
 
+function ShopShellFallback() {
+  return (
+    <div className="w-full min-h-screen bg-white dark:bg-zinc-950">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 py-8 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto space-y-2">
+          <div className="h-3 w-40 bg-zinc-200 dark:bg-zinc-800 rounded-sm" />
+          <div className="h-9 w-72 bg-zinc-200 dark:bg-zinc-800 rounded-sm" />
+          <div className="h-4 w-96 max-w-full bg-zinc-200/70 dark:bg-zinc-800/70 rounded-sm" />
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="hidden lg:block lg:col-span-3 space-y-4">
+          <div className="h-10 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-sm" />
+          <div className="h-44 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-sm" />
+        </div>
+        <div className="lg:col-span-9 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="aspect-[3/4] bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ShopPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs font-mono">Loading technical catalog...</div>}>
+    <Suspense fallback={<ShopShellFallback />}>
       <ShopContent />
     </Suspense>
   );

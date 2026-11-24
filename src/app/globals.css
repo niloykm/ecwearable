@@ -12,6 +12,7 @@
   --accent-olive: #365314;
   --accent-terracotta: #ea580c;
   --accent-champagne: #78716c;
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dark {

@@ -8,7 +8,11 @@ import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
 import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  PANEL_TRANSITION,
+} from "@/components/motion/MotionPrimitives";
 
 export function WishlistDrawer() {
   const {
@@ -41,7 +45,7 @@ export function WishlistDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: MOTION_EASE }}
+            transition={BACKDROP_TRANSITION}
             onClick={() => toggleWishlist(false)}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
@@ -51,7 +55,7 @@ export function WishlistDrawer() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ duration: 0.28, ease: MOTION_EASE }}
+              transition={DRAWER_TRANSITION}
               className="pointer-events-auto w-screen max-w-md bg-white dark:bg-zinc-950 shadow-2xl flex flex-col justify-between border-l border-zinc-200 dark:border-zinc-800"
             >
               {/* Header */}
@@ -95,14 +99,20 @@ export function WishlistDrawer() {
                     </Link>
                   </div>
                 ) : (
-                  wishlistedProducts.map((product) => {
-                    const primaryImg = product.colorVariants[0]?.images[0] || DEFAULT_PRODUCT_IMAGE;
+                  <AnimatePresence initial={false}>
+                    {wishlistedProducts.map((product) => {
+                      const primaryImg = product.colorVariants[0]?.images[0] || DEFAULT_PRODUCT_IMAGE;
 
-                    return (
-                      <div
-                        key={product.id}
-                        className="flex gap-4 pb-5 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0"
-                      >
+                      return (
+                        <motion.div
+                          key={product.id}
+                          layout
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, x: 16 }}
+                          transition={PANEL_TRANSITION}
+                          className="flex gap-4 pb-5 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0"
+                        >
                         <div className="relative w-20 h-24 flex-shrink-0 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
                           <SafeImage
                             src={optimizeCloudinaryUrl(primaryImg, { width: 160, height: 210 })}
@@ -156,9 +166,10 @@ export function WishlistDrawer() {
                             </button>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
+                      </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
                 )}
               </div>
             </motion.div>

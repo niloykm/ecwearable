@@ -82,7 +82,7 @@ export default function FabricGuidePage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 space-y-16">
         {FABRIC_CATALOG.map((f, idx) => (
           <ScrollReveal key={f.title}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pb-12 border-b border-zinc-200 dark:border-zinc-800 last:border-b-0">
+            <div className="group grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pb-12 border-b border-zinc-200 dark:border-zinc-800 last:border-b-0">
               <div
                 className={`lg:col-span-5 relative aspect-[4/3] bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden ${
                   idx % 2 === 1 ? "lg:order-2" : ""
@@ -93,7 +93,7 @@ export default function FabricGuidePage() {
                   alt={f.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 42vw"
-                  className="object-cover object-center"
+                  className="object-cover object-center transition-transform duration-300 ease-editorial group-hover:scale-[1.025]"
                 />
                 <div className="absolute top-3 left-3 bg-zinc-950/90 text-white px-2.5 py-1 text-[10px] font-mono font-bold tabular-nums">
                   {f.gsm}
@@ -135,10 +135,10 @@ export default function FabricGuidePage() {
                 <div className="pt-1">
                   <Link
                     href={`/shop?query=${encodeURIComponent(f.shopQuery)}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-sans uppercase font-bold tracking-wider text-zinc-950 dark:text-white hover:underline"
+                    className="group/link inline-flex items-center gap-1.5 text-xs font-sans uppercase font-bold tracking-wider text-zinc-950 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors duration-200"
                   >
                     <span>Explore {f.shopQuery} Garments</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 ease-editorial group-hover/link:translate-x-1" />
                   </Link>
                 </div>
               </div>

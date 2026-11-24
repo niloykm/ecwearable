@@ -85,8 +85,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       : 0;
 
   return (
-    <article className="group relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all duration-200 hover:border-zinc-400 dark:hover:border-zinc-600 hover:shadow-sm">
-      {/* Aspect 3:4 Image Frame with Smooth 220ms Layered Angle Swap */}
+    <article className="group relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all duration-220 ease-editorial hover:border-zinc-400 dark:hover:border-zinc-600 hover:shadow-sm">
+      {/* Aspect 3:4 Image Frame with Smooth 240ms Layered Angle Swap */}
       <div
         className="relative aspect-[3/4] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800"
         onMouseEnter={() => {
@@ -108,7 +108,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             priority={priority}
             className={cn(
               imagePositionClass,
-              "transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+              "transition-transform duration-280 ease-editorial group-hover:scale-[1.025]"
             )}
           />
           {hasAlternateAngle && hoverActivated && (
@@ -123,7 +123,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className={cn(
                 imagePositionClass,
-                "transition-opacity duration-[220ms] ease-out",
+                "transition-opacity duration-240 ease-editorial",
                 isHovered ? "opacity-100" : "opacity-0"
               )}
             />
@@ -170,7 +170,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         </button>
 
         {/* Quick Add Size Drawer (Reveals smoothly on hover & keyboard focus-within) */}
-        <div className="absolute inset-x-0 bottom-0 z-10 translate-y-full transition-transform duration-250 ease-out group-hover:translate-y-0 group-focus-within:translate-y-0 bg-zinc-950/95 backdrop-blur-md p-3 text-white border-t border-zinc-800">
+        <div className="absolute inset-x-0 bottom-0 z-10 translate-y-full transition-transform duration-250 ease-editorial group-hover:translate-y-0 group-focus-within:translate-y-0 bg-zinc-950/95 backdrop-blur-md p-3 text-white border-t border-zinc-800">
           <div className="flex items-center justify-between gap-2 mb-2">
             <span className="text-[10px] tracking-wider uppercase text-zinc-300 font-sans font-semibold">
               Quick Add Size

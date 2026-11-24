@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   LayoutDashboard,
   PackagePlus,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCommerceStore } from "@/store/useCommerceStore";
+import { SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -123,22 +125,32 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-2 px-3.5 py-2 text-xs font-sans uppercase tracking-wider rounded-sm transition-colors whitespace-nowrap border",
+                  "relative flex items-center gap-2 px-3.5 py-2 text-xs font-sans uppercase tracking-wider rounded-sm transition-colors duration-200 whitespace-nowrap border",
                   isActive
                     ? isDark
-                      ? "bg-white text-zinc-950 border-white font-semibold"
-                      : "bg-zinc-950 text-white border-zinc-950 font-semibold"
+                      ? "text-zinc-950 border-white font-semibold"
+                      : "text-white border-zinc-950 font-semibold"
                     : isDark
                     ? "border-transparent text-zinc-400 hover:text-white hover:bg-zinc-900"
                     : "border-transparent text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
                 )}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{item.label}</span>
+                {isActive && (
+                  <motion.span
+                    layoutId="admin-nav-pill"
+                    transition={SPRING_INDICATOR}
+                    className={cn(
+                      "absolute inset-0 rounded-sm",
+                      isDark ? "bg-white" : "bg-zinc-950"
+                    )}
+                  />
+                )}
+                <Icon className="w-3.5 h-3.5 relative z-10" />
+                <span className="relative z-10">{item.label}</span>
                 {item.badge !== undefined && (
                   <span
                     className={cn(
-                      "text-[10px] font-mono px-1.5 py-0.5 rounded-sm tabular-nums",
+                      "relative z-10 text-[10px] font-mono px-1.5 py-0.5 rounded-sm tabular-nums transition-colors duration-200",
                       isActive
                         ? isDark
                           ? "bg-zinc-950 text-white"

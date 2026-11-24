@@ -47,6 +47,17 @@ const config: Config = {
         elevated: "0 8px 30px rgba(20, 20, 19, 0.08)",
         drawer: "-8px 0 32px rgba(20, 20, 19, 0.12)",
       },
+      transitionDuration: {
+        180: "180ms",
+        220: "220ms",
+        240: "240ms",
+        250: "250ms",
+        260: "260ms",
+        280: "280ms",
+      },
+      transitionTimingFunction: {
+        editorial: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
     },
   },
   plugins: [],

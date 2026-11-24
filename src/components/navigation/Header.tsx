@@ -23,7 +23,11 @@ import { useCommerceStore } from "@/store/useCommerceStore";
 import { cn, formatPrice, formatShippingThreshold } from "@/lib/utils";
 import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  SPRING_INDICATOR,
+} from "@/components/motion/MotionPrimitives";
 
 const NAV_LINKS = [
   { label: "Men", href: "/shop?gender=MALE", match: { path: "/shop", key: "gender", value: "MALE" } },
@@ -274,10 +278,10 @@ export function Header() {
               <AnimatePresence>
                 {adminMenuOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                    initial={{ opacity: 0, y: 6, scale: 0.985 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                    transition={{ duration: 0.18, ease: MOTION_EASE }}
+                    exit={{ opacity: 0, y: 6, scale: 0.985 }}
+                    transition={BACKDROP_TRANSITION}
                     role="menu"
                     className="absolute right-0 mt-1.5 w-60 bg-zinc-950 border border-zinc-800 shadow-2xl py-1.5 z-50 text-left rounded-sm"
                   >
@@ -428,10 +432,10 @@ export function Header() {
             <AnimatePresence>
               {searchFocused && (
                 <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 6 }}
-                  transition={{ duration: 0.18, ease: MOTION_EASE }}
+                  initial={{ opacity: 0, y: 6, scale: 0.99 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.99 }}
+                  transition={BACKDROP_TRANSITION}
                   className="absolute right-0 w-80 mt-1.5 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl z-50 p-3.5 rounded-sm"
                 >
                   {searchQuery.trim() === "" ? (
@@ -550,23 +554,23 @@ export function Header() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: MOTION_EASE }}
-            className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 max-h-[75dvh] overflow-y-auto shadow-lg"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={DRAWER_TRANSITION}
+            className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden shadow-lg"
           >
-            <div className="px-5 pt-4 pb-6 space-y-4">
+            <div className="max-h-[75dvh] overflow-y-auto px-5 pt-4 pb-6 space-y-4">
               <nav className="flex flex-col" aria-label="Mobile navigation">
                 {NAV_LINKS.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-xs uppercase tracking-wider font-medium text-zinc-800 dark:text-zinc-200 hover:text-black dark:hover:text-white py-2.5 border-b border-zinc-100 dark:border-zinc-900 flex items-center justify-between"
+                    className="group text-xs uppercase tracking-wider font-medium text-zinc-800 dark:text-zinc-200 hover:text-black dark:hover:text-white py-2.5 border-b border-zinc-100 dark:border-zinc-900 flex items-center justify-between transition-colors duration-200"
                   >
                     <span>{link.label}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-zinc-400" />
+                    <ArrowRight className="w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ease-editorial group-hover:translate-x-1" />
                   </Link>
                 ))}
               </nav>
@@ -575,51 +579,79 @@ export function Header() {
               <div className="space-y-3 pt-1">
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-zinc-500 uppercase">Measurements</span>
-                  <div className="flex items-center gap-1.5" role="group" aria-label="Mobile measurement unit">
+                  <div
+                    className="inline-flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 rounded-sm"
+                    role="group"
+                    aria-label="Mobile measurement unit"
+                  >
                     {([
                       { value: "INCH", label: "IN" },
                       { value: "CM", label: "CM" },
-                    ] as const).map((u) => (
-                      <button
-                        key={u.value}
-                        type="button"
-                        onClick={() => setUnit(u.value)}
-                        aria-pressed={unit === u.value}
-                        className={cn(
-                          "px-3 py-1 border rounded-sm transition-colors",
-                          unit === u.value
-                            ? "bg-zinc-950 text-white border-zinc-950 dark:bg-white dark:text-zinc-950 font-bold"
-                            : "border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                        )}
-                      >
-                        {u.label}
-                      </button>
-                    ))}
+                    ] as const).map((u) => {
+                      const active = unit === u.value;
+                      return (
+                        <button
+                          key={u.value}
+                          type="button"
+                          onClick={() => setUnit(u.value)}
+                          aria-pressed={active}
+                          className={cn(
+                            "relative px-3 py-1 rounded-[2px] transition-colors duration-200",
+                            active
+                              ? "text-white dark:text-zinc-950 font-bold"
+                              : "text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
+                          )}
+                        >
+                          {active && (
+                            <motion.span
+                              layoutId="mobile-unit-pill"
+                              transition={SPRING_INDICATOR}
+                              className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                            />
+                          )}
+                          <span className="relative z-10">{u.label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-zinc-500 uppercase">Currency</span>
-                  <div className="flex items-center gap-1.5" role="group" aria-label="Mobile currency">
+                  <div
+                    className="inline-flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 rounded-sm"
+                    role="group"
+                    aria-label="Mobile currency"
+                  >
                     {([
                       { code: "BDT", label: "৳ BDT" },
                       { code: "USD", label: "$ USD" },
-                    ] as const).map((c) => (
-                      <button
-                        key={c.code}
-                        type="button"
-                        onClick={() => setCurrency(c.code)}
-                        aria-pressed={currency === c.code}
-                        className={cn(
-                          "px-3 py-1 border rounded-sm transition-colors",
-                          currency === c.code
-                            ? "bg-zinc-950 text-white border-zinc-950 dark:bg-white dark:text-zinc-950 font-bold"
-                            : "border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                        )}
-                      >
-                        {c.label}
-                      </button>
-                    ))}
+                    ] as const).map((c) => {
+                      const active = currency === c.code;
+                      return (
+                        <button
+                          key={c.code}
+                          type="button"
+                          onClick={() => setCurrency(c.code)}
+                          aria-pressed={active}
+                          className={cn(
+                            "relative px-3 py-1 rounded-[2px] transition-colors duration-200",
+                            active
+                              ? "text-white dark:text-zinc-950 font-bold"
+                              : "text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
+                          )}
+                        >
+                          {active && (
+                            <motion.span
+                              layoutId="mobile-currency-pill"
+                              transition={SPRING_INDICATOR}
+                              className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                            />
+                          )}
+                          <span className="relative z-10">{c.label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

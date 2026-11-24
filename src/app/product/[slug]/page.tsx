@@ -26,7 +26,14 @@ import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import { ColorVariant, SizeMeasurement } from "@/types/commerce";
 import { DEFAULT_PRODUCT_IMAGE, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  MOTION_EASE,
+  PANEL_TRANSITION,
+  SPRING_INDICATOR,
+  ScrollReveal,
+} from "@/components/motion/MotionPrimitives";
 
 export default function ProductDetailPage({
   params,
@@ -247,10 +254,10 @@ export default function ProductDetailPage({
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`${selectedColor.colorName}-${activeImageIndex}-${activeImage}`}
-                    initial={{ opacity: 0, scale: 1.01 }}
+                    initial={{ opacity: 0, scale: 1.015 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.24, ease: MOTION_EASE }}
+                    exit={{ opacity: 0, scale: 0.99 }}
+                    transition={{ duration: 0.26, ease: MOTION_EASE }}
                     className="absolute inset-0"
                   >
                     <SafeImage
@@ -259,7 +266,10 @@ export default function ProductDetailPage({
                       fill
                       sizes="(max-width: 1024px) 100vw, 58vw"
                       priority
-                      className={cn(mainImagePositionClass, "transition-transform duration-300 group-hover:scale-[1.015]")}
+                      className={cn(
+                        mainImagePositionClass,
+                        "transition-transform duration-280 ease-editorial group-hover:scale-[1.018]"
+                      )}
                     />
                   </motion.div>
                 </AnimatePresence>
@@ -346,7 +356,7 @@ export default function ProductDetailPage({
                       aria-label={`Select ${label}`}
                       aria-pressed={isActiveThumb}
                       className={cn(
-                        "group/thumb relative flex flex-col bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-200 rounded-sm text-left",
+                        "group/thumb relative flex flex-col bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-240 ease-editorial rounded-sm text-left",
                         isActiveThumb
                           ? "border-zinc-950 dark:border-white ring-1 ring-zinc-950 dark:ring-white"
                           : "border-zinc-200 dark:border-zinc-800 opacity-80 hover:opacity-100 hover:border-zinc-400"
@@ -358,7 +368,10 @@ export default function ProductDetailPage({
                           alt={`${product.name} — ${label}`}
                           fill
                           sizes="(max-width: 640px) 33vw, 18vw"
-                          className={thumbPos}
+                          className={cn(
+                            thumbPos,
+                            "transition-transform duration-260 ease-editorial group-hover/thumb:scale-[1.03]"
+                          )}
                         />
                       </div>
                       <span
@@ -431,11 +444,20 @@ export default function ProductDetailPage({
               {/* Color Swatches */}
               <div className="pt-2 space-y-2.5">
                 <div className="flex items-center justify-between text-xs font-sans">
-                  <span className="uppercase text-zinc-600 dark:text-zinc-400 tracking-wider">
-                    Color:{" "}
-                    <strong className="text-zinc-950 dark:text-white font-semibold">
-                      {selectedColor.colorName}
-                    </strong>
+                  <span className="uppercase text-zinc-600 dark:text-zinc-400 tracking-wider flex items-center gap-1.5">
+                    <span>Color:</span>
+                    <AnimatePresence mode="wait">
+                      <motion.strong
+                        key={selectedColor.colorName}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.2, ease: MOTION_EASE }}
+                        className="text-zinc-950 dark:text-white font-semibold inline-block"
+                      >
+                        {selectedColor.colorName}
+                      </motion.strong>
+                    </AnimatePresence>
                   </span>
                   <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
                     {product.colorVariants.length} {product.colorVariants.length === 1 ? "Colorway" : "Colorways"}
@@ -443,30 +465,38 @@ export default function ProductDetailPage({
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  {product.colorVariants.map((c) => (
-                    <button
-                      key={c.colorName}
-                      type="button"
-                      onClick={() => {
-                        setSelectedColor(c);
-                        setActiveImageIndex(0);
-                      }}
-                      aria-label={`Select color ${c.colorName}`}
-                      aria-pressed={selectedColor.colorName === c.colorName}
-                      className={cn(
-                        "w-8 h-8 rounded-full border-2 transition-all p-0.5",
-                        selectedColor.colorName === c.colorName
-                          ? "border-zinc-950 dark:border-white scale-110"
-                          : "border-transparent opacity-75 hover:opacity-100"
-                      )}
-                      title={c.colorName}
-                    >
-                      <div
-                        className="w-full h-full rounded-full border border-black/15"
-                        style={{ backgroundColor: c.colorHex }}
-                      />
-                    </button>
-                  ))}
+                  {product.colorVariants.map((c) => {
+                    const isColorSelected = selectedColor.colorName === c.colorName;
+                    return (
+                      <button
+                        key={c.colorName}
+                        type="button"
+                        onClick={() => {
+                          setSelectedColor(c);
+                          setActiveImageIndex(0);
+                        }}
+                        aria-label={`Select color ${c.colorName}`}
+                        aria-pressed={isColorSelected}
+                        className={cn(
+                          "relative w-8 h-8 rounded-full p-1 transition-transform duration-240 ease-editorial active:scale-95",
+                          isColorSelected ? "scale-105" : "opacity-80 hover:opacity-100 hover:scale-105"
+                        )}
+                        title={c.colorName}
+                      >
+                        {isColorSelected && (
+                          <motion.span
+                            layoutId="pdp-swatch-ring"
+                            transition={SPRING_INDICATOR}
+                            className="absolute inset-0 rounded-full border-2 border-zinc-950 dark:border-white"
+                          />
+                        )}
+                        <div
+                          className="relative z-10 w-full h-full rounded-full border border-black/15"
+                          style={{ backgroundColor: c.colorHex }}
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -535,16 +565,23 @@ export default function ProductDetailPage({
                         onClick={() => setSelectedSize(s)}
                         aria-pressed={isSelected}
                         className={cn(
-                          "py-2.5 px-2 text-xs font-mono border rounded-sm transition-all text-center flex flex-col items-center justify-center gap-0.5",
+                          "relative py-2.5 px-2 text-xs font-mono border rounded-sm transition-colors duration-200 text-center flex flex-col items-center justify-center gap-0.5 overflow-hidden",
                           isOutOfStock
                             ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-400 line-through cursor-not-allowed"
                             : isSelected
-                            ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-sm font-bold"
+                            ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-sm font-bold"
                             : "bg-white dark:bg-zinc-900 hover:border-zinc-500 text-zinc-950 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
                         )}
                       >
-                        <span>{s.sizeLabel}</span>
-                        <span className="text-[10px] opacity-80 tabular-nums">
+                        {isSelected && !isOutOfStock && (
+                          <motion.span
+                            layoutId="pdp-size-pill"
+                            transition={SPRING_INDICATOR}
+                            className="absolute inset-0 bg-zinc-950 dark:bg-white"
+                          />
+                        )}
+                        <span className="relative z-10">{s.sizeLabel}</span>
+                        <span className="relative z-10 text-[10px] opacity-80 tabular-nums">
                           {isOutOfStock ? "Out" : `${s.stock} left`}
                         </span>
                       </button>
@@ -563,7 +600,15 @@ export default function ProductDetailPage({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3 pt-0.5 text-[11px]">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`${selectedSize.sizeLabel}-${unit}`}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={PANEL_TRANSITION}
+                      className="grid grid-cols-3 gap-3 pt-0.5 text-[11px]"
+                    >
                     {currentMeasurements?.chest && (
                       <div>
                         <span className="text-zinc-500 block text-[10px]">Chest</span>
@@ -628,7 +673,8 @@ export default function ProductDetailPage({
                         </span>
                       </div>
                     )}
-                  </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -841,8 +887,10 @@ export default function ProductDetailPage({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {completeTheLookProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {completeTheLookProducts.map((p, idx) => (
+              <ScrollReveal key={p.id} delay={idx * 0.06}>
+                <ProductCard product={p} />
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -851,7 +899,7 @@ export default function ProductDetailPage({
       {/* Sticky Mobile Purchase Bar */}
       <div
         className={cn(
-          "sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl transition-all duration-250",
+          "sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl transition-all duration-250 ease-editorial",
           showStickyBar ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
         )}
       >
@@ -906,163 +954,189 @@ export default function ProductDetailPage({
       {/* Full-Screen Inspection & Zoom Lightbox Modal */}
       <AnimatePresence>
         {isLightboxOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: MOTION_EASE }}
+          <div
             role="dialog"
             aria-modal="true"
             aria-label={`${product.name} image inspection lightbox`}
-            className="fixed inset-0 z-50 bg-zinc-950/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6"
+            className="fixed inset-0 z-50 flex flex-col"
           >
-            {/* Lightbox Top Bar */}
-            <div className="flex items-center justify-between gap-4 text-white border-b border-zinc-800 pb-3">
-              <div className="min-w-0">
-                <p className="text-xs sm:text-sm font-sans font-bold uppercase tracking-tight truncate">
-                  {product.name} — {selectedColor.colorName}
-                </p>
-                <p className="text-[11px] font-mono text-zinc-400 tabular-nums">
-                  {String(activeImageIndex + 1).padStart(2, "0")} / {String(allImages.length).padStart(2, "0")} ·{" "}
-                  {getAngleLabel(activeImageIndex, allImages.length)} · Use ← / → or click image to zoom
-                </p>
-              </div>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={BACKDROP_TRANSITION}
+              onClick={() => {
+                setIsLightboxOpen(false);
+                setIsZoomed(false);
+              }}
+              className="fixed inset-0 bg-zinc-950/95 backdrop-blur-md"
+            />
 
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setIsZoomed((prev) => !prev)}
-                  aria-label={isZoomed ? "Zoom out" : "Zoom in 2x"}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-100 text-[11px] font-mono uppercase rounded-sm transition-colors"
-                >
-                  {isZoomed ? <ZoomOut className="w-3.5 h-3.5" /> : <ZoomIn className="w-3.5 h-3.5" />}
-                  <span>{isZoomed ? "1x Fit" : "2x Zoom"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsLightboxOpen(false);
-                    setIsZoomed(false);
-                  }}
-                  aria-label="Close inspection lightbox"
-                  className="p-2 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-100 rounded-sm transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+            {/* Lightbox Stage */}
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              transition={DRAWER_TRANSITION}
+              className="relative z-10 flex-1 flex flex-col justify-between p-4 sm:p-6"
+            >
+              {/* Lightbox Top Bar */}
+              <div className="flex items-center justify-between gap-4 text-white border-b border-zinc-800 pb-3">
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm font-sans font-bold uppercase tracking-tight truncate">
+                    {product.name} — {selectedColor.colorName}
+                  </p>
+                  <p className="text-[11px] font-mono text-zinc-400 tabular-nums">
+                    {String(activeImageIndex + 1).padStart(2, "0")} / {String(allImages.length).padStart(2, "0")} ·{" "}
+                    {getAngleLabel(activeImageIndex, allImages.length)} · Use ← / → or click image to zoom
+                  </p>
+                </div>
 
-            {/* Lightbox Center Stage */}
-            <div className="relative flex-1 flex items-center justify-center my-4 overflow-hidden select-none">
-              {allImages.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
-                    setIsZoomed(false);
-                  }}
-                  aria-label="Previous image"
-                  className="absolute left-2 sm:left-4 z-20 p-2.5 bg-zinc-900/90 border border-zinc-700 hover:border-white text-white rounded-sm transition-colors"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-              )}
-
-              <div
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = ((e.clientX - rect.left) / rect.width) * 100;
-                  const y = ((e.clientY - rect.top) / rect.height) * 100;
-                  setZoomOrigin({ x, y });
-                  setIsZoomed((prev) => !prev);
-                }}
-                onMouseMove={(e) => {
-                  if (!isZoomed) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-                  const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-                  setZoomOrigin({ x, y });
-                }}
-                className={cn(
-                  "relative w-full max-w-2xl h-full max-h-[72vh] aspect-[3/4] overflow-hidden bg-zinc-900 border border-zinc-800",
-                  isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
-                )}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`lightbox-${activeImageIndex}-${activeImage}`}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, ease: MOTION_EASE }}
-                    className="absolute inset-0"
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsZoomed((prev) => !prev)}
+                    aria-label={isZoomed ? "Zoom out" : "Zoom in 2x"}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-100 text-[11px] font-mono uppercase rounded-sm transition-colors duration-200 active:scale-[0.98]"
                   >
-                    <SafeImage
-                      src={optimizeCloudinaryUrl(activeImage, { width: 1600, height: 2133, quality: "auto:best" })}
-                      alt={`${product.name} — ${getAngleLabel(activeImageIndex, allImages.length)}`}
-                      fill
-                      sizes="(max-width: 768px) 95vw, 720px"
-                      className="object-contain transition-transform duration-200 ease-out"
-                      style={{
-                        transform: isZoomed ? "scale(2.1)" : "scale(1)",
-                        transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-                      }}
-                    />
-                  </motion.div>
-                </AnimatePresence>
+                    {isZoomed ? <ZoomOut className="w-3.5 h-3.5" /> : <ZoomIn className="w-3.5 h-3.5" />}
+                    <span>{isZoomed ? "1x Fit" : "2x Zoom"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLightboxOpen(false);
+                      setIsZoomed(false);
+                    }}
+                    aria-label="Close inspection lightbox"
+                    className="p-2 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-100 rounded-sm transition-colors duration-200 active:scale-[0.98]"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              {allImages.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveImageIndex((prev) => (prev + 1) % allImages.length);
-                    setIsZoomed(false);
+              {/* Lightbox Center Stage */}
+              <div className="relative flex-1 flex items-center justify-center my-4 overflow-hidden select-none">
+                {allImages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+                      setIsZoomed(false);
+                    }}
+                    aria-label="Previous image"
+                    className="absolute left-2 sm:left-4 z-20 p-2.5 bg-zinc-900/90 border border-zinc-700 hover:border-white text-white rounded-sm transition-all duration-200 active:scale-95"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
+
+                <div
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    setZoomOrigin({ x, y });
+                    setIsZoomed((prev) => !prev);
                   }}
-                  aria-label="Next image"
-                  className="absolute right-2 sm:right-4 z-20 p-2.5 bg-zinc-900/90 border border-zinc-700 hover:border-white text-white rounded-sm transition-colors"
+                  onMouseMove={(e) => {
+                    if (!isZoomed) return;
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+                    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+                    setZoomOrigin({ x, y });
+                  }}
+                  className={cn(
+                    "relative w-full max-w-2xl h-full max-h-[72vh] aspect-[3/4] overflow-hidden bg-zinc-900 border border-zinc-800",
+                    isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+                  )}
                 >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              )}
-            </div>
-
-            {/* Lightbox Bottom Angle Switcher */}
-            {allImages.length > 1 && (
-              <div className="flex items-center justify-center gap-2 overflow-x-auto pt-2 border-t border-zinc-800">
-                {allImages.map((img, idx) => {
-                  const isActive = activeImageIndex === idx;
-                  return (
-                    <button
-                      key={`lb-thumb-${idx}`}
-                      type="button"
-                      onClick={() => {
-                        setActiveImageIndex(idx);
-                        setIsZoomed(false);
-                      }}
-                      className={cn(
-                        "flex items-center gap-2 px-2.5 py-1.5 border rounded-sm text-[11px] font-mono uppercase transition-colors whitespace-nowrap",
-                        isActive
-                          ? "bg-white text-zinc-950 border-white font-bold"
-                          : "bg-zinc-900 text-zinc-300 border-zinc-700 hover:border-zinc-500"
-                      )}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`lightbox-${activeImageIndex}-${activeImage}`}
+                      initial={{ opacity: 0, scale: 0.985 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.985 }}
+                      transition={{ duration: 0.26, ease: MOTION_EASE }}
+                      className="absolute inset-0"
                     >
-                      <span className="relative w-6 h-8 overflow-hidden bg-zinc-800 flex-shrink-0">
-                        <SafeImage
-                          src={optimizeCloudinaryUrl(img, { width: 64, height: 86 })}
-                          alt=""
-                          fill
-                          sizes="24px"
-                          className="object-cover object-top"
-                        />
-                      </span>
-                      <span>{getAngleLabel(idx, allImages.length)}</span>
-                    </button>
-                  );
-                })}
+                      <SafeImage
+                        src={optimizeCloudinaryUrl(activeImage, { width: 1600, height: 2133, quality: "auto:best" })}
+                        alt={`${product.name} — ${getAngleLabel(activeImageIndex, allImages.length)}`}
+                        fill
+                        sizes="(max-width: 768px) 95vw, 720px"
+                        className="object-contain"
+                        style={{
+                          transform: isZoomed ? "scale(2.1)" : "scale(1)",
+                          transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                          transition: "transform 260ms cubic-bezier(0.22, 1, 0.36, 1)",
+                        }}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                {allImages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveImageIndex((prev) => (prev + 1) % allImages.length);
+                      setIsZoomed(false);
+                    }}
+                    aria-label="Next image"
+                    className="absolute right-2 sm:right-4 z-20 p-2.5 bg-zinc-900/90 border border-zinc-700 hover:border-white text-white rounded-sm transition-all duration-200 active:scale-95"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
               </div>
-            )}
-          </motion.div>
+
+              {/* Lightbox Bottom Angle Switcher */}
+              {allImages.length > 1 && (
+                <div className="flex items-center justify-center gap-2 overflow-x-auto pt-2 border-t border-zinc-800">
+                  {allImages.map((img, idx) => {
+                    const isActive = activeImageIndex === idx;
+                    return (
+                      <button
+                        key={`lb-thumb-${idx}`}
+                        type="button"
+                        onClick={() => {
+                          setActiveImageIndex(idx);
+                          setIsZoomed(false);
+                        }}
+                        className={cn(
+                          "relative flex items-center gap-2 px-2.5 py-1.5 border rounded-sm text-[11px] font-mono uppercase transition-colors duration-200 whitespace-nowrap overflow-hidden",
+                          isActive
+                            ? "text-zinc-950 border-white font-bold"
+                            : "bg-zinc-900 text-zinc-300 border-zinc-700 hover:border-zinc-500"
+                        )}
+                      >
+                        {isActive && (
+                          <motion.span
+                            layoutId="pdp-lightbox-angle-pill"
+                            transition={SPRING_INDICATOR}
+                            className="absolute inset-0 bg-white"
+                          />
+                        )}
+                        <span className="relative z-10 w-6 h-8 overflow-hidden bg-zinc-800 flex-shrink-0">
+                          <SafeImage
+                            src={optimizeCloudinaryUrl(img, { width: 64, height: 86 })}
+                            alt=""
+                            fill
+                            sizes="24px"
+                            className="object-cover object-top"
+                          />
+                        </span>
+                        <span className="relative z-10">{getAngleLabel(idx, allImages.length)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

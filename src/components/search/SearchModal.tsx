@@ -8,7 +8,11 @@ import { useCommerceStore } from "@/store/useCommerceStore";
 import { formatPrice } from "@/lib/utils";
 import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  PANEL_TRANSITION,
+} from "@/components/motion/MotionPrimitives";
 
 const POPULAR_TAGS = [
   "Heavyweight Tee",
@@ -54,17 +58,17 @@ export function SearchModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: MOTION_EASE }}
+            transition={BACKDROP_TRANSITION}
             onClick={() => toggleSearch(false)}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
 
           <div className="min-h-full flex items-start justify-center p-4 sm:p-6 md:p-20">
             <motion.div
-              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              initial={{ opacity: 0, y: 16, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: MOTION_EASE }}
+              exit={{ opacity: 0, y: 12, scale: 0.985 }}
+              transition={DRAWER_TRANSITION}
               className="relative w-full max-w-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-5 sm:p-7 rounded-sm"
             >
               {/* Search Header */}
@@ -106,52 +110,70 @@ export function SearchModal() {
               </div>
 
               {/* Results */}
-              <div className="mt-4 max-h-[50vh] overflow-y-auto space-y-2.5">
-                {query.trim() && filteredProducts.length === 0 && (
-                  <div className="py-8 text-center text-zinc-500 text-sm font-sans">
-                    No garments or wearables found matching &quot;{query}&quot;
-                  </div>
-                )}
-
-                {filteredProducts.map((p) => {
-                  const img = p.colorVariants[0]?.images[0] || DEFAULT_PRODUCT_IMAGE;
-
-                  return (
-                    <Link
-                      key={p.id}
-                      href={`/product/${p.slug}`}
-                      onClick={() => toggleSearch(false)}
-                      className="flex items-center justify-between gap-3 p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 rounded-sm transition-all group"
+              <div className="mt-4 max-h-[50vh] overflow-y-auto">
+                <AnimatePresence mode="wait">
+                  {query.trim() && filteredProducts.length === 0 ? (
+                    <motion.div
+                      key="search-empty"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={PANEL_TRANSITION}
+                      className="py-8 text-center text-zinc-500 text-sm font-sans"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="relative w-12 h-14 bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
-                          <SafeImage
-                            src={optimizeCloudinaryUrl(img, { width: 100, height: 120 })}
-                            alt={p.name}
-                            fill
-                            sizes="48px"
-                            className={getGarmentObjectPosition(p.mainCategory)}
-                          />
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="font-sans text-xs font-semibold text-zinc-950 dark:text-zinc-100 truncate">
-                            {p.name}
-                          </h4>
-                          <p className="text-[11px] font-mono text-zinc-500 truncate mt-0.5">
-                            {p.fabricType} · {p.dressType}
-                          </p>
-                        </div>
-                      </div>
+                      No garments or wearables found matching &quot;{query}&quot;
+                    </motion.div>
+                  ) : filteredProducts.length > 0 ? (
+                    <motion.div
+                      key={`search-results-${query.trim().toLowerCase()}`}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={PANEL_TRANSITION}
+                      className="space-y-2.5"
+                    >
+                      {filteredProducts.map((p) => {
+                        const img = p.colorVariants[0]?.images[0] || DEFAULT_PRODUCT_IMAGE;
 
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className="font-mono text-xs font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
-                          {formatPrice(p.discountPrice || p.basePrice, currency)}
-                        </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-zinc-400 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </Link>
-                  );
-                })}
+                        return (
+                          <Link
+                            key={p.id}
+                            href={`/product/${p.slug}`}
+                            onClick={() => toggleSearch(false)}
+                            className="flex items-center justify-between gap-3 p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 rounded-sm transition-all duration-200 group"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="relative w-12 h-14 bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+                                <SafeImage
+                                  src={optimizeCloudinaryUrl(img, { width: 100, height: 120 })}
+                                  alt={p.name}
+                                  fill
+                                  sizes="48px"
+                                  className={getGarmentObjectPosition(p.mainCategory)}
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <h4 className="font-sans text-xs font-semibold text-zinc-950 dark:text-zinc-100 truncate">
+                                  {p.name}
+                                </h4>
+                                <p className="text-[11px] font-mono text-zinc-500 truncate mt-0.5">
+                                  {p.fabricType} · {p.dressType}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                              <span className="font-mono text-xs font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
+                                {formatPrice(p.discountPrice || p.basePrice, currency)}
+                              </span>
+                              <ArrowRight className="w-3.5 h-3.5 text-zinc-400 group-hover:translate-x-1 transition-transform duration-200 ease-editorial" />
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </div>
             </motion.div>
           </div>

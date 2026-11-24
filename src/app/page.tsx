@@ -20,6 +20,7 @@ import { formatPrice, formatShippingThreshold, cn } from "@/lib/utils";
 import { SafeImage } from "@/components/ui/SafeImage";
 import {
   MOTION_EASE,
+  PANEL_TRANSITION,
   SPRING_INDICATOR,
   ScrollReveal,
 } from "@/components/motion/MotionPrimitives";
@@ -244,13 +245,13 @@ export default function HomePage() {
                     <span
                       aria-hidden="true"
                       className={cn(
-                        "absolute inset-1 rounded-full transition-transform duration-300",
+                        "absolute inset-1 rounded-full transition-transform duration-240 ease-editorial",
                         isOpen ? "bg-emerald-400/50 scale-125" : "bg-white/40 group-hover:scale-125"
                       )}
                     />
                     <span
                       className={cn(
-                        "relative flex items-center justify-center w-7 h-7 rounded-full border-2 text-[11px] font-mono font-bold shadow-lg transition-colors duration-200",
+                        "relative flex items-center justify-center w-7 h-7 rounded-full border-2 text-[11px] font-mono font-bold shadow-lg transition-all duration-200 ease-editorial group-active:scale-95",
                         isOpen
                           ? "bg-white text-zinc-950 border-zinc-950"
                           : "bg-zinc-950 text-white border-white group-hover:bg-white group-hover:text-zinc-950"
@@ -269,10 +270,10 @@ export default function HomePage() {
                 <motion.div
                   id="hero-pin-spec-card"
                   key={activePinData.id}
-                  initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 12, scale: 0.985 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                  transition={{ duration: 0.22, ease: MOTION_EASE }}
+                  exit={{ opacity: 0, y: 10, scale: 0.985 }}
+                  transition={PANEL_TRANSITION}
                   className="absolute bottom-14 left-4 right-4 sm:left-auto sm:right-6 sm:w-80 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-30 rounded-sm"
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
@@ -613,7 +614,12 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="md:col-span-6 relative aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800">
+              <motion.div
+                initial={{ opacity: 0, scale: 1.02 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.28, ease: MOTION_EASE }}
+                className="md:col-span-6 relative aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800"
+              >
                 <SafeImage
                   src={activeFabric.image}
                   alt={activeFabric.name}
@@ -621,7 +627,7 @@ export default function HomePage() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover object-center"
                 />
-              </div>
+              </motion.div>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -632,47 +638,53 @@ export default function HomePage() {
          ========================================================= */}
       <section className="w-full py-10 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
-              <ShieldCheck className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+          <ScrollReveal delay={0}>
+            <div className="flex items-start gap-3.5">
+              <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+                <ShieldCheck className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+              </div>
+              <div>
+                <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
+                  7-Day Hassle-Free Sizing Exchanges
+                </h4>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                  If the garment fit isn&apos;t exact, our courier swaps your size right at your doorstep.
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
-                7-Day Hassle-Free Sizing Exchanges
-              </h4>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
-                If the garment fit isn&apos;t exact, our courier swaps your size right at your doorstep.
-              </p>
-            </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
-              <Compass className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+          <ScrollReveal delay={0.06}>
+            <div className="flex items-start gap-3.5">
+              <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+                <Compass className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+              </div>
+              <div>
+                <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
+                  Nationwide 24-48hr Rapid Dispatch
+                </h4>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed tabular-nums">
+                  Free nationwide shipping on orders over {thresholdLabel}. Real-time courier SMS updates.
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
-                Nationwide 24-48hr Rapid Dispatch
-              </h4>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed tabular-nums">
-                Free nationwide shipping on orders over {thresholdLabel}. Real-time courier SMS updates.
-              </p>
-            </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
-              <Feather className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+          <ScrollReveal delay={0.12}>
+            <div className="flex items-start gap-3.5">
+              <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+                <Feather className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+              </div>
+              <div>
+                <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
+                  Pre-Shrunk Cold Dye Process
+                </h4>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                  All cottons are pre-washed with enzymatic wash to eliminate shrinkage after repeated laundering.
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-sans uppercase font-bold text-zinc-950 dark:text-white tracking-wide">
-                Pre-Shrunk Cold Dye Process
-              </h4>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
-                All cottons are pre-washed with enzymatic wash to eliminate shrinkage after repeated laundering.
-              </p>
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>

@@ -6,7 +6,12 @@ import { X, Ruler, UserCheck, Sparkles } from "lucide-react";
 import { Product } from "@/types/commerce";
 import { useCommerceStore } from "@/store/useCommerceStore";
 import { cn } from "@/lib/utils";
-import { MOTION_EASE, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  PANEL_TRANSITION,
+  SPRING_INDICATOR,
+} from "@/components/motion/MotionPrimitives";
 
 interface SizeGuideModalProps {
   product: Product;
@@ -67,17 +72,17 @@ export function SizeGuideModal({ product, isOpen, onClose }: SizeGuideModalProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: MOTION_EASE }}
+            transition={BACKDROP_TRANSITION}
             onClick={onClose}
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
           />
 
           <div className="min-h-full flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, y: 14, scale: 0.97 }}
+              initial={{ opacity: 0, y: 16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 14, scale: 0.97 }}
-              transition={{ duration: 0.24, ease: MOTION_EASE }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
+              transition={DRAWER_TRANSITION}
               className="relative w-full max-w-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 sm:p-8 rounded-sm"
             >
               {/* Header */}
@@ -153,7 +158,15 @@ export function SizeGuideModal({ product, isOpen, onClose }: SizeGuideModalProps
 
               {/* Sizing Table */}
               <div className="mt-4 overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <AnimatePresence mode="wait">
+                  <motion.table
+                    key={localUnit}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={PANEL_TRANSITION}
+                    className="w-full text-left border-collapse text-xs"
+                  >
                   <thead>
                     <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60">
                       <th className="py-2.5 px-3 font-mono uppercase text-zinc-950 dark:text-zinc-100 font-bold">
@@ -196,36 +209,36 @@ export function SizeGuideModal({ product, isOpen, onClose }: SizeGuideModalProps
 
                       return (
                         <tr key={s.sizeLabel} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
-                          <td className="py-2.5 px-3 font-bold text-zinc-950 dark:text-white tabular-nums">
+                          <td className="py-2.5 px-3 font-bold text-zinc-950 dark:text-white tabular-nums whitespace-nowrap">
                             {s.sizeLabel}
                           </td>
                           {!isWearableOrWatch && !isFootwear && (
                             <>
-                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums">
-                                {m?.chest ? `${m.chest} ${localUnit === "INCH" ? '"' : "cm"}` : "—"}
+                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
+                                {m?.chest ? (localUnit === "INCH" ? `${m.chest}"` : `${m.chest} cm`) : "—"}
                               </td>
-                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums">
-                                {m?.shoulder ? `${m.shoulder} ${localUnit === "INCH" ? '"' : "cm"}` : "—"}
+                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
+                                {m?.shoulder ? (localUnit === "INCH" ? `${m.shoulder}"` : `${m.shoulder} cm`) : "—"}
                               </td>
-                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums">
-                                {m?.length ? `${m.length} ${localUnit === "INCH" ? '"' : "cm"}` : "—"}
+                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
+                                {m?.length ? (localUnit === "INCH" ? `${m.length}"` : `${m.length} cm`) : "—"}
                               </td>
-                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums">
-                                {m?.sleeve ? `${m.sleeve} ${localUnit === "INCH" ? '"' : "cm"}` : "—"}
+                              <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
+                                {m?.sleeve ? (localUnit === "INCH" ? `${m.sleeve}"` : `${m.sleeve} cm`) : "—"}
                               </td>
                             </>
                           )}
                           {isFootwear && (
-                            <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums">
-                              {m?.footLength ? `${m.footLength} ${localUnit === "INCH" ? '"' : "cm"}` : "—"}
+                            <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
+                              {m?.footLength ? (localUnit === "INCH" ? `${m.footLength}"` : `${m.footLength} cm`) : "—"}
                             </td>
                           )}
                           {isWearableOrWatch && (
-                            <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums">
-                              {m?.wristOrCase ? `${m.wristOrCase} ${localUnit === "INCH" ? '"' : "cm"}` : "—"}
+                            <td className="py-2.5 px-3 text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
+                              {m?.wristOrCase ? (localUnit === "INCH" ? `${m.wristOrCase}"` : `${m.wristOrCase} cm`) : "—"}
                             </td>
                           )}
-                          <td className="py-2.5 px-3 text-right tabular-nums">
+                          <td className="py-2.5 px-3 text-right tabular-nums whitespace-nowrap">
                             {s.stock > 0 ? (
                               <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
                                 {s.stock} in stock
@@ -238,7 +251,8 @@ export function SizeGuideModal({ product, isOpen, onClose }: SizeGuideModalProps
                       );
                     })}
                   </tbody>
-                </table>
+                  </motion.table>
+                </AnimatePresence>
               </div>
 
               {/* Fit Predictor */}

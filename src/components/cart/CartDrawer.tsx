@@ -12,7 +12,12 @@ import {
 } from "@/lib/utils";
 import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
+import {
+  BACKDROP_TRANSITION,
+  DRAWER_TRANSITION,
+  MOTION_EASE,
+  PANEL_TRANSITION,
+} from "@/components/motion/MotionPrimitives";
 
 export function CartDrawer() {
   const {
@@ -54,7 +59,7 @@ export function CartDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: MOTION_EASE }}
+            transition={BACKDROP_TRANSITION}
             onClick={() => toggleCart(false)}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
@@ -65,7 +70,7 @@ export function CartDrawer() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ duration: 0.28, ease: MOTION_EASE }}
+              transition={DRAWER_TRANSITION}
               className="pointer-events-auto w-screen max-w-md bg-white dark:bg-zinc-950 shadow-2xl flex flex-col justify-between border-l border-zinc-200 dark:border-zinc-800"
             >
               {/* Header */}
@@ -116,9 +121,11 @@ export function CartDrawer() {
                   </span>
                 </div>
                 <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 overflow-hidden">
-                  <div
-                    className="bg-zinc-950 dark:bg-zinc-100 h-full transition-all duration-500 ease-out"
-                    style={{ width: `${progressPercent}%` }}
+                  <motion.div
+                    className="bg-zinc-950 dark:bg-zinc-100 h-full"
+                    initial={false}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 0.36, ease: MOTION_EASE }}
                   />
                 </div>
               </div>
@@ -143,18 +150,24 @@ export function CartDrawer() {
                     </Link>
                   </div>
                 ) : (
-                  cart.map((item) => {
-                    const itemPriceBdt = item.product.discountPrice || item.product.basePrice;
-                    const imageSrc =
-                      item.selectedColor.images?.[0] ||
-                      item.product.colorVariants[0]?.images?.[0] ||
-                      DEFAULT_PRODUCT_IMAGE;
+                  <AnimatePresence initial={false}>
+                    {cart.map((item) => {
+                      const itemPriceBdt = item.product.discountPrice || item.product.basePrice;
+                      const imageSrc =
+                        item.selectedColor.images?.[0] ||
+                        item.product.colorVariants[0]?.images?.[0] ||
+                        DEFAULT_PRODUCT_IMAGE;
 
-                    return (
-                      <div
-                        key={item.id}
-                        className="flex gap-3.5 pb-4 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0"
-                      >
+                      return (
+                        <motion.div
+                          key={item.id}
+                          layout
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, x: 16 }}
+                          transition={PANEL_TRANSITION}
+                          className="flex gap-3.5 pb-4 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0"
+                        >
                         {/* Thumbnail */}
                         <div className="relative w-20 h-24 flex-shrink-0 bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800">
                           <SafeImage
@@ -241,9 +254,10 @@ export function CartDrawer() {
                             </span>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
+                      </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
                 )}
               </div>
 

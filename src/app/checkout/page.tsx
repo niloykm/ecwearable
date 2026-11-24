@@ -22,7 +22,7 @@ import {
 import { OrderCustomer, PaymentMethod } from "@/types/commerce";
 import { DEFAULT_PRODUCT_IMAGE, getGarmentObjectPosition, optimizeCloudinaryUrl } from "@/lib/cloudinary";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { MOTION_EASE } from "@/components/motion/MotionPrimitives";
+import { PANEL_TRANSITION, SPRING_INDICATOR } from "@/components/motion/MotionPrimitives";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -135,23 +135,37 @@ export default function CheckoutPage() {
 
           <div className="flex items-center gap-2 text-xs font-mono">
             <span
-              className={`px-2.5 py-1 border rounded-sm ${
+              className={`relative px-2.5 py-1 border rounded-sm transition-colors duration-200 ${
                 step === 1
-                  ? "bg-zinc-950 text-white border-zinc-950 dark:bg-white dark:text-zinc-950 font-bold"
+                  ? "text-white border-zinc-950 dark:text-zinc-950 dark:border-white font-bold"
                   : "border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400"
               }`}
             >
-              1. Delivery
+              {step === 1 && (
+                <motion.span
+                  layoutId="checkout-step-pill"
+                  transition={SPRING_INDICATOR}
+                  className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                />
+              )}
+              <span className="relative z-10">1. Delivery</span>
             </span>
             <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
             <span
-              className={`px-2.5 py-1 border rounded-sm ${
+              className={`relative px-2.5 py-1 border rounded-sm transition-colors duration-200 ${
                 step === 2
-                  ? "bg-zinc-950 text-white border-zinc-950 dark:bg-white dark:text-zinc-950 font-bold"
+                  ? "text-white border-zinc-950 dark:text-zinc-950 dark:border-white font-bold"
                   : "border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400"
               }`}
             >
-              2. Payment &amp; Review
+              {step === 2 && (
+                <motion.span
+                  layoutId="checkout-step-pill"
+                  transition={SPRING_INDICATOR}
+                  className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                />
+              )}
+              <span className="relative z-10">2. Payment &amp; Review</span>
             </span>
           </div>
         </div>
@@ -167,7 +181,7 @@ export default function CheckoutPage() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
-                transition={{ duration: 0.22, ease: MOTION_EASE }}
+                transition={PANEL_TRANSITION}
                 className="space-y-6"
               >
                 <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3 flex items-center justify-between">
@@ -310,7 +324,7 @@ export default function CheckoutPage() {
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.22, ease: MOTION_EASE }}
+                transition={PANEL_TRANSITION}
                 className="space-y-6"
               >
                 <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3 flex items-center justify-between">

@@ -7,9 +7,23 @@ export const MOTION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export const SPRING_INDICATOR = {
   type: "spring" as const,
-  stiffness: 400,
-  damping: 31,
-  mass: 0.8,
+  stiffness: 360,
+  damping: 32,
+};
+
+export const PANEL_TRANSITION = {
+  duration: 0.24,
+  ease: MOTION_EASE,
+};
+
+export const DRAWER_TRANSITION = {
+  duration: 0.28,
+  ease: MOTION_EASE,
+};
+
+export const BACKDROP_TRANSITION = {
+  duration: 0.2,
+  ease: MOTION_EASE,
 };
 
 export function MotionProvider({ children }: { children: React.ReactNode }) {
@@ -19,8 +33,8 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
 export function ScrollProgressBar() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 240,
-    damping: 32,
+    stiffness: 220,
+    damping: 34,
     restDelta: 0.001,
   });
 
@@ -54,15 +68,17 @@ export function ScrollReveal({ children, className, delay = 0 }: ScrollRevealPro
       const el = ref.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 80) {
+      if (rect.top < window.innerHeight + 96) {
         setRevealed(true);
       }
     };
 
     checkPosition();
+    const rafId = window.requestAnimationFrame(checkPosition);
     window.addEventListener("scroll", checkPosition, { passive: true });
     window.addEventListener("resize", checkPosition, { passive: true });
     return () => {
+      window.cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", checkPosition);
       window.removeEventListener("resize", checkPosition);
     };
@@ -71,9 +87,11 @@ export function ScrollReveal({ children, className, delay = 0 }: ScrollRevealPro
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.38, delay, ease: MOTION_EASE }}
+      initial={{ opacity: 0, y: 18 }}
+      animate={revealed ? { opacity: 1, y: 0 } : undefined}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: "some" }}
+      transition={{ duration: 0.4, delay, ease: MOTION_EASE }}
       className={className}
     >
       {children}
