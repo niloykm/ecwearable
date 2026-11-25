@@ -171,42 +171,44 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
         {/* Quick Add Size Drawer (Reveals smoothly on hover & keyboard focus-within) */}
         <div className="absolute inset-x-0 bottom-0 z-10 translate-y-full transition-transform duration-250 ease-editorial group-hover:translate-y-0 group-focus-within:translate-y-0 bg-zinc-950/95 backdrop-blur-md p-3 text-white border-t border-zinc-800">
-          <div className="flex items-center justify-between gap-2 mb-2">
+          <p className="flex items-center justify-between gap-2 mb-2">
             <span className="text-[10px] tracking-wider uppercase text-zinc-300 font-sans font-semibold">
               Quick Add Size
-            </span>
+            </span>{" "}
             <span className="text-[10px] font-mono text-zinc-400 tabular-nums">
               {product.sizes.length} {product.sizes.length === 1 ? "Size" : "Sizes"}
             </span>
-          </div>
+          </p>{" "}
 
           <div className="flex items-center justify-start gap-1.5 flex-wrap">
-            {product.sizes.map((size) => {
+            {product.sizes.map((size, idx) => {
               const isSelected = justAddedSize === size.sizeLabel;
               const isOutOfStock = size.stock === 0;
 
               return (
-                <button
-                  key={size.sizeLabel}
-                  type="button"
-                  onClick={(e) => handleQuickAdd(e, size.sizeLabel)}
-                  disabled={isOutOfStock}
-                  className={cn(
-                    "min-w-[34px] h-7 px-2 text-[10px] font-mono font-semibold transition-colors duration-200 flex items-center justify-center border rounded-[2px]",
-                    isOutOfStock
-                      ? "border-zinc-800 text-zinc-500 line-through cursor-not-allowed bg-zinc-900/60"
-                      : isSelected
-                      ? "bg-emerald-600 border-emerald-600 text-white"
-                      : "border-zinc-700 bg-zinc-900 hover:bg-white hover:text-zinc-950 hover:border-white text-zinc-100"
-                  )}
-                  title={
-                    isOutOfStock
-                      ? `${size.sizeLabel} (Out of Stock)`
-                      : `Quick add ${size.sizeLabel} (${size.stock} in stock)`
-                  }
-                >
-                  {isSelected ? <Check className="w-3 h-3 text-white" /> : size.sizeLabel}
-                </button>
+                <React.Fragment key={size.sizeLabel}>
+                  {idx > 0 && " "}
+                  <button
+                    type="button"
+                    onClick={(e) => handleQuickAdd(e, size.sizeLabel)}
+                    disabled={isOutOfStock}
+                    className={cn(
+                      "min-w-[34px] h-7 px-2 text-[10px] font-mono font-semibold transition-colors duration-200 flex items-center justify-center border rounded-[2px]",
+                      isOutOfStock
+                        ? "border-zinc-800 text-zinc-500 line-through cursor-not-allowed bg-zinc-900/60"
+                        : isSelected
+                        ? "bg-emerald-600 border-emerald-600 text-white"
+                        : "border-zinc-700 bg-zinc-900 hover:bg-white hover:text-zinc-950 hover:border-white text-zinc-100"
+                    )}
+                    title={
+                      isOutOfStock
+                        ? `${size.sizeLabel} (Out of Stock)`
+                        : `Quick add ${size.sizeLabel} (${size.stock} in stock)`
+                    }
+                  >
+                    {isSelected ? <Check className="w-3 h-3 text-white" /> : size.sizeLabel}
+                  </button>
+                </React.Fragment>
               );
             })}
           </div>
@@ -220,29 +222,31 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="flex items-center justify-between gap-2">
             {product.colorVariants.length > 1 ? (
               <div className="flex items-center gap-1.5" role="group" aria-label="Color variants">
-                {product.colorVariants.map((c) => (
-                  <button
-                    key={c.colorName}
-                    type="button"
-                    onClick={(e) => handleColorChange(e, c)}
-                    onMouseEnter={(e) => handleColorChange(e, c)}
-                    aria-label={`Select color ${c.colorName}`}
-                    title={c.colorName}
-                    className={cn(
-                      "w-3.5 h-3.5 rounded-full border transition-all duration-200",
-                      activeColor.colorName === c.colorName
-                        ? "ring-1 ring-offset-1 ring-zinc-950 dark:ring-zinc-100 scale-110 border-zinc-400"
-                        : "opacity-75 hover:opacity-100 border-zinc-300 dark:border-zinc-700"
-                    )}
-                    style={{ backgroundColor: c.colorHex }}
-                  />
+                {product.colorVariants.map((c, idx) => (
+                  <React.Fragment key={c.colorName}>
+                    {idx > 0 && " "}
+                    <button
+                      type="button"
+                      onClick={(e) => handleColorChange(e, c)}
+                      onMouseEnter={(e) => handleColorChange(e, c)}
+                      aria-label={`Select color ${c.colorName}`}
+                      title={c.colorName}
+                      className={cn(
+                        "w-3.5 h-3.5 rounded-full border transition-all duration-200",
+                        activeColor.colorName === c.colorName
+                          ? "ring-1 ring-offset-1 ring-zinc-950 dark:ring-zinc-100 scale-110 border-zinc-400"
+                          : "opacity-75 hover:opacity-100 border-zinc-300 dark:border-zinc-700"
+                      )}
+                      style={{ backgroundColor: c.colorHex }}
+                    />
+                  </React.Fragment>
                 ))}
               </div>
             ) : (
               <span className="text-[10px] tracking-wider uppercase text-zinc-600 dark:text-zinc-400 font-sans font-medium truncate">
                 {product.primaryColor}
               </span>
-            )}
+            )}{" "}
 
             <span className="text-[10px] font-mono text-zinc-600 dark:text-zinc-400 tabular-nums whitespace-nowrap">
               {product.fabricWeightGsm ? `${product.fabricWeightGsm} GSM` : product.dressType}
@@ -271,16 +275,22 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </span>
 
             {product.discountPrice && product.discountPrice < product.basePrice && (
-              <span className="font-mono text-[11px] text-zinc-500 line-through tabular-nums whitespace-nowrap">
-                {formatPrice(product.basePrice, currency)}
-              </span>
+              <>
+                {" "}
+                <span className="font-mono text-[11px] text-zinc-500 line-through tabular-nums whitespace-nowrap">
+                  {formatPrice(product.basePrice, currency)}
+                </span>
+              </>
             )}
           </div>
 
           {savingsPercent > 0 && (
-            <span className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 tabular-nums whitespace-nowrap">
-              SAVE {savingsPercent}%
-            </span>
+            <>
+              {" "}
+              <span className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 tabular-nums whitespace-nowrap">
+                SAVE {savingsPercent}%
+              </span>
+            </>
           )}
         </div>
       </div>

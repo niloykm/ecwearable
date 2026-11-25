@@ -7,8 +7,8 @@ export const MOTION_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export const SPRING_INDICATOR = {
   type: "spring" as const,
-  stiffness: 360,
-  damping: 32,
+  stiffness: 400,
+  damping: 30,
 };
 
 export const PANEL_TRANSITION = {
@@ -87,11 +87,11 @@ export function ScrollReveal({ children, className, delay = 0 }: ScrollRevealPro
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 18 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={revealed ? { opacity: 1, y: 0 } : undefined}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: "some" }}
-      transition={{ duration: 0.4, delay, ease: MOTION_EASE }}
+      transition={{ duration: 0.38, delay, ease: MOTION_EASE }}
       className={className}
     >
       {children}

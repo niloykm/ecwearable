@@ -133,8 +133,10 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center gap-2.5">
                 <span className="px-2.5 py-1 text-[10px] font-mono tracking-widest uppercase font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
                   SS26 TECHNICAL LAB
-                </span>
-                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">/</span>
+                </span>{" "}
+                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">
+                  /
+                </span>{" "}
                 <span className="text-[11px] font-mono tracking-wider uppercase text-zinc-600 dark:text-zinc-400">
                   SYSTEM RELEASE 04
                 </span>
@@ -151,25 +153,25 @@ export default function HomePage() {
               {/* Material Callouts Grid */}
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Density</span>
+                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Density</span>{" "}
                   <span className="text-xs font-mono font-semibold text-zinc-950 dark:text-zinc-100 block">
                     280 GSM French Terry
                   </span>
                 </div>
                 <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Protection</span>
+                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Protection</span>{" "}
                   <span className="text-xs font-mono font-semibold text-zinc-950 dark:text-zinc-100 block">
                     DWR 3-Layer Ripstop
                   </span>
                 </div>
                 <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Thermal</span>
+                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Thermal</span>{" "}
                   <span className="text-xs font-mono font-semibold text-zinc-950 dark:text-zinc-100 block">
                     18.5µ Merino Wool
                   </span>
                 </div>
                 <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Hardware</span>
+                  <span className="text-[10px] font-mono uppercase text-zinc-500 block">Hardware</span>{" "}
                   <span className="text-xs font-mono font-semibold text-zinc-950 dark:text-zinc-100 block">
                     Cordura® &amp; Fidlock®
                   </span>
@@ -185,8 +187,7 @@ export default function HomePage() {
                 >
                   <span>Shop New Arrivals</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-                </Link>
-
+                </Link>{" "}
                 <Link
                   href="/shop?category=OUTERWEAR"
                   className="px-5 py-3.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-950 dark:text-zinc-100 text-xs font-sans uppercase tracking-wider font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-sm transition-colors duration-200"
@@ -196,10 +197,14 @@ export default function HomePage() {
               </div>
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-2 text-[11px] font-mono text-zinc-600 dark:text-zinc-400 tabular-nums">
-                <span>{products.length} Engineered SKUs</span>
-                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">·</span>
-                <span>Dual INCH / CM Specs</span>
-                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">·</span>
+                <span>{products.length} Engineered SKUs</span>{" "}
+                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">
+                  ·
+                </span>{" "}
+                <span>Dual INCH / CM Specs</span>{" "}
+                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">
+                  ·
+                </span>{" "}
                 <span>Lab Tested</span>
               </div>
             </div>
@@ -230,37 +235,40 @@ export default function HomePage() {
             </div>
 
             {/* Interactive Garment Pins (All 3 Pins Keyboard & Touch Accessible) */}
-            {pinEntries.map((pin) => {
+            {pinEntries.map((pin, idx) => {
               const isOpen = activePin === pin.id;
               return (
-                <div key={pin.id} className={cn("absolute z-20 -translate-x-1/2 -translate-y-1/2", pin.position)}>
-                  <button
-                    type="button"
-                    onClick={() => setActivePin(isOpen ? null : pin.id)}
-                    aria-expanded={isOpen}
-                    aria-controls="hero-pin-spec-card"
-                    aria-label={`Inspect pin ${pin.num}: ${pin.product.name}`}
-                    className="relative group p-2 focus-visible:outline-white rounded-full"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        "absolute inset-1 rounded-full transition-transform duration-240 ease-editorial",
-                        isOpen ? "bg-emerald-400/50 scale-125" : "bg-white/40 group-hover:scale-125"
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        "relative flex items-center justify-center w-7 h-7 rounded-full border-2 text-[11px] font-mono font-bold shadow-lg transition-all duration-200 ease-editorial group-active:scale-95",
-                        isOpen
-                          ? "bg-white text-zinc-950 border-zinc-950"
-                          : "bg-zinc-950 text-white border-white group-hover:bg-white group-hover:text-zinc-950"
-                      )}
+                <React.Fragment key={pin.id}>
+                  {idx > 0 && " "}
+                  <div className={cn("absolute z-20 -translate-x-1/2 -translate-y-1/2", pin.position)}>
+                    <button
+                      type="button"
+                      onClick={() => setActivePin(isOpen ? null : pin.id)}
+                      aria-expanded={isOpen}
+                      aria-controls="hero-pin-spec-card"
+                      aria-label={`Inspect pin ${pin.num}: ${pin.product.name}`}
+                      className="relative group p-2 focus-visible:outline-white rounded-full"
                     >
-                      {pin.num}
-                    </span>
-                  </button>
-                </div>
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "absolute inset-1 rounded-full transition-transform duration-240 ease-editorial",
+                          isOpen ? "bg-emerald-400/50 scale-125" : "bg-white/40 group-hover:scale-125"
+                        )}
+                      />
+                      <span
+                        className={cn(
+                          "relative flex items-center justify-center w-7 h-7 rounded-full border-2 text-[11px] font-mono font-bold shadow-lg transition-all duration-200 ease-editorial group-active:scale-95",
+                          isOpen
+                            ? "bg-white text-zinc-950 border-zinc-950"
+                            : "bg-zinc-950 text-white border-white group-hover:bg-white group-hover:text-zinc-950"
+                        )}
+                      >
+                        {pin.num}
+                      </span>
+                    </button>
+                  </div>
+                </React.Fragment>
               );
             })}
 
@@ -397,13 +405,10 @@ export default function HomePage() {
               },
             ].map((cat, idx) => (
               <ScrollReveal key={cat.title} delay={idx * 0.05}>
-                <Link
-                  href={cat.href}
-                  className="group relative aspect-[3/4] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4 transition-all duration-200 hover:border-zinc-500"
-                >
+                <article className="group relative aspect-[3/4] bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col justify-end p-4 transition-all duration-200 hover:border-zinc-500">
                   <SafeImage
                     src={cat.image}
-                    alt={cat.title}
+                    alt={`${cat.title} — ${cat.spec}`}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className={cn(
@@ -411,19 +416,25 @@ export default function HomePage() {
                       cat.objectPosition
                     )}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
                   <div className="relative z-10 text-white space-y-1">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-300 block">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-zinc-300">
                       {cat.spec}
-                    </span>
+                    </p>
                     <h3 className="font-sans text-sm sm:text-base font-bold uppercase tracking-tight leading-snug">
-                      {cat.title}
+                      <Link
+                        href={cat.href}
+                        className="focus:outline-none after:absolute after:inset-0 after:z-20"
+                      >
+                        {cat.title}
+                      </Link>
                     </h3>
-                    <span className="text-[10px] font-mono text-zinc-200 pt-0.5 flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
-                      Shop Category <ChevronRight className="w-3 h-3" />
-                    </span>
+                    <p className="text-[10px] font-mono text-zinc-200 pt-0.5 flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
+                      <span>Shop Category</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </p>
                   </div>
-                </Link>
+                </article>
               </ScrollReveal>
             ))}
           </div>
@@ -534,30 +545,32 @@ export default function HomePage() {
             {FABRIC_MATRIX.map((item, idx) => {
               const isSelected = activeFabricTab === idx;
               return (
-                <button
-                  key={item.name}
-                  type="button"
-                  role="tab"
-                  aria-selected={isSelected}
-                  aria-controls={`fabric-panel-${idx}`}
-                  id={`fabric-tab-${idx}`}
-                  onClick={() => setActiveFabricTab(idx)}
-                  className={cn(
-                    "relative px-4 sm:px-6 py-3 text-xs font-sans uppercase tracking-wider font-semibold transition-colors duration-200 whitespace-nowrap",
-                    isSelected
-                      ? "text-zinc-950 dark:text-white"
-                      : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-200"
-                  )}
-                >
-                  <span>{item.name}</span>
-                  {isSelected && (
-                    <motion.span
-                      layoutId="fabric-matrix-indicator"
-                      transition={SPRING_INDICATOR}
-                      className="absolute inset-x-0 bottom-0 h-[2px] bg-zinc-950 dark:bg-white"
-                    />
-                  )}
-                </button>
+                <React.Fragment key={item.name}>
+                  {idx > 0 && " "}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    aria-controls={`fabric-panel-${idx}`}
+                    id={`fabric-tab-${idx}`}
+                    onClick={() => setActiveFabricTab(idx)}
+                    className={cn(
+                      "relative px-4 sm:px-6 py-3 text-xs font-sans uppercase tracking-wider font-semibold transition-colors duration-200 whitespace-nowrap",
+                      isSelected
+                        ? "text-zinc-950 dark:text-white"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-200"
+                    )}
+                  >
+                    <span>{item.name}</span>
+                    {isSelected && (
+                      <motion.span
+                        layoutId="fabric-matrix-indicator"
+                        transition={SPRING_INDICATOR}
+                        className="absolute inset-x-0 bottom-0 h-[2px] bg-zinc-950 dark:bg-white"
+                      />
+                    )}
+                  </button>
+                </React.Fragment>
               );
             })}
           </div>
@@ -579,8 +592,10 @@ export default function HomePage() {
                 <div className="flex flex-wrap items-center gap-2.5">
                   <span className="px-2.5 py-1 text-[10px] font-mono tracking-wider uppercase font-bold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
                     {activeFabric.spec}
-                  </span>
-                  <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">·</span>
+                  </span>{" "}
+                  <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">
+                    ·
+                  </span>{" "}
                   <span className="text-xs font-mono font-medium text-zinc-600 dark:text-zinc-400 tabular-nums">
                     {activeFabric.metric}
                   </span>
@@ -597,7 +612,7 @@ export default function HomePage() {
                 <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
                   <span className="text-[10px] font-mono uppercase text-zinc-500 block">
                     Engineering Callout
-                  </span>
+                  </span>{" "}
                   <span className="text-xs font-mono font-semibold text-zinc-950 dark:text-zinc-100 block">
                     {activeFabric.feature}
                   </span>

@@ -112,8 +112,8 @@ export function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
           <p>© 2026 ECWEARABLE Systems Inc. All rights reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            <span>7-Day Sizing Guarantee</span>
-            <span>256-Bit SSL Encrypted</span>
+            <span>7-Day Sizing Guarantee</span>{" "}
+            <span>256-Bit SSL Encrypted</span>{" "}
             <span>Dhaka Metro &amp; Nationwide</span>
           </div>
         </div>

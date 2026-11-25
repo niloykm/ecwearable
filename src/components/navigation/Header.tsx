@@ -46,39 +46,75 @@ const TRENDING_SEARCHES = [
   { label: "Cordura Daypack", query: "Cordura" },
 ];
 
+function ActiveNavObserver({
+  onParamsChange,
+}: {
+  onParamsChange: (params: { gender: string | null; category: string | null }) => void;
+}) {
+  const searchParams = useSearchParams();
+  const gender = searchParams.get("gender");
+  const category = searchParams.get("category");
+
+  useEffect(() => {
+    onParamsChange({ gender, category });
+  }, [gender, category, onParamsChange]);
+
+  return null;
+}
+
 function DesktopNavLinks() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [activeParams, setActiveParams] = useState<{
+    gender: string | null;
+    category: string | null;
+  }>({ gender: null, category: null });
+
+  useEffect(() => {
+    if (pathname !== "/shop") {
+      setActiveParams({ gender: null, category: null });
+    }
+  }, [pathname]);
 
   return (
     <nav className="hidden lg:flex items-center gap-4 xl:gap-5" aria-label="Primary categories">
-      {NAV_LINKS.map((link) => {
+      <Suspense fallback={null}>
+        <ActiveNavObserver onParamsChange={setActiveParams} />
+      </Suspense>
+      {NAV_LINKS.map((link, idx) => {
+        const paramVal =
+          link.match.key === "gender"
+            ? activeParams.gender
+            : link.match.key === "category"
+            ? activeParams.category
+            : null;
         const isActive =
           link.match.key === null
             ? pathname === link.match.path
-            : pathname === link.match.path && searchParams.get(link.match.key) === link.match.value;
+            : pathname === link.match.path && paramVal === link.match.value;
 
         return (
-          <Link
-            key={link.label}
-            href={link.href}
-            aria-current={isActive ? "page" : undefined}
-            className={cn(
-              "relative text-[12px] uppercase tracking-wider font-sans font-medium transition-colors duration-200 py-1.5 whitespace-nowrap",
-              isActive
-                ? "text-zinc-950 dark:text-white font-semibold"
-                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-            )}
-          >
-            <span>{link.label}</span>
-            {isActive && (
-              <motion.span
-                layoutId="desktop-nav-underline"
-                transition={SPRING_INDICATOR}
-                className="absolute inset-x-0 bottom-0 h-[2px] bg-zinc-950 dark:bg-white"
-              />
-            )}
-          </Link>
+          <React.Fragment key={link.label}>
+            {idx > 0 && " "}
+            <Link
+              href={link.href}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "relative text-[12px] uppercase tracking-wider font-sans font-medium transition-colors duration-200 py-1.5 whitespace-nowrap",
+                isActive
+                  ? "text-zinc-950 dark:text-white font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+              )}
+            >
+              <span>{link.label}</span>
+              {isActive && (
+                <motion.span
+                  layoutId="desktop-nav-underline"
+                  transition={SPRING_INDICATOR}
+                  className="absolute inset-x-0 bottom-0 h-[2px] bg-zinc-950 dark:bg-white"
+                />
+              )}
+            </Link>
+          </React.Fragment>
         );
       })}
     </nav>
@@ -165,15 +201,8 @@ export function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" aria-hidden="true" />
-            <p className="hidden sm:block tracking-wide uppercase font-medium text-zinc-200 truncate tabular-nums">
-              <span>Free nationwide shipping on orders over {thresholdLabel}</span>
-              <span className="text-zinc-500 mx-2" aria-hidden="true"> · </span>
-              <span>7-Day Hassle-Free Size Exchanges</span>
-            </p>
-            <p className="sm:hidden text-[10px] tracking-wide uppercase font-medium text-zinc-200 truncate tabular-nums">
-              <span>Free shipping over {thresholdLabel}</span>
-              <span className="text-zinc-500 mx-1.5" aria-hidden="true"> · </span>
-              <span>7-Day Size Exchanges</span>
+            <p className="text-[10px] sm:text-[11px] tracking-wide uppercase font-medium text-zinc-200 truncate tabular-nums">
+              Free nationwide shipping on orders over {thresholdLabel} · 7-Day Hassle-Free Size Exchanges
             </p>
           </div>
 
@@ -182,22 +211,67 @@ export function Header() {
             <div className="flex items-center gap-1.5">
               <Ruler className="w-3 h-3 text-zinc-400 flex-shrink-0" aria-hidden="true" />
               <div
-                className="inline-flex items-center gap-0.5 bg-zinc-900 p-0.5 border border-zinc-700/80 text-[10px] font-mono rounded-sm"
+                className="inline-flex items-center gap-1 bg-zinc-900 p-0.5 border border-zinc-700/80 text-[10px] font-mono rounded-sm"
                 role="group"
                 aria-label="Measurement unit"
               >
                 {([
                   { value: "INCH", label: "IN" },
                   { value: "CM", label: "CM" },
-                ] as const).map((u) => {
+                ] as const).map((u, idx) => {
                   const active = unit === u.value;
                   return (
+                    <React.Fragment key={u.value}>
+                      {idx > 0 && " "}
+                      <button
+                        type="button"
+                        onClick={() => setUnit(u.value)}
+                        aria-pressed={active}
+                        aria-label={`Use ${u.value === "INCH" ? "inches" : "centimeters"}`}
+                        className={cn(
+                          "relative px-2 py-0.5 rounded-[2px] transition-colors duration-200 whitespace-nowrap",
+                          active ? "text-zinc-950 font-bold" : "text-zinc-300 hover:text-white"
+                        )}
+                      >
+                        {active && (
+                          <motion.span
+                            layoutId="header-unit-pill"
+                            transition={SPRING_INDICATOR}
+                            className="absolute inset-0 bg-white rounded-[2px]"
+                          />
+                        )}
+                        <span className="relative z-10">{u.label}</span>
+                      </button>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            </div>
+
+            {" "}
+            <span className="text-zinc-700 select-none text-[10px]" aria-hidden="true">
+              |
+            </span>
+            {" "}
+
+            {/* Currency Segmented Control */}
+            <div
+              className="inline-flex items-center gap-1 bg-zinc-900 p-0.5 border border-zinc-700/80 text-[10px] font-mono rounded-sm"
+              role="group"
+              aria-label="Display currency"
+            >
+              {([
+                { code: "BDT", label: "৳ BDT" },
+                { code: "USD", label: "$ USD" },
+              ] as const).map((c, idx) => {
+                const active = currency === c.code;
+                return (
+                  <React.Fragment key={c.code}>
+                    {idx > 0 && " "}
                     <button
-                      key={u.value}
                       type="button"
-                      onClick={() => setUnit(u.value)}
+                      onClick={() => setCurrency(c.code)}
                       aria-pressed={active}
-                      aria-label={`Use ${u.value === "INCH" ? "inches" : "centimeters"}`}
                       className={cn(
                         "relative px-2 py-0.5 rounded-[2px] transition-colors duration-200 whitespace-nowrap",
                         active ? "text-zinc-950 font-bold" : "text-zinc-300 hover:text-white"
@@ -205,56 +279,23 @@ export function Header() {
                     >
                       {active && (
                         <motion.span
-                          layoutId="header-unit-pill"
+                          layoutId="header-currency-pill"
                           transition={SPRING_INDICATOR}
                           className="absolute inset-0 bg-white rounded-[2px]"
                         />
                       )}
-                      <span className="relative z-10">{u.label}</span>
+                      <span className="relative z-10">{c.label}</span>
                     </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <span className="h-3.5 w-px bg-zinc-800 flex-shrink-0" aria-hidden="true" />
-
-            {/* Currency Segmented Control */}
-            <div
-              className="inline-flex items-center gap-0.5 bg-zinc-900 p-0.5 border border-zinc-700/80 text-[10px] font-mono rounded-sm"
-              role="group"
-              aria-label="Display currency"
-            >
-              {([
-                { code: "BDT", label: "৳ BDT" },
-                { code: "USD", label: "$ USD" },
-              ] as const).map((c) => {
-                const active = currency === c.code;
-                return (
-                  <button
-                    key={c.code}
-                    type="button"
-                    onClick={() => setCurrency(c.code)}
-                    aria-pressed={active}
-                    className={cn(
-                      "relative px-2 py-0.5 rounded-[2px] transition-colors duration-200 whitespace-nowrap",
-                      active ? "text-zinc-950 font-bold" : "text-zinc-300 hover:text-white"
-                    )}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="header-currency-pill"
-                        transition={SPRING_INDICATOR}
-                        className="absolute inset-0 bg-white rounded-[2px]"
-                      />
-                    )}
-                    <span className="relative z-10">{c.label}</span>
-                  </button>
+                  </React.Fragment>
                 );
               })}
             </div>
 
-            <span className="h-3.5 w-px bg-zinc-800 flex-shrink-0" aria-hidden="true" />
+            {" "}
+            <span className="text-zinc-700 select-none text-[10px]" aria-hidden="true">
+              |
+            </span>
+            {" "}
 
             {/* Store Admin & Lab Dropdown */}
             <div className="relative" ref={adminDropdownRef}>
@@ -378,6 +419,7 @@ export function Header() {
             <span className="font-sans text-[15px] sm:text-xl font-black tracking-tight uppercase text-zinc-950 dark:text-white leading-none whitespace-nowrap">
               ECWEARABLE
             </span>
+            {" "}
             <span className="text-[9px] tracking-[0.14em] uppercase font-mono text-zinc-500 dark:text-zinc-400 leading-none hidden xl:block whitespace-nowrap">
               Engineered Garments &amp; Lab
             </span>
@@ -385,9 +427,7 @@ export function Header() {
         </div>
 
         {/* Center: Desktop Category Navigation */}
-        <Suspense fallback={<div className="hidden lg:flex items-center gap-5 h-6" />}>
-          <DesktopNavLinks />
-        </Suspense>
+        <DesktopNavLinks />
 
         {/* Right: Search, Wishlist & Bag */}
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
@@ -580,37 +620,39 @@ export function Header() {
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-zinc-500 uppercase">Measurements</span>
                   <div
-                    className="inline-flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 rounded-sm"
+                    className="inline-flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 rounded-sm"
                     role="group"
                     aria-label="Mobile measurement unit"
                   >
                     {([
                       { value: "INCH", label: "IN" },
                       { value: "CM", label: "CM" },
-                    ] as const).map((u) => {
+                    ] as const).map((u, idx) => {
                       const active = unit === u.value;
                       return (
-                        <button
-                          key={u.value}
-                          type="button"
-                          onClick={() => setUnit(u.value)}
-                          aria-pressed={active}
-                          className={cn(
-                            "relative px-3 py-1 rounded-[2px] transition-colors duration-200",
-                            active
-                              ? "text-white dark:text-zinc-950 font-bold"
-                              : "text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
-                          )}
-                        >
-                          {active && (
-                            <motion.span
-                              layoutId="mobile-unit-pill"
-                              transition={SPRING_INDICATOR}
-                              className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
-                            />
-                          )}
-                          <span className="relative z-10">{u.label}</span>
-                        </button>
+                        <React.Fragment key={u.value}>
+                          {idx > 0 && " "}
+                          <button
+                            type="button"
+                            onClick={() => setUnit(u.value)}
+                            aria-pressed={active}
+                            className={cn(
+                              "relative px-3 py-1 rounded-[2px] transition-colors duration-200",
+                              active
+                                ? "text-white dark:text-zinc-950 font-bold"
+                                : "text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
+                            )}
+                          >
+                            {active && (
+                              <motion.span
+                                layoutId="mobile-unit-pill"
+                                transition={SPRING_INDICATOR}
+                                className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                              />
+                            )}
+                            <span className="relative z-10">{u.label}</span>
+                          </button>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -619,37 +661,39 @@ export function Header() {
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-zinc-500 uppercase">Currency</span>
                   <div
-                    className="inline-flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 rounded-sm"
+                    className="inline-flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 rounded-sm"
                     role="group"
                     aria-label="Mobile currency"
                   >
                     {([
                       { code: "BDT", label: "৳ BDT" },
                       { code: "USD", label: "$ USD" },
-                    ] as const).map((c) => {
+                    ] as const).map((c, idx) => {
                       const active = currency === c.code;
                       return (
-                        <button
-                          key={c.code}
-                          type="button"
-                          onClick={() => setCurrency(c.code)}
-                          aria-pressed={active}
-                          className={cn(
-                            "relative px-3 py-1 rounded-[2px] transition-colors duration-200",
-                            active
-                              ? "text-white dark:text-zinc-950 font-bold"
-                              : "text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
-                          )}
-                        >
-                          {active && (
-                            <motion.span
-                              layoutId="mobile-currency-pill"
-                              transition={SPRING_INDICATOR}
-                              className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
-                            />
-                          )}
-                          <span className="relative z-10">{c.label}</span>
-                        </button>
+                        <React.Fragment key={c.code}>
+                          {idx > 0 && " "}
+                          <button
+                            type="button"
+                            onClick={() => setCurrency(c.code)}
+                            aria-pressed={active}
+                            className={cn(
+                              "relative px-3 py-1 rounded-[2px] transition-colors duration-200",
+                              active
+                                ? "text-white dark:text-zinc-950 font-bold"
+                                : "text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
+                            )}
+                          >
+                            {active && (
+                              <motion.span
+                                layoutId="mobile-currency-pill"
+                                transition={SPRING_INDICATOR}
+                                className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                              />
+                            )}
+                            <span className="relative z-10">{c.label}</span>
+                          </button>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -668,21 +712,21 @@ export function Header() {
                     className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
                   >
                     Command Dashboard
-                  </Link>
+                  </Link>{" "}
                   <Link
                     href="/admin/products"
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
                   >
                     SKU Catalog
-                  </Link>
+                  </Link>{" "}
                   <Link
                     href="/admin/products/new"
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-3 py-1.5 text-[11px] font-mono uppercase bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-sm"
                   >
                     Add New Garment
-                  </Link>
+                  </Link>{" "}
                   <Link
                     href="/admin/orders"
                     onClick={() => setMobileMenuOpen(false)}

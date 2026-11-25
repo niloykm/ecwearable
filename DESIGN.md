@@ -1,20 +1,22 @@
-# ECWEARABLE UI/UX DESIGN SYSTEM
+# ECWEARABLE UI/UX & Anti-Slop Design System
 
-## 1. Aesthetic & Brand Surfaces
-- Palette: High-fashion monochromatic foundation with natural earthy accents.
-  - Light Canvas: `#ffffff` true white background with `#f4f4f5` (zinc-100) card backdrops.
-  - Dark Canvas: `#09090b` (zinc-950) base with `#18181b` (zinc-900) surfaces.
-  - Text: High-contrast `#09090b` (light) / `#fafafa` (dark), meeting strict WCAG AA.
-  - Accent Tokens: Deep olive (`#365314`), warm stone (`#78716c`), or tactical orange (`#ea580c`) reserved strictly for alerts/sale badges.
-- Geometry: Minimalist edges (`rounded-none` or subtle `rounded-sm` for luxury fashion; max `rounded-md` 6px for buttons and form elements). Never bloated `rounded-3xl` bubble cards.
-- Dividers: Crisp 1px lines (`border-zinc-200 dark:border-zinc-800`).
+## 1. Domain Classification & Editorial Benchmark
+- **Domain:** Technical Apparel, Everyday Essentials & Wearable Gear E-Commerce (`ECWEARABLE`).
+- **Layout & Density:** Asymmetric editorial lookbook grid with interactive garment inspection pins, immediate server-rendered product catalog (`/shop`) with multi-faceted filtering, and multi-angle product inspection (`Front`, `Fit / Angle`, `Fabric & Seam Detail`) with 2x zoom lightbox.
 
-## 2. Typography & Numerical Precision
-- Headings: Editorial, clean uppercase or tight tracking sans-serif (`font-medium tracking-tight text-zinc-900 dark:text-zinc-50`).
-- Numerical Precision: All prices (`৳ 1,850`), SKU codes, stock quantities, and size measurements formatted in `font-mono tabular-nums`.
-- Labels: Clean uppercase micro-labels (`text-[11px] uppercase tracking-wider font-medium text-zinc-500`).
+## 2. Color Theory & 60-30-10 Distribution (WCAG AA Enforced)
+- **60% Dominant Surface:** Crisp pure white (`#ffffff`) in light mode / obsidian (`#09090b`, `zinc-950`) in dark mode.
+- **30% Structural Surfaces & Hairline Borders:** Subtle neutral elevation (`#f4f4f5` / `zinc-100` in light, `#18181b` / `zinc-900` in dark) with 1px structural dividers (`border-zinc-200 dark:border-zinc-800`).
+- **10% Primary Action & Semantic Tokens:** High-contrast obsidian/white primary actions, paired with semantic emerald (`emerald-700` / `emerald-400`) for stock/lab verification and orange (`orange-600`) for low-stock alerts.
+- **Strict Anti-Slop Bans:** Zero purple/blue mesh gradients, zero neon glows, zero floating blobs, zero emojis in headings or controls, and zero concatenated DOM strings.
 
-## 3. Micro-Interactions & Tactile Feedback
-- Smooth image crossfade transitions (`duration-300 ease-out`).
-- Instant slide-over cart drawer opening without screen flickering.
-- Visual toast notifications with product thumbnail on successful "Add to Cart".
+## 3. Typography, Spacing & Numerical Precision
+- **Font Pairing:** `Plus Jakarta Sans` (`--font-jakarta`) for editorial display and UI copy, paired with `JetBrains Mono` (`--font-jetbrains`) for garment specs, GSM ratings, dimensions, and pricing.
+- **Numerical Discipline:** All prices (`৳ 1,650` / `$13.75`), shipping thresholds (`৳ 3,000` / `$25`), SKU counts, stock levels, and `INCH / CM` flat dimensions enforce `font-mono tabular-nums`.
+- **DOM Text & Control Separation:** Adjacent interactive buttons, badges, and spec tokens include explicit spacing and semantic block boundaries so both visual layout and DOM text/screen-reader output remain cleanly separated.
+
+## 4. Motion, Transitions & Reduced-Motion Compliance
+- **Root Motion Stack:** `<MotionConfig reducedMotion="user">` in `MotionProvider` paired with `@media (prefers-reduced-motion: reduce)` CSS rules.
+- **Route Open Transitions:** `src/app/template.tsx` animates page mounts keyed by `usePathname()` (`initial={{ opacity: 0, y: 14 }}`, `animate={{ opacity: 1, y: 0 }}`, `duration: 0.3`, `ease: [0.22, 1, 0.36, 1]`).
+- **Shared-Element Indicators & Panel Transitions:** Controlled springs (`stiffness: 400, damping: 30`) on `layoutId` indicators paired with `<AnimatePresence mode="wait">` on switched panels and drawers.
+- **Scroll Progress & Reveal:** Top `ScrollProgressBar` (`useScroll` + `useSpring`) and `ScrollReveal` (`initial={{ opacity: 0, y: 20 }}`, `duration: 0.38`, `ease: [0.22, 1, 0.36, 1]`) with light stagger (`0.05s`).

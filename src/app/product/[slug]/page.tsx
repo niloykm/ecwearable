@@ -181,14 +181,14 @@ export default function ProductDetailPage({
       >
         <Link href="/" className="hover:text-zinc-950 dark:hover:text-white transition-colors whitespace-nowrap">
           Home
-        </Link>
-        <span aria-hidden="true">/</span>
+        </Link>{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link href="/shop" className="hover:text-zinc-950 dark:hover:text-white transition-colors whitespace-nowrap">
           Catalog
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span className="uppercase tracking-wider text-zinc-500 whitespace-nowrap">{product.dressType}</span>
-        <span aria-hidden="true">/</span>
+        </Link>{" "}
+        <span aria-hidden="true">/</span>{" "}
+        <span className="uppercase tracking-wider text-zinc-500 whitespace-nowrap">{product.dressType}</span>{" "}
+        <span aria-hidden="true">/</span>{" "}
         <span className="text-zinc-950 dark:text-white font-semibold truncate">{product.name}</span>
       </nav>
 
@@ -209,32 +209,34 @@ export default function ProductDetailPage({
                     const isSelected = activeImageIndex === idx;
                     const label = getAngleLabel(idx, allImages.length);
                     return (
-                      <button
-                        key={`${selectedColor.colorName}-tab-${idx}`}
-                        type="button"
-                        role="tab"
-                        aria-selected={isSelected}
-                        onClick={() => setActiveImageIndex(idx)}
-                        className={cn(
-                          "relative px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-[2px] transition-colors duration-200 whitespace-nowrap",
-                          isSelected
-                            ? "text-white dark:text-zinc-950 font-bold"
-                            : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-                        )}
-                      >
-                        {isSelected && (
-                          <motion.span
-                            layoutId="pdp-angle-indicator"
-                            transition={SPRING_INDICATOR}
-                            className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
-                          />
-                        )}
-                        <span className="relative z-10">{label}</span>
-                      </button>
+                      <React.Fragment key={`${selectedColor.colorName}-tab-${idx}`}>
+                        {idx > 0 && " "}
+                        <button
+                          type="button"
+                          role="tab"
+                          aria-selected={isSelected}
+                          onClick={() => setActiveImageIndex(idx)}
+                          className={cn(
+                            "relative px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-[2px] transition-colors duration-200 whitespace-nowrap",
+                            isSelected
+                              ? "text-white dark:text-zinc-950 font-bold"
+                              : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                          )}
+                        >
+                          {isSelected && (
+                            <motion.span
+                              layoutId="pdp-angle-indicator"
+                              transition={SPRING_INDICATOR}
+                              className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                            />
+                          )}
+                          <span className="relative z-10">{label}</span>
+                        </button>
+                      </React.Fragment>
                     );
                   })}
                 </div>
-
+                {" "}
                 <span className="text-[11px] font-mono text-zinc-500 tabular-nums">
                   {String(activeImageIndex + 1).padStart(2, "0")} / {String(allImages.length).padStart(2, "0")}
                 </span>
@@ -349,42 +351,44 @@ export default function ProductDetailPage({
                   const label = getAngleLabel(idx, allImages.length);
                   const thumbPos = isObjectItem || idx >= 2 ? "object-cover object-center" : "object-cover object-top";
                   return (
-                    <button
-                      key={`${selectedColor.colorName}-thumb-${idx}`}
-                      type="button"
-                      onClick={() => setActiveImageIndex(idx)}
-                      aria-label={`Select ${label}`}
-                      aria-pressed={isActiveThumb}
-                      className={cn(
-                        "group/thumb relative flex flex-col bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-240 ease-editorial rounded-sm text-left",
-                        isActiveThumb
-                          ? "border-zinc-950 dark:border-white ring-1 ring-zinc-950 dark:ring-white"
-                          : "border-zinc-200 dark:border-zinc-800 opacity-80 hover:opacity-100 hover:border-zinc-400"
-                      )}
-                    >
-                      <div className="relative aspect-[3/4] w-full overflow-hidden">
-                        <SafeImage
-                          src={optimizeCloudinaryUrl(img, { width: 320, height: 426 })}
-                          alt={`${product.name} — ${label}`}
-                          fill
-                          sizes="(max-width: 640px) 33vw, 18vw"
-                          className={cn(
-                            thumbPos,
-                            "transition-transform duration-260 ease-editorial group-hover/thumb:scale-[1.03]"
-                          )}
-                        />
-                      </div>
-                      <span
+                    <React.Fragment key={`${selectedColor.colorName}-thumb-${idx}`}>
+                      {idx > 0 && " "}
+                      <button
+                        type="button"
+                        onClick={() => setActiveImageIndex(idx)}
+                        aria-label={`Select ${label}`}
+                        aria-pressed={isActiveThumb}
                         className={cn(
-                          "px-2 py-1 text-[10px] font-mono uppercase tracking-wider truncate w-full border-t transition-colors",
+                          "group/thumb relative flex flex-col bg-zinc-100 dark:bg-zinc-900 border overflow-hidden transition-all duration-240 ease-editorial rounded-sm text-left",
                           isActiveThumb
-                            ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-semibold"
-                            : "bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800"
+                            ? "border-zinc-950 dark:border-white ring-1 ring-zinc-950 dark:ring-white"
+                            : "border-zinc-200 dark:border-zinc-800 opacity-80 hover:opacity-100 hover:border-zinc-400"
                         )}
                       >
-                        {label}
-                      </span>
-                    </button>
+                        <div className="relative aspect-[3/4] w-full overflow-hidden">
+                          <SafeImage
+                            src={optimizeCloudinaryUrl(img, { width: 320, height: 426 })}
+                            alt={`${product.name} — ${label}`}
+                            fill
+                            sizes="(max-width: 640px) 33vw, 18vw"
+                            className={cn(
+                              thumbPos,
+                              "transition-transform duration-260 ease-editorial group-hover/thumb:scale-[1.03]"
+                            )}
+                          />
+                        </div>
+                        <span
+                          className={cn(
+                            "px-2 py-1 text-[10px] font-mono uppercase tracking-wider truncate w-full border-t transition-colors",
+                            isActiveThumb
+                              ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white font-semibold"
+                              : "bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800"
+                          )}
+                        >
+                          {label}
+                        </span>
+                      </button>
+                    </React.Fragment>
                   );
                 })}
               </div>
@@ -397,8 +401,10 @@ export default function ProductDetailPage({
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                   {product.mainCategory} // {product.dressType}
-                </span>
-                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">·</span>
+                </span>{" "}
+                <span className="text-zinc-300 dark:text-zinc-700" aria-hidden="true">
+                  ·
+                </span>{" "}
                 <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
                   In Stock &amp; Ready to Dispatch
                 </span>
@@ -419,16 +425,22 @@ export default function ProductDetailPage({
                     {formatPrice(product.discountPrice || product.basePrice, currency)}
                   </span>
                   {product.discountPrice && product.discountPrice < product.basePrice && (
-                    <span className="font-mono text-sm text-zinc-500 line-through tabular-nums">
-                      {formatPrice(product.basePrice, currency)}
-                    </span>
+                    <>
+                      {" "}
+                      <span className="font-mono text-sm text-zinc-500 line-through tabular-nums">
+                        {formatPrice(product.basePrice, currency)}
+                      </span>
+                    </>
                   )}
                 </div>
 
                 {savingsPercent > 0 && (
-                  <span className="px-2 py-0.5 text-xs font-mono font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 tabular-nums">
-                    SAVE {savingsPercent}%
-                  </span>
+                  <>
+                    {" "}
+                    <span className="px-2 py-0.5 text-xs font-mono font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 tabular-nums">
+                      SAVE {savingsPercent}%
+                    </span>
+                  </>
                 )}
               </div>
 
@@ -445,7 +457,7 @@ export default function ProductDetailPage({
               <div className="pt-2 space-y-2.5">
                 <div className="flex items-center justify-between text-xs font-sans">
                   <span className="uppercase text-zinc-600 dark:text-zinc-400 tracking-wider flex items-center gap-1.5">
-                    <span>Color:</span>
+                    <span>Color:</span>{" "}
                     <AnimatePresence mode="wait">
                       <motion.strong
                         key={selectedColor.colorName}
@@ -458,43 +470,45 @@ export default function ProductDetailPage({
                         {selectedColor.colorName}
                       </motion.strong>
                     </AnimatePresence>
-                  </span>
+                  </span>{" "}
                   <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
                     {product.colorVariants.length} {product.colorVariants.length === 1 ? "Colorway" : "Colorways"}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  {product.colorVariants.map((c) => {
+                  {product.colorVariants.map((c, idx) => {
                     const isColorSelected = selectedColor.colorName === c.colorName;
                     return (
-                      <button
-                        key={c.colorName}
-                        type="button"
-                        onClick={() => {
-                          setSelectedColor(c);
-                          setActiveImageIndex(0);
-                        }}
-                        aria-label={`Select color ${c.colorName}`}
-                        aria-pressed={isColorSelected}
-                        className={cn(
-                          "relative w-8 h-8 rounded-full p-1 transition-transform duration-240 ease-editorial active:scale-95",
-                          isColorSelected ? "scale-105" : "opacity-80 hover:opacity-100 hover:scale-105"
-                        )}
-                        title={c.colorName}
-                      >
-                        {isColorSelected && (
-                          <motion.span
-                            layoutId="pdp-swatch-ring"
-                            transition={SPRING_INDICATOR}
-                            className="absolute inset-0 rounded-full border-2 border-zinc-950 dark:border-white"
+                      <React.Fragment key={c.colorName}>
+                        {idx > 0 && " "}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedColor(c);
+                            setActiveImageIndex(0);
+                          }}
+                          aria-label={`Select color ${c.colorName}`}
+                          aria-pressed={isColorSelected}
+                          className={cn(
+                            "relative w-8 h-8 rounded-full p-1 transition-transform duration-240 ease-editorial active:scale-95",
+                            isColorSelected ? "scale-105" : "opacity-80 hover:opacity-100 hover:scale-105"
+                          )}
+                          title={c.colorName}
+                        >
+                          {isColorSelected && (
+                            <motion.span
+                              layoutId="pdp-swatch-ring"
+                              transition={SPRING_INDICATOR}
+                              className="absolute inset-0 rounded-full border-2 border-zinc-950 dark:border-white"
+                            />
+                          )}
+                          <div
+                            className="relative z-10 w-full h-full rounded-full border border-black/15"
+                            style={{ backgroundColor: c.colorHex }}
                           />
-                        )}
-                        <div
-                          className="relative z-10 w-full h-full rounded-full border border-black/15"
-                          style={{ backgroundColor: c.colorHex }}
-                        />
-                      </button>
+                        </button>
+                      </React.Fragment>
                     );
                   })}
                 </div>
@@ -505,41 +519,46 @@ export default function ProductDetailPage({
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-xs font-sans uppercase text-zinc-600 dark:text-zinc-400 tracking-wider font-semibold">
                     Select Size
-                  </span>
-
+                  </span>{" "}
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px] font-mono rounded-sm" role="group" aria-label="Measurement unit">
+                    <div
+                      className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px] font-mono rounded-sm"
+                      role="group"
+                      aria-label="Measurement unit"
+                    >
                       {([
                         { value: "INCH", label: "IN" },
                         { value: "CM", label: "CM" },
-                      ] as const).map((u) => {
+                      ] as const).map((u, idx) => {
                         const active = unit === u.value;
                         return (
-                          <button
-                            key={u.value}
-                            type="button"
-                            onClick={() => setUnit(u.value)}
-                            aria-pressed={active}
-                            className={cn(
-                              "relative px-2.5 py-0.5 transition-colors rounded-[2px]",
-                              active
-                                ? "text-white dark:text-zinc-950 font-bold"
-                                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
-                            )}
-                          >
-                            {active && (
-                              <motion.span
-                                layoutId="pdp-unit-pill"
-                                transition={SPRING_INDICATOR}
-                                className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
-                              />
-                            )}
-                            <span className="relative z-10">{u.label}</span>
-                          </button>
+                          <React.Fragment key={u.value}>
+                            {idx > 0 && " "}
+                            <button
+                              type="button"
+                              onClick={() => setUnit(u.value)}
+                              aria-pressed={active}
+                              className={cn(
+                                "relative px-2.5 py-0.5 transition-colors rounded-[2px]",
+                                active
+                                  ? "text-white dark:text-zinc-950 font-bold"
+                                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+                              )}
+                            >
+                              {active && (
+                                <motion.span
+                                  layoutId="pdp-unit-pill"
+                                  transition={SPRING_INDICATOR}
+                                  className="absolute inset-0 bg-zinc-950 dark:bg-white rounded-[2px]"
+                                />
+                              )}
+                              <span className="relative z-10">{u.label}</span>
+                            </button>
+                          </React.Fragment>
                         );
                       })}
                     </div>
-
+                    {" "}
                     <button
                       type="button"
                       onClick={() => setIsSizeGuideOpen(true)}
@@ -553,38 +572,40 @@ export default function ProductDetailPage({
 
                 {/* Size Grid */}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                  {product.sizes.map((s) => {
+                  {product.sizes.map((s, idx) => {
                     const isSelected = selectedSize.sizeLabel === s.sizeLabel;
                     const isOutOfStock = s.stock === 0;
 
                     return (
-                      <button
-                        key={s.sizeLabel}
-                        type="button"
-                        disabled={isOutOfStock}
-                        onClick={() => setSelectedSize(s)}
-                        aria-pressed={isSelected}
-                        className={cn(
-                          "relative py-2.5 px-2 text-xs font-mono border rounded-sm transition-colors duration-200 text-center flex flex-col items-center justify-center gap-0.5 overflow-hidden",
-                          isOutOfStock
-                            ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-400 line-through cursor-not-allowed"
-                            : isSelected
-                            ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-sm font-bold"
-                            : "bg-white dark:bg-zinc-900 hover:border-zinc-500 text-zinc-950 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
-                        )}
-                      >
-                        {isSelected && !isOutOfStock && (
-                          <motion.span
-                            layoutId="pdp-size-pill"
-                            transition={SPRING_INDICATOR}
-                            className="absolute inset-0 bg-zinc-950 dark:bg-white"
-                          />
-                        )}
-                        <span className="relative z-10">{s.sizeLabel}</span>
-                        <span className="relative z-10 text-[10px] opacity-80 tabular-nums">
-                          {isOutOfStock ? "Out" : `${s.stock} left`}
-                        </span>
-                      </button>
+                      <React.Fragment key={s.sizeLabel}>
+                        {idx > 0 && " "}
+                        <button
+                          type="button"
+                          disabled={isOutOfStock}
+                          onClick={() => setSelectedSize(s)}
+                          aria-pressed={isSelected}
+                          className={cn(
+                            "relative py-2.5 px-2 text-xs font-mono border rounded-sm transition-colors duration-200 text-center flex flex-col items-center justify-center gap-0.5 overflow-hidden",
+                            isOutOfStock
+                              ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-400 line-through cursor-not-allowed"
+                              : isSelected
+                              ? "text-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-sm font-bold"
+                              : "bg-white dark:bg-zinc-900 hover:border-zinc-500 text-zinc-950 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
+                          )}
+                        >
+                          {isSelected && !isOutOfStock && (
+                            <motion.span
+                              layoutId="pdp-size-pill"
+                              transition={SPRING_INDICATOR}
+                              className="absolute inset-0 bg-zinc-950 dark:bg-white"
+                            />
+                          )}
+                          <span className="relative z-10">{s.sizeLabel}</span>{" "}
+                          <span className="relative z-10 text-[10px] opacity-80 tabular-nums">
+                            {isOutOfStock ? "Out" : `${s.stock} left`}
+                          </span>
+                        </button>
+                      </React.Fragment>
                     );
                   })}
                 </div>
@@ -594,7 +615,7 @@ export default function ProductDetailPage({
                   <div className="flex flex-wrap items-center justify-between gap-2 text-zinc-600 dark:text-zinc-400 pb-2 border-b border-zinc-200 dark:border-zinc-800">
                     <span className="text-[10px] uppercase font-sans tracking-wider font-semibold">
                       Flat Dimensions — Size {selectedSize.sizeLabel} ({unitLabel})
-                    </span>
+                    </span>{" "}
                     <span className="text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">
                       {product.fitType}
                     </span>
@@ -611,7 +632,7 @@ export default function ProductDetailPage({
                     >
                     {currentMeasurements?.chest && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Chest</span>
+                        <span className="text-zinc-500 block text-[10px]">Chest</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.chest} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -619,7 +640,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.waist && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Waist</span>
+                        <span className="text-zinc-500 block text-[10px]">Waist</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.waist} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -627,7 +648,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.length && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Length</span>
+                        <span className="text-zinc-500 block text-[10px]">Length</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.length} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -635,7 +656,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.shoulder && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Shoulder</span>
+                        <span className="text-zinc-500 block text-[10px]">Shoulder</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.shoulder} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -643,7 +664,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.sleeve && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Sleeve</span>
+                        <span className="text-zinc-500 block text-[10px]">Sleeve</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.sleeve} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -651,7 +672,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.inseam && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Inseam</span>
+                        <span className="text-zinc-500 block text-[10px]">Inseam</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.inseam} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -659,7 +680,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.footLength && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Foot Length</span>
+                        <span className="text-zinc-500 block text-[10px]">Foot Length</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.footLength} {unit === "INCH" ? '"' : "cm"}
                         </span>
@@ -667,7 +688,7 @@ export default function ProductDetailPage({
                     )}
                     {currentMeasurements?.wristOrCase && (
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">Case / Fit</span>
+                        <span className="text-zinc-500 block text-[10px]">Case / Fit</span>{" "}
                         <span className="font-bold text-zinc-950 dark:text-zinc-100 tabular-nums">
                           {currentMeasurements.wristOrCase} {unit === "INCH" ? '"' : "cm"}
                         </span>
